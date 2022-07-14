@@ -1,0 +1,103 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2816805 */
+  src: url('iconfont.woff2?t=1631775604656') format('woff2'),
+       url('iconfont.woff?t=1631775604656') format('woff'),
+       url('iconfont.ttf?t=1631775604656') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zoom-in:before {
+  content: "\e644";
+}
+
+.icon-paste:before {
+  content: "\e7a7";
+}
+
+.icon-undo:before {
+  content: "\e84d";
+}
+
+.icon-delete:before {
+  content: "\e606";
+}
+
+.icon-copy:before {
+  content: "\e6b8";
+}
+
+.icon-zoom-out:before {
+  content: "\e62f";
+}
+
+.icon-fit-canvas:before {
+  content: "\e728";
+}
+
+.icon-ungroup:before {
+  content: "\ea6a";
+}
+
+.icon-new:before {
+  content: "\e792";
+}
+
+.icon-clear:before {
+  content: "\e7fc";
+}
+
+.icon-redo:before {
+  content: "\e6af";
+}
+
+.icon-download:before {
+  content: "\e600";
+}
+
+.icon-group:before {
+  content: "\e607";
+}
+
+.icon-preview:before {
+  content: "\e642";
+}
+
+.icon-to-back:before {
+  content: "\e601";
+}
+
+.icon-qingkong:before {
+  content: "\e720";
+}
+
+.icon-to-front:before {
+  content: "\e602";
+}
+
+.icon-actual-size:before {
+  content: "\e799";
+}
+
+.icon-multiselect:before {
+  content: "\e716";
+}
+
+.icon-history:before {
+  content: "\e643";
+}
+
+.icon-baocun:before {
+  content: "\e80f";
+}
+
+.icon-save-as:before {
+  content: "\e604";
+}
+

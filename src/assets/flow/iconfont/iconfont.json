@@ -1,0 +1,37 @@
+{
+  "id": "2819855",
+  "name": "普通图标",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5308332",
+      "name": "公共",
+      "font_class": "gonggong",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
+    },
+    {
+      "icon_id": "10868286",
+      "name": "子流程",
+      "font_class": "ziliucheng",
+      "unicode": "eb0a",
+      "unicode_decimal": 60170
+    },
+    {
+      "icon_id": "16707196",
+      "name": "控制",
+      "font_class": "control",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "17616733",
+      "name": "扩展",
+      "font_class": "kuozhan",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    }
+  ]
+}
