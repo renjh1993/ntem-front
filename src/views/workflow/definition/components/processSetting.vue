@@ -148,6 +148,7 @@ export default {
     },
     methods: {
        selectDept(dept){
+        console.log(dept)
         if(dept == '3'){
           this.propDeptList = [];
             if(this.form.deptId){
@@ -212,11 +213,16 @@ export default {
               console.log(this.form.id)
               del(this.form.id)
               this.form.id = undefined
+               this.form.deptState = this.form.dept
+              this.form.dept = undefined
               edit(this.form).then(response => {
                 this.form = response.data
                 this.msgSuccess("保存成功")
               })
             }else{
+              console.log(this.form)
+              this.form.deptState = this.form.dept
+              this.form.dept = undefined
               add(this.form).then(response => {
                 this.form = response.data
                 this.msgSuccess("保存成功")
