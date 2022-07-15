@@ -18,30 +18,15 @@
           <el-row>
             <el-col :span="24"><el-alert title="每个节点设置，如有修改都请保存一次，跳转节点后数据不会自动保存！" type="warning" show-icon :closable="false"/></el-col>
           </el-row>
-          <!-- <el-form-item prop="chooseWay" label="选人方式"> 
-            <el-radio-group v-model="form.chooseWay">
-              <el-radio border label="person">选择人员</el-radio>
-              <el-radio border label="role">选择角色</el-radio>
-              <el-radio border label="dept">选择部门</el-radio>
-               <el-radio border label="rule">业务规则</el-radio>
-            </el-radio-group>
-          </el-form-item> -->
+         
           <el-row>
-            <!-- <el-col class="line" :span="6">
-              <el-form-item label="是否弹窗选人" prop="isShow">
-                <el-switch :disabled = "isShowDisabled" v-model="form.isShow"></el-switch>
-              </el-form-item>
-            </el-col> -->
+           
             <el-col class="line" :span="6">
               <el-form-item label="是否会签" prop="isShow">
                 <el-switch @change="multipleChange" v-model="form.multiple"></el-switch>
               </el-form-item>
            </el-col>
-           <!-- <el-col class="line" :span="6">
-              <el-form-item label="是否可退回" prop="isBack">
-                <el-switch v-model="form.isBack"></el-switch>
-              </el-form-item>
-           </el-col> -->
+          
           </el-row>
           <el-row v-if="form.multiple">
             <el-col :span="20">
@@ -67,11 +52,19 @@
                 <el-input v-model="form.roleId" v-show="false" placeholder="审批角色ID"/>
               </el-form-item>
               <el-form-item label-width="100px" label="审批部门" prop="dept">
-                <el-input readonly v-model="form.dept" placeholder="审批部门">
+                <el-select v-model="form.dept" placeholder="请选择部门" @change="selectDept(form.dept)">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+                <!-- <el-input readonly v-model="form.dept" placeholder="审批部门">
                   <el-button type="primary" slot="append" @click="openSelectDept">选择部门</el-button>
                   <el-button type="success" slot="append" @click="clearSelectDept">清空</el-button>
                 </el-input>
-                <el-input v-model="form.deptId" v-show="false" placeholder="审批部门ID"/>
+                <el-input v-model="form.deptId" v-show="false" placeholder="审批部门ID"/> -->
               </el-form-item>
            </el-col>
           </el-row>
@@ -113,6 +106,22 @@ export default {
     },
     data() {
       return {
+         options: [{
+          value: '0',
+          label: '上级部门'
+         },
+         {
+          value: '1',
+          label: '同级部门'
+          },
+           {
+          value: '2',
+          label: '下级部门'
+          },
+           {
+          value: '3',
+          label: '指定部门'
+          }],
         loading: false,
         nodeList: [],
         visible: false,
@@ -138,29 +147,31 @@ export default {
       }
     },
     methods: {
+       selectDept(dept){
+        if(dept == '3'){
+          this.propDeptList = [];
+            if(this.form.deptId){
+              let deptIds = this.form.deptId.split( ',' )
+              if(deptIds.length>0){
+                this.propDeptList = deptIds
+              }
+            }
+          this.$refs.deptRef.visible = true
+        }else{
+          this.form.dept = dept
+        }
+       },
         // 查询流程节点
         async init(definitionId) {
            this.definitionId = definitionId
            setting(definitionId).then(response => {
               this.nodeList = response.data
-              /* getInfo(this.nodeList[1].processDefinitionId,this.nodeList[1].nodeId).then(response => {
-                if(response.data){
-                  this.form = response.data
-                  this.nodeName = response.data.nodeName
-                }else{
-                  this.form.processDefinitionId = this.definitionId
-                  this.form.nodeName = this.nodeList[0].nodeName
-                  this.nodeName = this.nodeList[1].nodeName
-                }
-              }) */
+              
            })
         },
         //切换节点
         changeSteps(node,index) {
-          /* if(index === 0){
-             this.$modal.msg("第一个环节自动跳过")
-             return false
-          } */
+          
           this.form.assignee = undefined
           this.form.role = undefined
           this.form.dept = undefined
@@ -197,17 +208,6 @@ export default {
         //保存设置
         onSubmit(){
           if(this.nodeName){
-            // if(this.form.chooseWay !== 'rule'){
-            //     this.form.fullClassId = undefined
-            // }
-            // if(this.form.chooseWay === null || this.form.chooseWay === ''||this.form.chooseWay === undefined){
-            //     this.msgError("请选择选人方式")
-            //     return false
-            // }
-            // if(this.form.isBack === null || this.form.isBack === ''||this.form.isBack === undefined){
-            //     this.form.isBack = false
-            // }
-
             if(this.form.id){
               console.log(this.form.id)
               del(this.form.id)
@@ -282,42 +282,10 @@ export default {
                 this.propUserList = userIds
               }
             }
-            this.$refs.userRef.visible = true
-         // }else if(this.form.chooseWay === 'role'){
-        //    this.propRoleList = [];
-        //     if(this.form.assigneeId){
-        //       let roleIds = this.form.assigneeId.split( ',' )
-        //       if(roleIds.length>0){
-        //         this.propRoleList = roleIds
-        //       }
-        //     }
-        //     this.$refs.roleRef.visible = true
-        //  // }else if(this.form.chooseWay === 'dept'){
-        //     this.propDeptList = [];
-        //     if(this.form.assigneeId){
-        //       let deptIds = this.form.assigneeId.split( ',' )
-        //       if(deptIds.length>0){
-        //         this.propDeptList = deptIds
-        //       }
-        //     }
-        //     this.$refs.deptRef.visible = true
-        //  // }else if(this.form.chooseWay === 'rule'){
-        //     this.$refs.processRuleRef.visible = true
-          //}
+            this.$refs.userRef.visible = true       
         },
          async openSelectRole(){
-          // if(this.form.chooseWay === 'person'){
-            // console.log("======="+this.form.chooseWay)
-            // console.log("======="+this.$refs.userRef.visible)
-            // this.propUserList = [];
-            // if(this.form.assigneeId){
-            //   let userIds = this.form.assigneeId.split( ',' )
-            //   if(userIds.length>0){
-            //     this.propUserList = userIds
-            //   }
-            // }
-            // this.$refs.userRef.visible = true
-         // }else if(this.form.chooseWay === 'role'){
+          
            this.propRoleList = [];
             if(this.form.roleId){
               let roleIds = this.form.roleId.split( ',' )
@@ -326,41 +294,9 @@ export default {
               }
             }
             this.$refs.roleRef.visible = true
-         // }else if(this.form.chooseWay === 'dept'){
-        //     this.propDeptList = [];
-        //     if(this.form.assigneeId){
-        //       let deptIds = this.form.assigneeId.split( ',' )
-        //       if(deptIds.length>0){
-        //         this.propDeptList = deptIds
-        //       }
-        //     }
-        //     this.$refs.deptRef.visible = true
-        //  // }else if(this.form.chooseWay === 'rule'){
-        //     this.$refs.processRuleRef.visible = true
-          //}
+         
         },
          async openSelectDept(){
-          // if(this.form.chooseWay === 'person'){
-        //     console.log("======="+this.form.chooseWay)
-        //     console.log("======="+this.$refs.userRef.visible)
-        //     this.propUserList = [];
-        //     if(this.form.assigneeId){
-        //       let userIds = this.form.assigneeId.split( ',' )
-        //       if(userIds.length>0){
-        //         this.propUserList = userIds
-        //       }
-        //     }
-        //     this.$refs.userRef.visible = true
-        //  // }else if(this.form.chooseWay === 'role'){
-        //    this.propRoleList = [];
-        //     if(this.form.assigneeId){
-        //       let roleIds = this.form.assigneeId.split( ',' )
-        //       if(roleIds.length>0){
-        //         this.propRoleList = roleIds
-        //       }
-        //     }
-        //     this.$refs.roleRef.visible = true
-         // }else if(this.form.chooseWay === 'dept'){
             this.propDeptList = [];
             if(this.form.deptId){
               let deptIds = this.form.deptId.split( ',' )
@@ -369,9 +305,7 @@ export default {
               }
             }
             this.$refs.deptRef.visible = true
-         // }else if(this.form.chooseWay === 'rule'){
-          //   this.$refs.processRuleRef.visible = true
-          // }
+        
         },
         //选择人员
         clickUser(userList){

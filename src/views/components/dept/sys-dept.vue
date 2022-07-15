@@ -1,5 +1,5 @@
 <template>
-<el-dialog title="用户" :visible.sync="visible" v-if="visible" width="60%" append-to-body :close-on-click-modal="false">
+<el-dialog title="部门" :visible.sync="visible" v-if="visible" width="60%" append-to-body :close-on-click-modal="false">
   <div class="app-container">
     <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
     <el-tree
@@ -40,7 +40,7 @@ export default {
     // 是否与子级联动 false为联动
     isLinked: {
       type: Boolean,
-      default:false
+      default:true
     }
   },
   data() {

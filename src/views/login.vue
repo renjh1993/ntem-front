@@ -39,7 +39,7 @@
             <svg-icon slot="prefix" icon-class="validCode" v-bind:class="{'color-class':isValidCode}" class="el-input__icon input-icon "  />
           </el-input>
           <div class="login-code">
-            <img :src="codeUrl" @click="getCode" style="width:300px; height: 400px"/>
+            <img :src="codeUrl" @click="getCode" />
           </div>
         </el-form-item>
         <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
