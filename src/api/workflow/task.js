@@ -2,13 +2,15 @@ import request from '@/utils/request'
 
 export default {
 
-    complete(data) {
+  //完成任务
+  complete(data) {
      return request({
       url: '/workflow/task/completeTask',
       method: 'post',
       data: data
      })
-    },
+  },
+
   // 查询当前用户的待办任务
   getTaskWaitByPage(query) {
     // return request({
@@ -54,6 +56,15 @@ export default {
   completeTask(data) {
     return request({
       url: '/workflow/task/completeTask',
+      method: 'post',
+      data: data
+    })
+  },
+
+  //批量完成任务
+  batchCompleteTask(data) {
+    return request({
+      url: '/workflow/task/batchCompleteTask',
       method: 'post',
       data: data
     })
