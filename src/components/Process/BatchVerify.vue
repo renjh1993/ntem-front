@@ -1,7 +1,7 @@
 <template>
 <div v-if="visible">
   <!-- 提交申请开始 -->
-  <el-dialog  title="审批意见" :visible.sync="visible"  width="800px"  :close-on-click-modal="false"
+  <el-dialog  title="批量审批意见" :visible.sync="visible"  width="800px"  :close-on-click-modal="false"
   append-to-body destroy-on-close @close="closeDialog" >
     <el-form v-loading="loading"  :rules="rules" ref="formData" :model="formData" status-icon >
       <el-form-item label="审批意见" prop="message" label-width="120px">
@@ -36,9 +36,10 @@ import ChooseWorkflowUser from "@/views/components/user/choose-workflow-user ";
 import  SysUser from "@/views/components/user/sys-user";
 export default {
   props: {
-    businessKey: String,
-    taskId: String,
-    taskVariables: Object,
+    // businessKey: String,
+    // taskId: String,
+    // taskVariables: Object,
+    batchData: Object
   },
   components: {
     ChooseWorkflowUser,
@@ -64,25 +65,25 @@ export default {
   methods: {
     // 提交表单数据
     async submitForm(formName) {
- let params = {
-        message: formName.message,
-        delegate: this.delegate,
-        taskId: this.taskId,
-        businessKey: this.businessKey
- }
-let response = await api.completeTask(params);
-            if (response.code === 200) {
-              // 刷新数据
-              this.$message.success("办理成功");
-              // 将表单清空
-              // this.$refs[formName].resetFields();
-              // 关闭窗口
-              this.visible = false;
-              // 回调事件
-              this.$emit("callSubmit")
-            }
-  
+    let params = {
+      message: formName.message,
+      delegate: this.delegate,
+      // taskId: this.taskId,
+      // businessKey: this.businessKey
+      "batchData": this.batchData
+    }
+    let response = await api.batchCompleteTask(params);
+      if (response.code === 200) {
+        // 刷新数据
+        this.$message.success("办理成功");
+        // 将表单清空
+        // this.$refs[formName].resetFields();
+        // 关闭窗口
+        this.visible = false;
+        // 回调事件
+        this.$emit("batchCallSubmit")
+        // this.batchCallSubmit()
+      }
     },
-   
 }};
 </script>
