@@ -83,8 +83,7 @@
     <sys-role ref="roleRef" @confirmUser="clickRole" :propRoleList = 'propRoleList'/>
     <!-- 选择部门 -->
     <sys-dept ref="deptRef" @confirmUser="clickDept" :propDeptList = 'propDeptList'/>
-    <!-- 选择业务规则 -->
-    <!-- <process-Rule ref="processRuleRef" @primary="clickRule" :propDeptList = 'propDeptList'/> -->
+   
 
   </el-dialog>
 </template>
@@ -93,7 +92,7 @@
 import  SysUser from "@/views/components/user/sys-user";
 import  SysRole from "@/views/components/role/sys-role";
 import  SysDept from "@/views/components/dept/sys-dept";
-// import  ProcessRule from "@/views/workflow/definition/components/processRule";
+
 import {setting} from "@/api/workflow/definition";
 import {getInfo,add,edit,del} from "@/api/workflow/actNodeAssginee";
 
@@ -121,7 +120,8 @@ export default {
            {
           value: '3',
           label: '指定部门'
-          }],
+          }
+          ],
         loading: false,
         nodeList: [],
         visible: false,
@@ -147,21 +147,21 @@ export default {
       }
     },
     methods: {
-       selectDept(dept){
-        console.log(dept)
-        if(dept == '3'){
-          this.propDeptList = [];
-            if(this.form.deptId){
-              let deptIds = this.form.deptId.split( ',' )
-              if(deptIds.length>0){
-                this.propDeptList = deptIds
-              }
-            }
-          this.$refs.deptRef.visible = true
-        }else{
-          this.form.dept = dept
-        }
-       },
+      //  selectDept(dept){
+      //   console.log(dept)
+      //   if(dept == '3'){
+      //     this.propDeptList = [];
+      //       if(this.form.deptId){
+      //         let deptIds = this.form.deptId.split( ',' )
+      //         if(deptIds.length>0){
+      //           this.propDeptList = deptIds
+      //         }
+      //       }
+      //     this.$refs.deptRef.visible = true
+      //   }else{
+      //     this.form.dept = dept
+      //   }
+      //  },
         // 查询流程节点
         async init(definitionId) {
            this.definitionId = definitionId
@@ -184,6 +184,8 @@ export default {
           getInfo(this.definitionId,node.nodeId).then(response => {
             if(response.data){
               this.form = response.data
+              this.form.dept = response.data.deptState
+              console.log(this.form.dept)
               this.form.nodeName = node.nodeName
               this.loading = false
               this.$forceUpdate()
@@ -210,13 +212,14 @@ export default {
         onSubmit(){
           if(this.nodeName){
             if(this.form.id){
-              console.log(this.form.id)
+              console.log(this.form)
               del(this.form.id)
               this.form.id = undefined
                this.form.deptState = this.form.dept
               this.form.dept = undefined
               edit(this.form).then(response => {
                 this.form = response.data
+                this.form.dept = response.data.deptState
                 this.msgSuccess("保存成功")
               })
             }else{
@@ -356,12 +359,7 @@ export default {
           this.$set(this.form,'deptId',resultAssigneeId)
           this.$refs.deptRef.visible = false
         },
-        //业务规则
-        clickRule(rule){
-          this.$set(this.form,'assignee',rule.fullClass+"."+rule.method)
-          this.$set(this.form,'fullClassId',rule.id)
-          this.$refs.processRuleRef.visible = false
-        }
+        
     }
 }
 </script>
