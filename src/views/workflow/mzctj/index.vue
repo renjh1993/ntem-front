@@ -65,25 +65,14 @@
 
     <el-table v-loading="loading" :data="leaveList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
-      <el-table-column label="请假类型" align="center" prop="type" :formatter="typeFormat"/>
-      <el-table-column label="标题" align="center" prop="title"/>
-      <el-table-column label="原因" align="center" prop="reason"/>
-      <el-table-column label="开始时间" align="center" prop="leaveStartTime" width="180">
+      <el-table-column label="村名称" align="center" prop="cunName"/>
+      <el-table-column label="所属市" align="center" prop="city"/>
+      <el-table-column label="县（市、区）" align="center" prop="county"/>
+     <el-table-column label="状态" align="center">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.leaveStartTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="结束时间" align="center" prop="leaveEndTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.leaveEndTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-
-
-      <el-table-column label="状态" align="center">
-        <template slot-scope="scope">
-            {{stateFormat(scope.row)}}               
+          
+            {{stateFormat(scope.row)}}
+          
         </template>
       </el-table-column>
 
@@ -156,80 +145,39 @@
 
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
-        <el-form-item label="请假类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择请假类型" @change="chooseMedicine">
-            <el-option
-              v-for="dict in typeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            ></el-option>
-          </el-select>
+        <el-form-item label="村名称" prop="cunName">
+         <el-input v-model="form.cunName"/>
         </el-form-item>
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title"/>
+        <el-form-item label="所属市" prop="city">
+           <el-input v-model="form.city"/>
         </el-form-item>
-        <el-form-item label="原因" prop="reason">
-          <el-input v-model="form.reason" type="textarea" placeholder="请输入内容"/>
+     <el-form-item label="县（市，区）" prop="county">
+           <el-input v-model="form.county"/>
         </el-form-item>
-        <el-form-item label="开始时间" prop="leaveStartTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveStartTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择开始时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="leaveEndTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveEndTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择结束时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-form>
+        </el-form>
+     
       <div slot="footer" class="dialog-footer">
         <el-button v-if="true == isDraft " @click="asDraft">暂 存</el-button>
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    
+    
+    
+    
     <el-dialog :title="title" :visible.sync="open3" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
-        <el-form-item label="请假类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择请假类型" @change="chooseMedicine">
-            <el-option
-              v-for="dict in typeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            ></el-option>
-          </el-select>
+        <el-form-item label="村名称" prop="cunName">
+         <el-input v-model="form.cunName"/>
         </el-form-item>
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title"/>
+        <el-form-item label="所属市" prop="city">
+           <el-input v-model="form.city"/>
         </el-form-item>
-        <el-form-item label="原因" prop="reason">
-          <el-input v-model="form.reason" type="textarea" placeholder="请输入内容"/>
+     <el-form-item label="县（市，区）" prop="county">
+           <el-input v-model="form.city"/>
         </el-form-item>
-        <el-form-item label="开始时间" prop="leaveStartTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveStartTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择开始时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="leaveEndTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveEndTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择结束时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-form>
+        </el-form>
       <div slot="footer" class="dialog-footer">
        
         <el-button type="primary" @click="submitForm2">确 定</el-button>
@@ -241,7 +189,7 @@
 </template>
 
 <script>
-  import {listLeave, getLeave, delLeave, addLeave, updateLeave, draft,exportLeave} from '@/api/workflow/leave'
+  import {listMzctj, getMzctj, delMzctj, addMzctj, updateMzctj, draft,exportMzctj} from '@/api/workflow/mzctj'
   import api from '@/api/workflow/processInst'
   import {getDefinitionsByInstanceId} from '@/api/activiti/definition'
 
@@ -250,7 +198,7 @@
  import  approvalForm from "@/views/components/approvalForm";
 
   export default {
-    name: 'Leave',
+    name: 'Mzctj',
     components: {approvalForm},
     data() {
       return {
@@ -294,42 +242,19 @@
         queryParams: {
           pageNum: 1,
           pageSize: 10,
-          type: null,
-          title: null,
-          reason: null,
-          leaveStartTime: null,
-          leaveEndTime: null,
-          instanceId: null,
-          state: null,
-          createBy: null
+          
+         
         },
         // 表单参数
         form: {},
         // 表单校验
         rules: {
-          type: [
-            {required: true, message: '请假类型不能为空', trigger: 'change'}
-          ],
-          title: [
-            {required: true, message: '标题不能为空', trigger: 'blur'}
-          ],
-          reason: [
-            {required: true, message: '原因不能为空', trigger: 'blur'}
-          ],
-          leaveStartTime: [
-            {required: true, message: '开始时间不能为空', trigger: 'blur'}
-          ],
-          leaveEndTime: [
-            {required: true, message: '结束时间不能为空', trigger: 'blur'}
-          ]
+          
         }
       }
     },
     created() {
-      this.getList()
-      this.getDicts('activiti_leave_type').then(response => {
-        this.typeOptions = response.data
-      })
+      this.getList() 
       this.getDicts('activiti_flow_type').then(response => {
         this.stateOptions = response.data
       })
@@ -338,7 +263,7 @@
       /** 查询请假列表 */
       getList() {
         this.loading = true
-        listLeave(this.queryParams).then(response => {
+        listMzctj(this.queryParams).then(response => {
           this.leaveList = response.rows
           this.total = response.total
           this.loading = false
@@ -350,7 +275,7 @@
       },
       // 状态字典翻译
       stateFormat(row, column) {
-        return this.selectDictLabel(this.stateOptions, row.state)
+        return this.selectDictLabel(this.stateOptions, row.status)
       },
 
       // 取消按钮
@@ -412,7 +337,7 @@
       /** 修改按钮操作 */
       handleUpdate(row) {
         this.reset()
-        getLeave(row.id).then(response => {
+        getMzctj(row.id).then(response => {
           this.form = response.data
           this.isDraft = false
           this.open = true
@@ -422,7 +347,7 @@
 /** 重新提交 */
       reSubmit(row) {
          this.reset()
-        getLeave(row.id).then(response => {
+        getMzctj(row.id).then(response => {
           this.form = response.data
          // this.form.id = null
           this.open3 = true
@@ -453,7 +378,7 @@
       handleSub(row) {
         //row.processKey = "testleave"
         row.businessRoute = this.$route.name
-            addLeave(row).then(response => {
+            addMzctj(row).then(response => {
                 this.msgSuccess('提交成功')
                 this.getList()
               })           
@@ -464,7 +389,7 @@
         this.$refs['form'].validate(valid => {
           if (valid) {
             if (this.form.id != null) {
-              updateLeave(this.form).then(response => {
+              updateMzctj(this.form).then(response => {
                 this.msgSuccess('修改成功')
                 this.open = false
                 this.getList()
@@ -472,7 +397,7 @@
             } else {
            // this.form.processKey = "testleave"
             this.form.businessRoute = this.$route.name
-            addLeave(this.form).then(response => {
+            addMzctj(this.form).then(response => {
                 this.msgSuccess('提交成功')
                 this.open = false
                 this.getList()
@@ -485,7 +410,7 @@
         this.$refs['form'].validate(valid => {
           if (valid) {
             this.form.businessRoute = this.$route.name
-            addLeave(this.form).then(response => {
+            addMzctj(this.form).then(response => {
                 this.msgSuccess('提交成功')
                 this.open3 = false
                 this.getList()
@@ -512,7 +437,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function () {
-          return delLeave(id)
+          return delMzctj(id)
         }).then(() => {
           this.getList()
           this.msgSuccess('删除成功')
@@ -526,7 +451,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function () {
-          return exportLeave(queryParams)
+          return exportMzctj(queryParams)
         }).then(response => {
           this.download(response.message)
         })

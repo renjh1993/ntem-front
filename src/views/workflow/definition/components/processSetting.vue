@@ -147,21 +147,21 @@ export default {
       }
     },
     methods: {
-      //  selectDept(dept){
-      //   console.log(dept)
-      //   if(dept == '3'){
-      //     this.propDeptList = [];
-      //       if(this.form.deptId){
-      //         let deptIds = this.form.deptId.split( ',' )
-      //         if(deptIds.length>0){
-      //           this.propDeptList = deptIds
-      //         }
-      //       }
-      //     this.$refs.deptRef.visible = true
-      //   }else{
-      //     this.form.dept = dept
-      //   }
-      //  },
+       selectDept(dept){
+        console.log(dept)
+        if(dept == '3'){
+          this.propDeptList = [];
+            if(this.form.deptId){
+              let deptIds = this.form.deptId.split( ',' )
+              if(deptIds.length>0){
+                this.propDeptList = deptIds
+              }
+            }
+          this.$refs.deptRef.visible = true
+        }else{
+          this.form.dept = dept
+        }
+       },
         // 查询流程节点
         async init(definitionId) {
            this.definitionId = definitionId
