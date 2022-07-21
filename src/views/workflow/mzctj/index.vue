@@ -111,7 +111,14 @@
                      
           >重新提交
           </el-button>
-         
+         <el-button v-if="'4' == scope.row.status "
+                     size="mini"
+                     type="text"
+                     icon="el-icon-edit"
+                     @click="handleEdit(scope.row)"
+                     
+          >提交修改
+          </el-button>
           <el-button
           v-if="'1' != scope.row.status "
             size="mini"
@@ -163,7 +170,25 @@
       </div>
     </el-dialog>
     
-    
+    <el-dialog :title="title" :visible.sync="open4" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
+        <el-form-item label="村名称" prop="cunName">
+         <el-input v-model="form.cunName"/>
+        </el-form-item>
+        <el-form-item label="所属市" prop="city">
+           <el-input v-model="form.city"/>
+        </el-form-item>
+     <el-form-item label="县（市，区）" prop="county">
+           <el-input v-model="form.county"/>
+        </el-form-item>
+        </el-form>
+     
+      <div slot="footer" class="dialog-footer">
+        <!-- <el-button v-if="true == isDraft " @click="asDraft">暂 存</el-button> -->
+        <el-button type="primary" @click="submitForm3">确 定</el-button>
+        <el-button @click="cancel2">取 消</el-button>
+      </div>
+    </el-dialog>
     
     
     <el-dialog :title="title" :visible.sync="open3" width="500px" append-to-body>
@@ -189,7 +214,7 @@
 </template>
 
 <script>
-  import {listMzctj, getMzctj, delMzctj, addMzctj, updateMzctj, draft,exportMzctj} from '@/api/workflow/mzctj'
+  import {listMzctj, getMzctj, delMzctj, addMzctj,editMzctj, updateMzctj, draft,exportMzctj} from '@/api/workflow/mzctj'
   import api from '@/api/workflow/processInst'
   import {getDefinitionsByInstanceId} from '@/api/activiti/definition'
 
@@ -234,6 +259,7 @@
         open: false,
         open2: false,
         open3: false,
+        open4: false,
         // 请假类型字典
         typeOptions: [],
         // 状态字典
@@ -287,6 +313,10 @@
         this.open3 = false
         //this.reset()
       },
+      cancel2() {
+        this.open4 = false
+        //this.reset()
+      },
       // 表单重置
       reset() {
         this.form = {
@@ -332,7 +362,17 @@
           this.form = response.data
           this.isDraft = false
           this.open = true
-          this.title = '修改请假'
+          this.title = '修改'
+        })
+      },
+      /** 已完成提交修改按钮操作 */
+      handleEdit(row) {
+        this.reset()
+        getMzctj(row.id).then(response => {
+          this.form = response.data
+          this.isDraft = false
+          this.open4 = true
+          this.title = '修改'
         })
       },
 /** 重新提交 */
@@ -394,6 +434,18 @@
                 this.getList()
               })
             }
+          }
+        })
+      },
+      submitForm3() {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            this.form.businessRoute = this.$route.name
+            editMzctj(this.form).then(response => {
+                this.msgSuccess('提交成功')
+                this.open4 = false
+                this.getList()
+              })
           }
         })
       },

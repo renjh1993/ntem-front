@@ -50,7 +50,14 @@ export function updateMzctj(data) {
     data: data
   })
 }
-
+// 已完成后提交修改
+export function editMzctj(data) {
+  return request({
+    url: '/workflowMzctj/edit',
+    method: 'post',
+    data: data
+  })
+}
 // 删除请假
 export function delMzctj(data) {
   return request({
