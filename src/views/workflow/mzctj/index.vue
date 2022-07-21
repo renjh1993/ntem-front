@@ -78,7 +78,7 @@
 
 <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="'1'==scope.row.state || '3'==scope.row.state "
+          <el-button v-if="'1'==scope.row.status || '3'==scope.row.status "
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
@@ -86,7 +86,7 @@
                      
           >修改
           </el-button>
-          <el-button v-if="'1'==scope.row.state"
+          <el-button v-if="'1'==scope.row.status"
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
@@ -94,8 +94,8 @@
                     
           >提交
           </el-button>
-          <el-button v-if="'1'==scope.row.state || '5'==scope.row.state 
-          ||'4'==scope.row.state ||  '7'==scope.row.state"
+          <el-button v-if="'1'==scope.row.status || '5'==scope.row.status 
+          ||'4'==scope.row.status ||  '7'==scope.row.status"
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
@@ -103,7 +103,7 @@
                     
           >删除
           </el-button>
-          <el-button v-if="'7' == scope.row.state "
+          <el-button v-if="'7' == scope.row.status "
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
@@ -113,7 +113,7 @@
           </el-button>
          
           <el-button
-          v-if="'1' != scope.row.state "
+          v-if="'1' != scope.row.status "
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -291,16 +291,7 @@
       reset() {
         this.form = {
           id: null,
-          type: null,
-          title: null,
-          reason: null,
-          leaveStartTime: null,
-          leaveEndTime: null,
-          instanceId: null,
-          state: null,
-          createBy: null,
-          createTime: null,
-          updateTime: null
+          
         }
         this.resetForm('form')
       },
@@ -431,13 +422,13 @@
       ,
       /** 删除按钮操作 */
       handleDelete(row) {
-        const id = row.id  //|| this.ids
-        this.$confirm('是否确认删除请假编号为"' + id + '"的数据项?', '警告', {
+        const data = {id: row.id  }//|| this.ids
+        this.$confirm('是否确认删除请假编号为"' + row.id + '"的数据项?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function () {
-          return delMzctj(id)
+          return delMzctj(data)
         }).then(() => {
           this.getList()
           this.msgSuccess('删除成功')

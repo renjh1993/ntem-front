@@ -20,7 +20,7 @@ export function listMzctjAll(query) {
 // 查询请假详细
 export function getMzctj(id) {
   return request({
-    url: '/workflowMzctj/' + id,
+    url: '/workflowMzctj/getOne/' + id,
     method: 'get'
   })
 }
@@ -52,10 +52,12 @@ export function updateMzctj(data) {
 }
 
 // 删除请假
-export function delMzctj(id) {
+export function delMzctj(data) {
   return request({
-    url: '/workflowMzctj/' + id,
-    method: 'delete'
+    url: '/workflowMzctj/del',
+    
+    method: 'post',
+    data: data
   })
 }
 
