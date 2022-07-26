@@ -78,12 +78,11 @@ export default {
       data: data
     })
   },
-   // 通过流程实例ID获取对应流程业务表单组件名
-   getFormNameByProcInstId(processInstId) {
+  // 通过流程实例ID获取对应流程业务表单组件名
+  getFormNameByProcInstId(processInstId) {
     return request({
       url: '/workflow/processInstance/getFormNameByProcInstId/'+processInstId,
       method: 'get',
-     
     })
   },
   // 作废流程实例，不会删除历史记录
@@ -101,5 +100,13 @@ export default {
       method: 'get',
       params: query
     })
-  }
+  },
+
+  // 通过流程实例ID获取程实例
+  getProcessInstByBusinessKey(businessKey) {
+    return request({
+      url: '/workflow/processInstance/getProcessInstByBusinessKey/' + businessKey,
+      method: 'get',
+    })
+  },
 }

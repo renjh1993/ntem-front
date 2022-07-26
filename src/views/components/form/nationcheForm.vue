@@ -1,7 +1,8 @@
 <template>
   <div>
     <div >
-    <h2>提交人：{{form.crtUser}}</h2>
+    <!-- <h2>提交人：{{form.crtUser}}</h2> -->
+    <h2>{{this.processInstName}}</h2>
     
     <el-form  label-width="80px">
       <el-form-item label="社区名称">
@@ -49,7 +50,7 @@
 <script>
 import { getNationChe, addNationChe, updateNationChe } from "@/api/workflow/nationche";
 import processAip from "@/api/workflow/processInst";
- import verify from "@/components/Process/Verify";
+import verify from "@/components/Process/Verify";
 import { boolean } from "yargs";
 export default {
   name: "Leave",
@@ -72,6 +73,8 @@ export default {
       leaveList: [],
       // 表单参数
       form: {},
+      //流程实例名称
+      processInstName: undefined,
       // 表单校验
       rules: {
         id: [
@@ -129,6 +132,9 @@ export default {
     async getById() {
         const {data} = await getNationChe(this.businessKey)
         this.form = data;
+        processAip.getProcessInstByBusinessKey(this.businessKey).then(response => {
+          this.processInstName = response.data.name;
+        })
     },
     /** 提交按钮 */
     submitForm() {
