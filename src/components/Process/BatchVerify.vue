@@ -26,7 +26,7 @@
       </el-form-item>
     </el-form>
   </el-dialog>
- 
+  <Navbar ref="navbar" v-show="false"/>
   
 </div>
 </template>
@@ -34,6 +34,7 @@
 import api from "@/api/workflow/task";
 import ChooseWorkflowUser from "@/views/components/user/choose-workflow-user ";
 import  SysUser from "@/views/components/user/sys-user";
+import Navbar from "../../layout/components/Navbar.vue";
 export default {
   props: {
     // businessKey: String,
@@ -43,7 +44,8 @@ export default {
   },
   components: {
     ChooseWorkflowUser,
-    SysUser
+    SysUser,
+    Navbar
   },
   data() {
     return {
@@ -78,6 +80,7 @@ export default {
         this.$message.success("办理成功");
         // 将表单清空
         // this.$refs[formName].resetFields();
+        this.$refs.navbar.reload();
         // 关闭窗口
         this.visible = false;
         // 回调事件
