@@ -63,6 +63,7 @@ export default {
   },
   data: function(){
     return {
+     
       total: 0,
       queryParams: {
             pageNum: 1,
@@ -88,6 +89,7 @@ export default {
       }
     }
   },
+  inject: ["reload"],
   methods: {
     noticeTips(){
       return '当前您有'+ this.total +'条待办任务'
