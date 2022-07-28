@@ -172,7 +172,7 @@ export const constantRoutes = [
 ]
 
 export default new Router({
-  // base: "/dfsp/manager",
+  base: process.env.VUE_APP_NGINX_LOCATION,
   // mode: 'history', // 去掉url中的#
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes

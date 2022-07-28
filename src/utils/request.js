@@ -40,7 +40,7 @@ service.interceptors.response.use(res => {
         }
       ).then(() => {
         store.dispatch('LogOut').then(() => {
-          location.href = '/dfsp/manager/index';
+          location.href = process.env.VUE_APP_NGINX_LOCATION + '/';
         })
       }).catch(() => {})
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')

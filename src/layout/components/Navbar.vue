@@ -107,7 +107,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
-          location.href = '/dfsp/manager/index';
+          location.href = process.env.VUE_APP_NGINX_LOCATION + '/';
         })
       })
     },

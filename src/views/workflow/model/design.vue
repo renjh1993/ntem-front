@@ -21,7 +21,7 @@ export default {
 
     computed:{
         src(){
-          return "/activiti/modeler.html?modelId="+this.modelId
+          return process.env.VUE_APP_MODEL_URL + "/activiti/modeler.html?modelId="+this.modelId
         },
         apiUrl(){
           return  process.env.VUE_APP_BASE_API // "/dev-api";//后台部署的api服务
