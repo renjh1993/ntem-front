@@ -128,6 +128,7 @@ export default {
         active: null,
         isShowDisabled: false,
         form: {
+          dept:null,
           isShow: true,
           isBack: false,
           multiple: false,
@@ -158,7 +159,8 @@ export default {
               }
             }
           this.$refs.deptRef.visible = true
-        }else{
+        }
+        else{
           this.form.dept = dept
         }
        },
@@ -175,7 +177,7 @@ export default {
           
           this.form.assignee = undefined
           this.form.role = undefined
-          this.form.dept = undefined
+          this.form.dept = null
           this.form.multipleColumn = undefined
           this.form.multiple = false
           this.loading = true
@@ -184,7 +186,11 @@ export default {
           getInfo(this.definitionId,node.nodeId).then(response => {
             if(response.data){
               this.form = response.data
-              this.form.dept = response.data.deptState
+             if(response.data.deptState == '3'){
+                this.form.dept = response.data.dept
+                }else{
+                this.form.dept = response.data.deptState
+                }  
               console.log(this.form.dept)
               this.form.nodeName = node.nodeName
               this.loading = false
@@ -219,7 +225,11 @@ export default {
               this.form.dept = undefined
               edit(this.form).then(response => {
                 this.form = response.data
+               if(response.data.deptState == '3'){
+                this.form.dept = response.data.dept
+                }else{
                 this.form.dept = response.data.deptState
+                }  
                 this.msgSuccess("保存成功")
               })
             }else{
@@ -227,7 +237,12 @@ export default {
               this.form.deptState = this.form.dept
               this.form.dept = undefined
               add(this.form).then(response => {
-                this.form = response.data
+                 this.form = response.data
+               if(response.data.deptState == '3'){
+                this.form.dept = response.data.dept
+                }else{
+                this.form.dept = response.data.deptState
+                }         
                 this.msgSuccess("保存成功")
               })
             }
@@ -257,7 +272,7 @@ export default {
           this.form.roleId =undefined
           this.form.role = undefined
           this.form.deptId =undefined
-          this.form.dept = undefined
+          this.form.dept = null
           this.form.chooseWay = undefined
           this.form.processDefinitionId = this.definitionId
         },

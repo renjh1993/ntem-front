@@ -46,7 +46,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['workflow:leave:add']"
+         
         >新增
         </el-button>
       </el-col>
@@ -56,7 +56,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['workflow:leave:export']"
+          
         >导出
         </el-button>
       </el-col>
