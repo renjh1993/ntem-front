@@ -23,7 +23,7 @@
            
             <el-col class="line" :span="6">
               <el-form-item label="是否会签" prop="isShow">
-                <el-switch @change="multipleChange" v-model="form.multiple"></el-switch>
+                <el-switch  v-model="form.multiple"></el-switch>
               </el-form-item>
            </el-col>
           
@@ -31,20 +31,20 @@
           <el-row v-if="form.multiple">
             <el-col :span="20">
               <el-form-item label-width="100px" label="会签KEY值" prop="multipleColumn">
-                <el-input v-model="form.multipleColumn" placeholder="会签保存人员KEY值"/>
+                <el-input v-model="form.multipleColumn" @input="forceUpdate()" placeholder="会签保存人员KEY值"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="20">
               <el-form-item label-width="100px" label="审批人员" prop="assignee">
-                <el-input readonly v-model="form.assignee" placeholder="审批人员">
+                <el-input @input="forceUpdate()" readonly v-model="form.assignee" placeholder="审批人员">
                   <el-button type="primary" slot="append" @click="openSelectPerson">选择人员</el-button>
                   <el-button type="success" slot="append" @click="clearSelectPerson">清空</el-button>
                 </el-input>
                 <el-input v-model="form.assigneeId" v-show="false" placeholder="审批人员ID"/>
               </el-form-item>
-              <el-form-item label-width="100px" label="审批角色" prop="role">
+              <el-form-item @input="forceUpdate()" label-width="100px" label="审批角色" prop="role">
                 <el-input readonly v-model="form.role" placeholder="审批角色">
                   <el-button type="primary" slot="append" @click="openSelectRole">选择角色</el-button>
                   <el-button type="success" slot="append" @click="clearSelectRole">清空</el-button>
@@ -148,6 +148,9 @@ export default {
       }
     },
     methods: {
+      forceUpdate(){
+this.$forceUpdate()
+      },
        selectDept(dept){
         console.log(dept)
         if(dept == '3'){
