@@ -12,7 +12,7 @@ export default {
   name: 'Notice',
   data() {
     return {
-      total: 0,
+      // total: 0,
       queryParams: {
         pageNum: 1,
         pageSize: 10
@@ -22,8 +22,8 @@ export default {
   props: {
     // message用于接收
     total: {
-      type: String, //验证类型，也可以验证其他类型
-      default: "0", //如果父组件传值，则用父组件的值渲染，反之使用默认值
+      type: Number, //验证类型，也可以验证其他类型
+      default: 0, //如果父组件传值，则用父组件的值渲染，反之使用默认值
     },
   },
   mounted() {

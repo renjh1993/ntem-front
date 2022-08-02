@@ -38,18 +38,18 @@
           <el-row>
             <el-col :span="20">
               <el-form-item label-width="100px" label="审批人员" prop="assignee">
-                <el-input @input="forceUpdate()" readonly v-model="form.assignee" placeholder="审批人员">
+                <el-input @input="forceUpdate()"  v-model="form.assignee" placeholder="审批人员">
                   <el-button type="primary" slot="append" @click="openSelectPerson">选择人员</el-button>
                   <el-button type="success" slot="append" @click="clearSelectPerson">清空</el-button>
                 </el-input>
-                <el-input v-model="form.assigneeId" v-show="false" placeholder="审批人员ID"/>
+                <el-input @input="forceUpdate()" v-model="form.assigneeId" v-show="false" placeholder="审批人员ID"/>
               </el-form-item>
-              <el-form-item @input="forceUpdate()" label-width="100px" label="审批角色" prop="role">
-                <el-input readonly v-model="form.role" placeholder="审批角色">
+              <el-form-item  label-width="100px" label="审批角色" prop="role">
+                <el-input @input="forceUpdate()"  v-model="form.role"  placeholder="审批角色">
                   <el-button type="primary" slot="append" @click="openSelectRole">选择角色</el-button>
                   <el-button type="success" slot="append" @click="clearSelectRole">清空</el-button>
                 </el-input>
-                <el-input v-model="form.roleId" v-show="false" placeholder="审批角色ID"/>
+                <el-input @input="forceUpdate()" v-model="form.roleId" v-show="false" placeholder="审批角色ID"/>
               </el-form-item>
               <el-form-item label-width="100px" label="审批部门" prop="dept">
                 <el-select v-model="form.dept" placeholder="请选择部门" @change="selectDept(form.dept)">
@@ -165,7 +165,9 @@ this.$forceUpdate()
         }
         else{
           this.form.dept = dept
+         
         }
+        this.$forceUpdate()
        },
         // 查询流程节点
         async init(definitionId) {
@@ -277,20 +279,20 @@ this.$forceUpdate()
           this.form.deptId =undefined
           this.form.dept = null
           this.form.chooseWay = undefined
+          this.multipleColumn = undefined
           this.form.processDefinitionId = this.definitionId
         },
         //清空选择的人员
         clearSelectPerson(){
-          
-           this.form.assigneeId = ''
-          this.form.assignee = ''
-          
+           this.form.assigneeId = null
+          this.form.assignee = null
+          this.forceUpdate()
         },
         clearSelectRole(){
          
-           this.form.roleId = ''
-          this.form.role = ''
-          
+           this.form.roleId = null
+          this.form.role = null
+          this.forceUpdate()
         },
         clearSelectDept(){
          
@@ -312,7 +314,6 @@ this.$forceUpdate()
             this.$refs.userRef.visible = true       
         },
          async openSelectRole(){
-          
            this.propRoleList = [];
             if(this.form.roleId){
               let roleIds = this.form.roleId.split( ',' )
@@ -351,6 +352,7 @@ this.$forceUpdate()
         },
         //选择角色
         clickRole(roleList){
+          console.log(roleList)
           let arrAssignee= roleList.map(item => {
             return item.roleName
           })
@@ -362,6 +364,7 @@ this.$forceUpdate()
           this.$set(this.form,'role',resultAssignee)
           this.$set(this.form,'roleId',resultAssigneeId)
           this.$refs.roleRef.visible = false
+          this.forceUpdate()
         },
         //选择部门
         clickDept(deptList){
