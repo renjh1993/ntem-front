@@ -279,7 +279,8 @@ this.$forceUpdate()
           this.form.deptId =undefined
           this.form.dept = null
           this.form.chooseWay = undefined
-          this.multipleColumn = undefined
+          this.form.multiple = undefined
+          this.form.multipleColumn = undefined
           this.form.processDefinitionId = this.definitionId
         },
         //清空选择的人员
