@@ -224,8 +224,8 @@ this.$forceUpdate()
           if(this.nodeName){
             if(this.form.id){
               console.log(this.form)
-              del(this.form.id)
-              this.form.id = undefined
+             // del(this.form.id)
+              //this.form.id = undefined
                this.form.deptState = this.form.dept
               this.form.dept = undefined
               edit(this.form).then(response => {
