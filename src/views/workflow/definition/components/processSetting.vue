@@ -285,14 +285,14 @@ this.$forceUpdate()
         },
         //清空选择的人员
         clearSelectPerson(){
-           this.form.assigneeId = null
-          this.form.assignee = null
+           this.form.assigneeId = ''
+          this.form.assignee = ''
           this.forceUpdate()
         },
         clearSelectRole(){
          
-           this.form.roleId = null
-          this.form.role = null
+           this.form.roleId = ''
+          this.form.role = ''
           this.forceUpdate()
         },
         clearSelectDept(){
