@@ -64,17 +64,28 @@ export default {
 
  
   methods: {
+    openLoading(){
+    const loading = this.$loading({         // 声明一个loading对象       
+      lock: true,   
+      text: '提交中',                        // 是否锁屏
+      fullScreen: true,                     //是否为全屏 Dialog
+      background: "rgba(255,255,255,0.7)"   //遮罩背景色
+    })
+   
+    return loading;
+  },
     // 提交表单数据
     async submitForm(formName) {
+      const loadingInstance =  this.openLoading();
  let params = {
         message: formName.message,
         delegate: this.delegate,
         taskId: this.taskId,
         businessKey: this.businessKey
  }
-let response = await api.completeTask(params);
-            if (response.code === 200) {
-              // 刷新数据
+ api.completeTask(params).then(response => {  
+  loadingInstance.close();       
+           // 刷新数据
               this.$message.success("办理成功");
               // 将表单清空
               // this.$refs[formName].resetFields();
@@ -84,8 +95,9 @@ let response = await api.completeTask(params);
               
               // 回调事件
               this.$emit("callSubmit")
-            }
-  
+        },()=>{
+          loadingInstance.close();
+        })
     },
    
 }};

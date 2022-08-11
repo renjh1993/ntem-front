@@ -97,7 +97,7 @@
                      
           >修改
           </el-button>
-          <el-button v-if="'1'==scope.row.state"
+          <el-button v-if="'1'==scope.row.state" 
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
@@ -154,8 +154,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
+    <el-dialog v-loading="loading" :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form   ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
         <el-form-item label="请假类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择请假类型" @change="chooseMedicine">
             <el-option
@@ -191,11 +191,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-if="true == isDraft " @click="asDraft">暂 存</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary"  @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="title" :visible.sync="open3" width="500px" append-to-body>
+    <el-dialog v-loading="loading" :title="title" :visible.sync="open3" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="80px">
         <el-form-item label="请假类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择请假类型" @change="chooseMedicine">
@@ -232,7 +232,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
        
-        <el-button type="primary" @click="submitForm2">确 定</el-button>
+        <el-button type="primary"  @click="submitForm2">确 定</el-button>
         <el-button @click="cancel1">取 消</el-button>
       </div>
     </el-dialog>
@@ -244,9 +244,7 @@
   import {listLeave, getLeave, delLeave, addLeave, updateLeave, draft,exportLeave} from '@/api/workflow/leave'
   import api from '@/api/workflow/processInst'
   import {getDefinitionsByInstanceId} from '@/api/activiti/definition'
-
-
-  
+import { Loading } from 'element-ui';
  import  approvalForm from "@/views/components/approvalForm";
 
   export default {
@@ -255,7 +253,7 @@
     data() {
       return {
         modelVisible: false,
-     
+    
         modelerUrl: '',
         userName: '',
         createName:'',
@@ -290,6 +288,11 @@
         typeOptions: [],
         // 状态字典
         stateOptions: [],
+        options:{
+text : '正在提交中，请稍等',
+lock:true,
+background: 'rgba(0, 0, 0, 0.7)'
+        },
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -335,6 +338,16 @@
       })
     },
     methods: {
+      openLoading(){
+    const loading = this.$loading({         // 声明一个loading对象       
+      lock: true,   
+      text: '提交中',                        // 是否锁屏
+      fullScreen: true,                     //是否为全屏 Dialog
+      background: "rgba(255,255,255,0.7)"   //遮罩背景色
+    })
+   
+    return loading;
+  },
       /** 查询请假列表 */
       getList() {
         this.loading = true
@@ -421,6 +434,7 @@
       },
 /** 重新提交 */
       reSubmit(row) {
+       
          this.reset()
         getLeave(row.id).then(response => {
           this.form = response.data
@@ -452,27 +466,35 @@
        
       handleSub(row) {
         //row.processKey = "testleave"
+        const loadingInstance =  this.openLoading();
         row.businessRoute = this.$route.name
             addLeave(row).then(response => {
+              loadingInstance.close()
                 this.msgSuccess('提交成功')
                 this.getList()
               })           
           
       },
       /** 提交按钮 */
-      submitForm() {
+      submitForm() {      
+        
         this.$refs['form'].validate(valid => {
           if (valid) {
+            
             if (this.form.id != null) {
+              const loadingInstance =  this.openLoading();
               updateLeave(this.form).then(response => {
+             loadingInstance.close()
                 this.msgSuccess('修改成功')
                 this.open = false
                 this.getList()
               })
             } else {
+              const loadingInstance =  this.openLoading();
            // this.form.processKey = "testleave"
             this.form.businessRoute = this.$route.name
             addLeave(this.form).then(response => {
+            loadingInstance.close()
                 this.msgSuccess('提交成功')
                 this.open = false
                 this.getList()
@@ -481,11 +503,13 @@
           }
         })
       },
-       submitForm2() {
+       submitForm2() { 
+       const loadingInstance =  this.openLoading();    
         this.$refs['form'].validate(valid => {
           if (valid) {
             this.form.businessRoute = this.$route.name
             addLeave(this.form).then(response => {
+              loadingInstance.close()
                 this.msgSuccess('提交成功')
                 this.open3 = false
                 this.getList()
