@@ -89,7 +89,7 @@
 
 <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="'1'==scope.row.state || '3'==scope.row.state "
+          <el-button v-if="'1'==scope.row.state  "
                      size="mini"
                      type="text"
                      icon="el-icon-edit"
