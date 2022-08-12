@@ -25,7 +25,7 @@
     
       <div slot="footer" class="dialog-footer">
        
-        <el-button v-if="isApproval" :loading="buttonLoading" size="mini" type="primary" @click="submitForm">审批</el-button>
+        <el-button v-if="isApproval" :loading="buttonLoading"  type="primary" @click="submitForm">审批</el-button>
         <el-button v-if="isApproval" @click="cancel">取 消</el-button>
       </div>
       <verify ref="verifyRef" :taskId="taskId" :businessKey='businessKey' @callSubmit="callSubmit" :taskVariables="taskVariables"></verify>

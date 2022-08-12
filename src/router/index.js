@@ -65,19 +65,19 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '',
-    component: Layout,
-    redirect: 'index',
-    children: [
-      {
-        path: window.location.origin + '/flow',
-        component: (resolve) => require(['@/views/flow/index'], resolve),
-        name: '流程模板',
-        meta: { title: '流程模板', icon: 'flow', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: 'index',
+  //   children: [
+  //     {
+  //       path: window.location.origin + '/flow',
+  //       component: (resolve) => require(['@/views/flow/index'], resolve),
+  //       name: '流程模板',
+  //       meta: { title: '流程模板', icon: 'flow', noCache: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,
