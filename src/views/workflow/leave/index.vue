@@ -172,22 +172,24 @@
         <el-form-item label="原因" prop="reason">
           <el-input v-model="form.reason" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
-        <el-form-item label="开始时间" prop="leaveStartTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveStartTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择开始时间">
-          </el-date-picker>
+        <el-form-item label="请假时间" prop="leaveTime">
+          <el-date-picker
+      v-model="form.leaveTime"
+      value-format="yyyy-MM-dd"
+      type="daterange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间" prop="leaveEndTime">
+        <!-- <el-form-item label="结束时间" prop="leaveEndTime">
           <el-date-picker clearable size="small" style="width: 200px"
                           v-model="form.leaveEndTime"
                           type="date"
                           value-format="yyyy-MM-dd"
                           placeholder="选择结束时间">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-if="true == isDraft " @click="asDraft">暂 存</el-button>
@@ -213,22 +215,24 @@
         <el-form-item label="原因" prop="reason">
           <el-input v-model="form.reason" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
-        <el-form-item label="开始时间" prop="leaveStartTime">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.leaveStartTime"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择开始时间">
-          </el-date-picker>
+        <el-form-item label="请假时间" prop="leaveTime">
+          <el-date-picker
+      v-model="form.leaveTime"
+      value-format="yyyy-MM-dd"
+      type="daterange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间" prop="leaveEndTime">
+        <!-- <el-form-item label="结束时间" prop="leaveEndTime">
           <el-date-picker clearable size="small" style="width: 200px"
                           v-model="form.leaveEndTime"
                           type="date"
                           value-format="yyyy-MM-dd"
                           placeholder="选择结束时间">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
        
@@ -253,7 +257,7 @@ import { Loading } from 'element-ui';
     data() {
       return {
         modelVisible: false,
-    
+       
         modelerUrl: '',
         userName: '',
         createName:'',
@@ -288,11 +292,6 @@ import { Loading } from 'element-ui';
         typeOptions: [],
         // 状态字典
         stateOptions: [],
-        options:{
-text : '正在提交中，请稍等',
-lock:true,
-background: 'rgba(0, 0, 0, 0.7)'
-        },
         // 查询参数
         queryParams: {
           pageNum: 1,
@@ -307,7 +306,9 @@ background: 'rgba(0, 0, 0, 0.7)'
           createBy: null
         },
         // 表单参数
-        form: {},
+        form: {
+          leaveTime:[]
+        },
         // 表单校验
         rules: {
           type: [
@@ -319,11 +320,8 @@ background: 'rgba(0, 0, 0, 0.7)'
           reason: [
             {required: true, message: '原因不能为空', trigger: 'blur'}
           ],
-          leaveStartTime: [
-            {required: true, message: '开始时间不能为空', trigger: 'blur'}
-          ],
-          leaveEndTime: [
-            {required: true, message: '结束时间不能为空', trigger: 'blur'}
+          leaveTime: [
+            {required: true, message: '请假时间不能为空', trigger: 'blur'}
           ]
         }
       }
@@ -382,8 +380,8 @@ background: 'rgba(0, 0, 0, 0.7)'
           type: null,
           title: null,
           reason: null,
-          leaveStartTime: null,
-          leaveEndTime: null,
+          leaveTime: null,
+    
           instanceId: null,
           state: null,
           createBy: null,
@@ -427,6 +425,7 @@ background: 'rgba(0, 0, 0, 0.7)'
         this.reset()
         getLeave(row.id).then(response => {
           this.form = response.data
+          this.form.leaveTime = [response.data.leaveStartTime,response.data.leaveEndTime]
           this.isDraft = false
           this.open = true
           this.title = '修改请假'
@@ -438,6 +437,8 @@ background: 'rgba(0, 0, 0, 0.7)'
          this.reset()
         getLeave(row.id).then(response => {
           this.form = response.data
+          this.form.leaveTime = [response.data.leaveStartTime,response.data.leaveEndTime]
+          
          // this.form.id = null
           this.open3 = true
           this.title = '重新提交'
@@ -479,10 +480,11 @@ background: 'rgba(0, 0, 0, 0.7)'
       submitForm() {      
         
         this.$refs['form'].validate(valid => {
-          if (valid) {
-            
+          if (valid) {            
             if (this.form.id != null) {
               const loadingInstance =  this.openLoading();
+              this.form.leaveStartTime = this.form.leaveTime[0] 
+             this.form.leaveEndTime = this.form.leaveTime[1] 
               updateLeave(this.form).then(response => {
              loadingInstance.close()
                 this.msgSuccess('修改成功')
@@ -493,6 +495,8 @@ background: 'rgba(0, 0, 0, 0.7)'
               const loadingInstance =  this.openLoading();
            // this.form.processKey = "testleave"
             this.form.businessRoute = this.$route.name
+            this.form.leaveStartTime = this.form.leaveTime[0] 
+             this.form.leaveEndTime = this.form.leaveTime[1] 
             addLeave(this.form).then(response => {
             loadingInstance.close()
                 this.msgSuccess('提交成功')
@@ -519,13 +523,20 @@ background: 'rgba(0, 0, 0, 0.7)'
       },
        /** 暂存按钮 */
       asDraft() {
+       
+        console.log(this.form.leaveTime)
         this.$refs['form'].validate(valid => {
+          if(valid){
+             const loadingInstance =  this.openLoading(); 
+             this.form.leaveStartTime = this.form.leaveTime[0] 
+             this.form.leaveEndTime = this.form.leaveTime[1] 
               draft(this.form).then(response => {
+                 loadingInstance.close()
                 this.msgSuccess('暂存成功')
                 this.open = false
                 this.getList()
               })
-            } )
+            } })
       }  
       ,
       /** 删除按钮操作 */

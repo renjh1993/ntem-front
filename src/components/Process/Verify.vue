@@ -11,7 +11,7 @@
        <el-form-item label="是否同意"  prop="delegate" label-width="120px" >
          <el-col :span="12">
            <div class="grid-content bg-purple">
-             <el-radio-group v-model="delegate" @change="changeDelegate" size="small">
+             <el-radio-group v-model="formData.delegate" @change="changeDelegate" size="small">
               <el-radio label="1" border>是</el-radio>
               <el-radio label="2" border>否</el-radio>
             </el-radio-group>
@@ -54,10 +54,10 @@ export default {
       formData: {
         // 提交表单数据
         message: null,
-        
+         delegate: '1',//是否同意
       },
       
-      delegate: '1',//是否委托
+     
      
     };
   },
@@ -75,17 +75,19 @@ export default {
     return loading;
   },
     // 提交表单数据
-    async submitForm(formName) {
+    async submitForm(formData) {
       const loadingInstance =  this.openLoading();
  let params = {
-        message: formName.message,
-        delegate: this.delegate,
+        message: formData.message,
+        delegate: formData.delegate,
         taskId: this.taskId,
         businessKey: this.businessKey
  }
  api.completeTask(params).then(response => {  
   loadingInstance.close();       
            // 刷新数据
+           formData.message = null
+           formData.delegate = '1'
               this.$message.success("办理成功");
               // 将表单清空
               // this.$refs[formName].resetFields();

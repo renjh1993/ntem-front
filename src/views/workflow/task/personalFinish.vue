@@ -32,6 +32,19 @@
             <el-table-column  align="center" prop="assignee" label="流程办理人"  min-width="130"/>
             <el-table-column  align="center" prop="startTime" label="启动时间" width="160"/>
             <el-table-column  align="center" prop="endTime" label="结束时间" width="160"/>
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button 
+                     size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="historyFory(scope.row)"
+                     
+          >审批详情
+          </el-button>
+          </template>
+          </el-table-column>
+      
         </el-table>
 
         <pagination v-show="total>0"
@@ -39,15 +52,20 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList" />
+    <approvalForm ref="approvalForm" :businessKey = 'businessKey' :processInstanceId = 'instanceId'/>
     </div>
 </template>
 
 <script>
   import api from '@/api/workflow/task'
-
+import  approvalForm from "@/views/components/approvalForm";
   export default {
+     components: {approvalForm},
     data () {
       return {
+        businessKey: '',
+        instanceId: null,
+        visible: false,
         //按钮loading
         buttonLoading: false,
         // 遮罩层
@@ -80,6 +98,13 @@
       this.getList();
     },
     methods: {
+      /** 审批详情 */
+      historyFory(row) {
+       this.instanceId = row.processInstanceId
+       this.businessKey = row.businessKey
+        this.$refs.approvalForm.visible = true
+
+      },
       /** 搜索按钮操作 */
       handleQuery() {
         this.queryParams.pageNum = 1;
