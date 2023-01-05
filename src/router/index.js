@@ -131,17 +131,17 @@ export const constantRoutes = [
   {
     path: '/flow',
     component: (resolve) => require(['@/views/flow/index'], resolve),
-    name: 'Flow',
+    name: 'Flow'
   },
   {
     path: '/trad',
     component: (resolve) => require(['@/views/flow/tradingFlow'], resolve),
-    name: 'TradingFlow',
+    name: 'TradingFlow'
   },
   {
     path: '/viewFlow',
     component: (resolve) => require(['@/views/flow/viewFlow'], resolve),
-    name: 'ViewFlow',
+    name: 'ViewFlow'
   },
   {
     path: '/gen',

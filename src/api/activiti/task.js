@@ -12,20 +12,17 @@ export function listTask(query) {
 // 查询表单
 export function formDataShow(taskID) {
   return request({
-    url: '/task/formDataShow/'+taskID,
-    method: 'get',
+    url: '/task/formDataShow/' + taskID,
+    method: 'get'
   })
 }
 
 // 查询表单
-export function formDataSave(taskID,data) {
+export function formDataSave(taskID, data) {
   return request({
-    url: '/task/formDataSave/'+taskID,
+    url: '/task/formDataSave/' + taskID,
     method: 'post',
-    data:data
+    data: data
   })
 }
-
-
-
 

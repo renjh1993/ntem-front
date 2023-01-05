@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="协议Id" prop="bndProflId">
         <el-input
           v-model="queryParams.bndProflId"
@@ -70,18 +70,18 @@
           @click="handleDelete"
         >删除</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="warning"-->
+      <!--          icon="el-icon-download"-->
+      <!--          size="mini"-->
+      <!--          @click="handleExport"-->
+      <!--        >导出</el-button>-->
+      <!--      </el-col>-->
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table border v-loading="loading" :data="proflList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" border :data="proflList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="bndProflPk" />
       <el-table-column label="修订历史" align="center" prop="revisionHisPk">
@@ -121,8 +121,8 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="版本号" prop="revisionHisPk">
-          <el-select style="width: 100%" v-model="form.revisionHisPk" placeholder="请选择修订历史版本">
-            <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionNbr + '-' + item.markNm" :value="item.revisionHisPk"></el-option>
+          <el-select v-model="form.revisionHisPk" style="width: 100%" placeholder="请选择修订历史版本">
+            <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionNbr + '-' + item.markNm" :value="item.revisionHisPk" />
           </el-select>
         </el-form-item>
         <el-form-item label="协议概要Id" prop="bndProflId">
@@ -147,11 +147,22 @@
 </template>
 
 <script>
-import { listProfl, getProfl, delProfl, addProfl, updateProfl, exportProfl } from "@/api/configuration/profl";
-import { listHis } from "@/api/configuration/his"
+import { listProfl, getProfl, delProfl, addProfl, updateProfl, exportProfl } from '@/api/configuration/profl'
+import { listHis } from '@/api/configuration/his'
 
 export default {
-  name: "Profl",
+  name: 'Profl',
+  filters: {
+    revisionHis: function(value, hisList) {
+      let revisionHis
+      hisList.map(res => {
+        if (value === res.revisionHisPk) {
+          revisionHis = res.revisionNbr + '-' + res.markNm
+        }
+      })
+      return revisionHis
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -169,7 +180,7 @@ export default {
       // ESB访问服务提供方的协议概要表格数据
       proflList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -186,7 +197,7 @@ export default {
         dpQmName: null,
         dpReqtqName: null,
         dpReplyqName: null,
-        dpRetryqName: null,
+        dpRetryqName: null
       },
       // his列表
       hisList: [],
@@ -195,35 +206,24 @@ export default {
       // 表单校验
       rules: {
         revisionHisPk: [
-          { required: true, message: "修订历史不能为空", trigger: "blur" }
-        ],
+          { required: true, message: '修订历史不能为空', trigger: 'blur' }
+        ]
       }
-    };
+    }
   },
   created() {
-    this.getList();
-    this.getHisList();
-  },
-  filters: {
-    revisionHis: function(value, hisList) {
-      let revisionHis
-      hisList.map(res =>{
-        if (value === res.revisionHisPk){
-          revisionHis = res.revisionNbr + '-' + res.markNm
-        }
-      })
-      return revisionHis
-    }
+    this.getList()
+    this.getHisList()
   },
   methods: {
     /** 查询ESB访问服务提供方的协议概要列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       listProfl(this.queryParams).then(response => {
-        this.proflList = response.data.data;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+        this.proflList = response.data.data
+        this.total = response.data.total
+        this.loading = false
+      })
     },
     getHisList() {
       listHis().then(response => {
@@ -232,8 +232,8 @@ export default {
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -254,88 +254,88 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.bndProflPk)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加ESB访问服务提供方的协议概要";
+      this.reset()
+      this.open = true
+      this.title = '添加ESB访问服务提供方的协议概要'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.reset()
       const bndProflPk = row.bndProflPk || this.ids
       getProfl(bndProflPk).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改ESB访问服务提供方的协议概要";
-      });
+        this.form = response.data
+        this.open = true
+        this.title = '修改ESB访问服务提供方的协议概要'
+      })
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.bndProflPk != null) {
             updateProfl(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addProfl(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const bndProflPks = row.bndProflPk || this.ids;
-      this.$confirm('是否确认删除ESB访问服务提供方的协议概要编号为"' + bndProflPks + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delProfl(bndProflPks);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      const bndProflPks = row.bndProflPk || this.ids
+      this.$confirm('是否确认删除ESB访问服务提供方的协议概要编号为"' + bndProflPks + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delProfl(bndProflPks)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有ESB访问服务提供方的协议概要数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportProfl(queryParams);
-        }).then(response => {
-          this.download(response.message);
-        })
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有ESB访问服务提供方的协议概要数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportProfl(queryParams)
+      }).then(response => {
+        this.download(response.message)
+      })
     }
   }
-};
+}
 </script>

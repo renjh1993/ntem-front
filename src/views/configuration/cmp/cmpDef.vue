@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-<!--      <el-form-item label="修订历史" prop="revisionHisPk">-->
-<!--        <el-select style="width: 100%" @change="handleQuery" v-model="queryParams.revisionHisPk" placeholder="请选择修订历史版本">-->
-<!--          <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionHisPk + '-版本号:' + item.revisionNbr" :value="item.revisionHisPk"></el-option>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <!--      <el-form-item label="修订历史" prop="revisionHisPk">-->
+      <!--        <el-select style="width: 100%" @change="handleQuery" v-model="queryParams.revisionHisPk" placeholder="请选择修订历史版本">-->
+      <!--          <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionHisPk + '-版本号:' + item.revisionNbr" :value="item.revisionHisPk"></el-option>-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item label="组件名称-英文" label-width="120px" prop="beanName">
         <el-input
           v-model="queryParams.beanName"
@@ -25,19 +25,30 @@
         />
       </el-form-item>
       <el-form-item label="组件类型" label-width="100px" prop="cmpTypeCd">
-        <el-select style="width: 100%" v-model="queryParams.cmpTypeCd" clearable @change="handleQuery" placeholder="请选择组件类型">
-          <el-option v-for="item in cmpTypeList" :key="item.cmpTypeCd" :label="item.cmpTypeCd + '-' + item.cmpTypeNm" :value="item.cmpTypeCd"></el-option>
+        <el-select
+          v-model="queryParams.cmpTypeCd"
+          style="width: 100%"
+          clearable
+          placeholder="请选择组件类型"
+          @change="handleQuery"
+        >
+          <el-option
+            v-for="item in cmpTypeList"
+            :key="item.cmpTypeCd"
+            :label="item.cmpTypeCd + '-' + item.cmpTypeNm"
+            :value="item.cmpTypeCd"
+          />
         </el-select>
       </el-form-item>
-<!--      <el-form-item label="租户ID" prop="tenantId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.tenantId"-->
-<!--          placeholder="请输入租户ID—项目组件"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item label="租户ID" prop="tenantId">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.tenantId"-->
+      <!--          placeholder="请输入租户ID—项目组件"-->
+      <!--          clearable-->
+      <!--          size="small"-->
+      <!--          @keyup.enter.native="handleQuery"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -51,7 +62,8 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -60,21 +72,28 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--        >删除</el-button>-->
-      </el-col>
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="danger"-->
+      <!--          icon="el-icon-delete"-->
+      <!--          size="mini"-->
+      <!--          :disabled="multiple"-->
+      <!--          @click="handleDelete"-->
+      <!--        >删除</el-button>-->
+      <!--      </el-col>-->
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" @row-click="clickCmp" highlight-current-row :data="cmpDefList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      highlight-current-row
+      :data="cmpDefList"
+      @row-click="clickCmp"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="cmpPk" />
       <el-table-column label="修订历史" align="center" prop="revisionHisPk" />
@@ -82,7 +101,7 @@
       <el-table-column label="描述-中文" align="center" prop="sdesc" />
       <el-table-column label="组件类型(代码-名称)" align="center" prop="cmpTypeCd">
         <template scope="scope">
-          {{ scope.row.cmpTypeCd + "-" + scope.row.cmpTypeNm }}
+          {{ scope.row.cmpTypeCd + '-' + scope.row.cmpTypeNm }}
         </template>
       </el-table-column>
       <el-table-column label="流程pk(子流程组件相关联的子流程)" align="center" prop="subFlowTplPk" />
@@ -90,19 +109,21 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-hasPermi="['system:cmpDef:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:cmpDef:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
+            v-hasPermi="['system:cmpDef:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:cmpDef:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,8 +140,13 @@
     <el-dialog :title="title" :visible.sync="open" width="750px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="115px">
         <el-form-item label="修订历史" prop="revisionHisPk">
-          <el-select style="width: 100%" v-model="form.revisionHisPk" placeholder="请选择修订历史版本">
-            <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionNbr + '-' + item.markNm" :value="item.revisionHisPk"></el-option>
+          <el-select v-model="form.revisionHisPk" style="width: 100%" placeholder="请选择修订历史版本">
+            <el-option
+              v-for="item in hisList"
+              :key="item.revisionHisPk"
+              :label="item.revisionNbr + '-' + item.markNm"
+              :value="item.revisionHisPk"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="组件名称-英文" prop="beanName">
@@ -130,16 +156,31 @@
           <el-input v-model="form.sdesc" placeholder="请输入描述-中文" />
         </el-form-item>
         <el-form-item label="组件类型" prop="cmpTypeCd">
-          <el-select style="width: 100%" v-model="form.cmpTypeCd" @change="typeSelect(form.cmpTypeCd)" placeholder="请选择组件类型">
-            <el-option v-for="item in cmpTypeList" :key="item.cmpTypeCd" :label="item.cmpTypeCd + '-' + item.cmpTypeNm" :value="item.cmpTypeCd"></el-option>
+          <el-select
+            v-model="form.cmpTypeCd"
+            style="width: 100%"
+            placeholder="请选择组件类型"
+            @change="typeSelect(form.cmpTypeCd)"
+          >
+            <el-option
+              v-for="item in cmpTypeList"
+              :key="item.cmpTypeCd"
+              :label="item.cmpTypeCd + '-' + item.cmpTypeNm"
+              :value="item.cmpTypeCd"
+            />
           </el-select>
         </el-form-item>
         <el-form-item v-show="false" label="组件类型名称" prop="cmpTypeNm">
           <el-input v-model="form.cmpTypeNm" disabled />
         </el-form-item>
         <el-form-item v-if="form.cmpTypeCd === '190'" label="子流程" prop="subFlowTplPk">
-          <el-select style="width: 100%" v-model="form.subFlowTplPk" placeholder="请选择子流程">
-            <el-option v-for="item in subFlowList" :key="item.flowTplPk" :label="item.flowTplPk + '-' + item.tplName" :value="item.flowTplPk"/>
+          <el-select v-model="form.subFlowTplPk" style="width: 100%" placeholder="请选择子流程">
+            <el-option
+              v-for="item in subFlowList"
+              :key="item.flowTplPk"
+              :label="item.flowTplPk + '-' + item.tplName"
+              :value="item.flowTplPk"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="租户ID" prop="tenantId">
@@ -157,15 +198,16 @@
 </template>
 
 <script>
-import { listCmpDef, getCmpDef, delCmpDef, addCmpDef, updateCmpDef, exportCmpDef } from "@/api/configuration/cmpDef";
-import { listHis } from "@/api/configuration/his"
-import { listCmpType } from "@/api/configuration/cmpType"
-import { getFlowList } from "@/api/flow/flow";
+import { listCmpDef, getCmpDef, delCmpDef, addCmpDef, updateCmpDef, exportCmpDef } from '@/api/configuration/cmpDef'
+import { listHis } from '@/api/configuration/his'
+import { listCmpType } from '@/api/configuration/cmpType'
+import { getFlowList } from '@/api/flow/flow'
 import PramConfig from './pramConfig'
 
 export default {
-  name: "CmpDef",
+  name: 'CmpDef',
   components: { PramConfig },
+  filters: {},
   data() {
     return {
       // 遮罩层
@@ -183,7 +225,7 @@ export default {
       // 组件定义表格数据
       cmpDefList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -195,7 +237,7 @@ export default {
         sdesc: null,
         cmpTypeCd: null,
         cmpTypeNm: null,
-        tenantId: null,
+        tenantId: null
       },
       // 表单参数
       form: {},
@@ -206,43 +248,40 @@ export default {
       // 表单校验
       rules: {
         revisionHisPk: [
-          { required: true, message: "修订历史不能为空", trigger: "blur" }
+          { required: true, message: '修订历史不能为空', trigger: 'blur' }
         ],
         beanName: [
-          { required: true, message: "组件名称不能为空", trigger: "blur" }
+          { required: true, message: '组件名称不能为空', trigger: 'blur' }
         ],
         sdesc: [
-          { required: true, message: "组件描述不能为空", trigger: "blur" }
+          { required: true, message: '组件描述不能为空', trigger: 'blur' }
         ],
         cmpTypeCd: [
-          { required: true, message: "组件类型不能为空", trigger: "blur" }
+          { required: true, message: '组件类型不能为空', trigger: 'blur' }
         ],
         subFlowTplPk: [
-          { required: true, message: "子流程不能为空", trigger: "blur" }
-        ],
+          { required: true, message: '子流程不能为空', trigger: 'blur' }
+        ]
       },
       // 子流程列表
       subFlowList: []
-    };
-  },
-  filters: {
-
+    }
   },
   created() {
-    this.getList();
-    this.getHisList();
-    this.getCmpTypeList();
-    this.getSubFlowList();
+    this.getList()
+    this.getHisList()
+    this.getCmpTypeList()
+    this.getSubFlowList()
   },
   methods: {
     /** 查询组件定义列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       listCmpDef(this.queryParams).then(response => {
-        this.cmpDefList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+        this.cmpDefList = response.rows
+        this.total = response.total
+        this.loading = false
+      })
     },
     // 获取版本号列表
     getHisList() {
@@ -258,8 +297,8 @@ export default {
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -276,92 +315,92 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.cmpPk)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加组件定义";
+      this.reset()
+      this.open = true
+      this.title = '添加组件定义'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.reset()
       const cmpPk = row.cmpPk || this.ids
       getCmpDef(cmpPk).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改组件定义";
-      });
+        this.form = response.data
+        this.open = true
+        this.title = '修改组件定义'
+      })
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.cmpPk != null) {
             updateCmpDef(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addCmpDef(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const cmpPks = row.cmpPk || this.ids;
-      this.$confirm('是否确认删除组件定义编号为"' + cmpPks + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delCmpDef(cmpPks);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      const cmpPks = row.cmpPk || this.ids
+      this.$confirm('是否确认删除组件定义编号为"' + cmpPks + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delCmpDef(cmpPks)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有组件定义数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportCmpDef(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有组件定义数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportCmpDef(queryParams)
+      }).then(response => {
+        this.download(response.msg)
+      })
     },
-    clickCmp(row, event, column){
+    clickCmp(row, event, column) {
       const currentCmpPk = row.cmpPk
       const currenthis = row.revisionHisPk
-      const params = {'cmpPk' : currentCmpPk, 'revisionHisPk' : currenthis}
+      const params = { 'cmpPk': currentCmpPk, 'revisionHisPk': currenthis }
       this.$refs.pram.getList(params)
     },
     typeSelect(cmpTypeCd) {
@@ -373,11 +412,11 @@ export default {
       }
     },
     getSubFlowList() {
-      let subFlowParams = { tplType: '03' }
+      const subFlowParams = { tplType: '03' }
       getFlowList(subFlowParams).then(response => {
         this.subFlowList = response.data.data
       })
     }
   }
-};
+}
 </script>

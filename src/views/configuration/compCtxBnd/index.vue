@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="提供方ID" prop="compCtxBndId">
         <el-input
           v-model="queryParams.compCtxBndId"
@@ -33,34 +33,34 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:compCtxBnd:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:compCtxBnd:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:compCtxBnd:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:compCtxBnd:remove']"
         >删除</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['system:compCtxBnd:export']"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="warning"-->
+      <!--          icon="el-icon-download"-->
+      <!--          size="mini"-->
+      <!--          @click="handleExport"-->
+      <!--          v-hasPermi="['system:compCtxBnd:export']"-->
+      <!--        >导出</el-button>-->
+      <!--      </el-col>-->
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="compCtxBndList" @selection-change="handleSelectionChange">
@@ -83,26 +83,26 @@
       <el-table-column label="INTF号段" align="center" prop="intfSeq" />
       <el-table-column label="OPT号段" align="center" prop="optSeq" />
       <el-table-column label="版本号" align="center" prop="revisionHisPk" />
-<!--      <el-table-column label="场景描述" align="center" prop="ctxDesc" />-->
-<!--      <el-table-column label="${comment}" align="center" prop="respcdeXpath" />-->
-<!--      <el-table-column label="${comment}" align="center" prop="respmsgXpath" />-->
-<!--      <el-table-column label="${comment}" align="center" prop="custMsgType" />-->
-<!--      <el-table-column label="${comment}" align="center" prop="srvrMsgType" />-->
+      <!--      <el-table-column label="场景描述" align="center" prop="ctxDesc" />-->
+      <!--      <el-table-column label="${comment}" align="center" prop="respcdeXpath" />-->
+      <!--      <el-table-column label="${comment}" align="center" prop="respmsgXpath" />-->
+      <!--      <el-table-column label="${comment}" align="center" prop="custMsgType" />-->
+      <!--      <el-table-column label="${comment}" align="center" prop="srvrMsgType" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-hasPermi="['system:compCtxBnd:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:compCtxBnd:edit']"
           >修改</el-button>
           <el-button
+            v-hasPermi="['system:compCtxBnd:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:compCtxBnd:remove']"
           >删除</el-button>
           <el-button
             size="mini"
@@ -149,22 +149,22 @@
         <el-form-item label="场景描述" prop="ctxDesc">
           <el-input v-model="form.ctxDesc" placeholder="请输入场景描述" />
         </el-form-item>
-<!--        <el-form-item label="${comment}" prop="respcdeXpath">-->
-<!--          <el-input v-model="form.respcdeXpath" placeholder="请输入${comment}" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="${comment}" prop="respmsgXpath">-->
-<!--          <el-input v-model="form.respmsgXpath" placeholder="请输入${comment}" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="${comment}" prop="custMsgType">-->
-<!--          <el-select v-model="form.custMsgType" placeholder="请选择${comment}">-->
-<!--            <el-option label="请选择字典生成" value="" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="${comment}" prop="srvrMsgType">-->
-<!--          <el-select v-model="form.srvrMsgType" placeholder="请选择${comment}">-->
-<!--            <el-option label="请选择字典生成" value="" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="${comment}" prop="respcdeXpath">-->
+        <!--          <el-input v-model="form.respcdeXpath" placeholder="请输入${comment}" />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="${comment}" prop="respmsgXpath">-->
+        <!--          <el-input v-model="form.respmsgXpath" placeholder="请输入${comment}" />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="${comment}" prop="custMsgType">-->
+        <!--          <el-select v-model="form.custMsgType" placeholder="请选择${comment}">-->
+        <!--            <el-option label="请选择字典生成" value="" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="${comment}" prop="srvrMsgType">-->
+        <!--          <el-select v-model="form.srvrMsgType" placeholder="请选择${comment}">-->
+        <!--            <el-option label="请选择字典生成" value="" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -184,7 +184,7 @@
           <el-col :span="12">
             <el-form-item label="协议类型" prop="profileType">
               <el-select v-model="attrForm.profileType" placeholder="请选择协议类型">
-                <el-option :label="item.value" :value="item.value" :index="item.index" v-for="item in profileTypes" />
+                <el-option v-for="item in profileTypes" :key="item.value" :label="item.value" :value="item.value" :index="item.index" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -229,8 +229,8 @@
           <el-col :span="12">
             <el-form-item label="是否需要代理" prop="httpNeedProxy">
               <el-radio-group v-model="attrForm.httpNeedProxy">
-                <el-radio :label=0>否</el-radio>
-                <el-radio :label=1>是</el-radio>
+                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">是</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -267,7 +267,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
+        <!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -275,11 +275,32 @@
 </template>
 
 <script>
-import { listCompCtxBnd, listTmp, getCompCtxBnd, delCompCtxBnd, addCompCtxBnd, updateCompCtxBnd, exportCompCtxBnd } from "@/api/configuration/compCtxBnd";
-import { getAttr } from "@/api/configuration/attr";
+import { listTmp, getCompCtxBnd, delCompCtxBnd, addCompCtxBnd, updateCompCtxBnd, exportCompCtxBnd } from '@/api/configuration/compCtxBnd'
+import { getAttr } from '@/api/configuration/attr'
 
 export default {
-  name: "CompCtxBnd",
+  name: 'CompCtxBnd',
+  filters: {
+    ctxType: function(value) {
+      if (value === '1510') {
+        return '1510-默认场景'
+      } else if (value === '1520') {
+        return '1520-与TCP请求报文值相关的场景'
+      } else if (value === '1530') {
+        return '1530-与XML请求报文值相关的场景'
+      } else if (value === '1531') {
+        return '1531-与服务请求方相关的场景'
+      } else if (value === '1550') {
+        return '1550-与TCP返回报文值相关的场景'
+      } else if (value === '1560') {
+        return '1560--与XML返回报文值相关的场景'
+      } else if (value === '1570') {
+        return '1570-与请求协议相关的相关的场景'
+      } else if (value === '1580') {
+        return '1580-通过JS实现选择的与响应相关的场景'
+      }
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -297,7 +318,7 @@ export default {
       // 提供方组件表格数据
       compCtxBndList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -327,64 +348,43 @@ export default {
       profileTypes: [{
         index: 'http',
         value: 'http'
-      },{
+      }, {
         index: 'https',
         value: 'https'
-      },{
+      }, {
         index: 'tcp',
         value: 'tcp'
-      },{
+      }, {
         index: 'udp',
         value: 'udp'
-      },{
+      }, {
         index: 'service',
         value: 'service'
       }]
-    };
+    }
   },
   created() {
-    this.getList();
-  },
-  filters: {
-    ctxType: function(value) {
-      if (value === '1510') {
-        return '1510-默认场景'
-      } else if(value === '1520') {
-        return '1520-与TCP请求报文值相关的场景'
-      } else if (value === '1530') {
-        return '1530-与XML请求报文值相关的场景'
-      } else if (value === '1531') {
-        return '1531-与服务请求方相关的场景'
-      } else if (value === '1550') {
-        return '1550-与TCP返回报文值相关的场景'
-      } else if (value === '1560') {
-        return '1560--与XML返回报文值相关的场景'
-      } else if (value === '1570') {
-        return '1570-与请求协议相关的相关的场景'
-      } else if (value === '1580') {
-        return '1580-通过JS实现选择的与响应相关的场景'
-      }
-    }
+    this.getList()
   },
   methods: {
     /** 查询提供方组件列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       // listCompCtxBnd(this.queryParams).then(response => {
       //   this.compCtxBndList = response.data.data;
       //   this.total = response.data.total;
       //   this.loading = false;
       // });
       listTmp(this.queryParams).then(response => {
-        this.compCtxBndList = response.data.data;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+        this.compCtxBndList = response.data.data
+        this.total = response.data.total
+        this.loading = false
+      })
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -403,96 +403,96 @@ export default {
         createTime: null,
         custMsgType: null,
         srvrMsgType: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.compCtxBndId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加提供方组件";
+      this.reset()
+      this.open = true
+      this.title = '添加提供方组件'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.reset()
       const compCtxBndId = row.compCtxBndId || this.ids
       getCompCtxBnd(compCtxBndId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改提供方组件";
-      });
+        this.form = response.data
+        this.open = true
+        this.title = '修改提供方组件'
+      })
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.compCtxBndId != null) {
             updateCompCtxBnd(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addCompCtxBnd(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const compCtxBndIds = row.compCtxBndId || this.ids;
-      this.$confirm('是否确认删除提供方组件编号为"' + compCtxBndIds + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delCompCtxBnd(compCtxBndIds);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      const compCtxBndIds = row.compCtxBndId || this.ids
+      this.$confirm('是否确认删除提供方组件编号为"' + compCtxBndIds + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delCompCtxBnd(compCtxBndIds)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有提供方组件数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportCompCtxBnd(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有提供方组件数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportCompCtxBnd(queryParams)
+      }).then(response => {
+        this.download(response.msg)
+      })
     },
     /** 协议详情按钮操作 */
     handleAttrDetail(row) {
-      this.resetAttr();
+      this.resetAttr()
       const bndAttrPk = row.bndAttrPk
       getAttr(bndAttrPk).then(response => {
-        this.attrForm = response.data;
-        this.attrOpen = true;
-      });
+        this.attrForm = response.data
+        this.attrOpen = true
+      })
     },
     resetAttr() {
       this.form = {
@@ -517,9 +517,9 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null
-      };
-      this.resetForm("attrForm");
-    },
+      }
+      this.resetForm('attrForm')
+    }
   }
-};
+}
 </script>

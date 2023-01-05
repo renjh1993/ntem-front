@@ -9,7 +9,8 @@
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
           <div class="components-title">
-            <svg-icon icon-class="component" />输入型组件
+            <svg-icon icon-class="component" />
+            输入型组件
           </div>
           <draggable
             class="components-draggable"
@@ -21,7 +22,9 @@
             @end="onEnd"
           >
             <div
-              v-for="(element, index) in inputComponents" :key="index" class="components-item"
+              v-for="(element, index) in inputComponents"
+              :key="index"
+              class="components-item"
               @click="addComponent(element)"
             >
               <div class="components-body">
@@ -31,7 +34,8 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" />选择型组件
+            <svg-icon icon-class="component" />
+            选择型组件
           </div>
           <draggable
             class="components-draggable"
@@ -55,15 +59,22 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" /> 布局型组件
+            <svg-icon icon-class="component" />
+            布局型组件
           </div>
           <draggable
-            class="components-draggable" :list="layoutComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd"
+            class="components-draggable"
+            :list="layoutComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
           >
             <div
-              v-for="(element, index) in layoutComponents" :key="index" class="components-item"
+              v-for="(element, index) in layoutComponents"
+              :key="index"
+              class="components-item"
               @click="addComponent(element)"
             >
               <div class="components-body">
@@ -140,7 +151,6 @@ import draggable from 'vuedraggable'
 import { saveAs } from 'file-saver'
 import beautifier from 'js-beautify'
 import ClipboardJS from 'clipboard'
-import render from '@/utils/generator/render'
 import RightPanel from './RightPanel'
 import {
   inputComponents,
@@ -148,9 +158,7 @@ import {
   layoutComponents,
   formConf
 } from '@/utils/generator/config'
-import {
-  exportDefault, beautifierConf, isNumberStr, titleCase
-} from '@/utils/index'
+import { beautifierConf, titleCase } from '@/utils'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
 } from '@/utils/generator/html'
@@ -161,14 +169,12 @@ import logo from '@/assets/logo/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 
-const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
 let tempActiveData
 
 export default {
   components: {
     draggable,
-    render,
     RightPanel,
     CodeTypeDialog,
     DraggableItem
@@ -193,15 +199,14 @@ export default {
       activeData: drawingDefalut[0]
     }
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     // eslint-disable-next-line func-names
-    'activeData.label': function (val, oldVal) {
+    'activeData.label': function(val, oldVal) {
       if (
-        this.activeData.placeholder === undefined
-        || !this.activeData.tag
-        || oldActiveId !== this.activeId
+        this.activeData.placeholder === undefined ||
+        !this.activeData.tag ||
+        oldActiveId !== this.activeId
       ) {
         return
       }
@@ -354,8 +359,8 @@ export default {
       delete this.activeData.tagIcon
       delete this.activeData.document
       Object.keys(newTag).forEach(key => {
-        if (this.activeData[key] !== undefined
-          && typeof this.activeData[key] === typeof newTag[key]) {
+        if (this.activeData[key] !== undefined &&
+          typeof this.activeData[key] === typeof newTag[key]) {
           newTag[key] = this.activeData[key]
         }
       })
@@ -376,31 +381,34 @@ export default {
 }
 </script>
 
-<style lang='scss'>
-body, html{
+<style lang="scss">
+body, html {
   margin: 0;
   padding: 0;
   background: #fff;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-input, textarea{
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+input, textarea {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-.editor-tabs{
+.editor-tabs {
   background: #121315;
-  .el-tabs__header{
+
+  .el-tabs__header {
     margin: 0;
     border-bottom-color: #121315;
-    .el-tabs__nav{
+
+    .el-tabs__nav {
       border-color: #121315;
     }
   }
-  .el-tabs__item{
+
+  .el-tabs__item {
     height: 32px;
     line-height: 32px;
     color: #888a8e;
@@ -409,15 +417,18 @@ input, textarea{
     margin-right: 5px;
     user-select: none;
   }
-  .el-tabs__item.is-active{
+
+  .el-tabs__item.is-active {
     background: #1e1e1e;
-    border-bottom-color: #1e1e1e!important;
+    border-bottom-color: #1e1e1e !important;
     color: #fff;
   }
-  .el-icon-edit{
+
+  .el-icon-edit {
     color: #f1fa8c;
   }
-  .el-icon-document{
+
+  .el-icon-document {
     color: #a95812;
   }
 }
@@ -428,29 +439,35 @@ input, textarea{
     padding: 12px 18px 15px 15px;
   }
 }
+
 .left-scrollbar .el-scrollbar__wrap {
   box-sizing: border-box;
   overflow-x: hidden !important;
   margin-bottom: 0 !important;
 }
-.center-tabs{
-  .el-tabs__header{
-    margin-bottom: 0!important;
+
+.center-tabs {
+  .el-tabs__header {
+    margin-bottom: 0 !important;
   }
-  .el-tabs__item{
+
+  .el-tabs__item {
     width: 50%;
     text-align: center;
   }
-  .el-tabs__nav{
+
+  .el-tabs__nav {
     width: 100%;
   }
 }
-.reg-item{
+
+.reg-item {
   padding: 12px 6px;
   background: #f8f8f8;
   position: relative;
   border-radius: 4px;
-  .close-btn{
+
+  .close-btn {
     position: absolute;
     right: -6px;
     top: -6px;
@@ -465,18 +482,22 @@ input, textarea{
     z-index: 1;
     cursor: pointer;
     font-size: 12px;
-    &:hover{
+
+    &:hover {
       background: rgba(210, 23, 23, 0.5)
     }
   }
-  & + .reg-item{
+
+  & + .reg-item {
     margin-top: 18px;
   }
 }
-.action-bar{
-  & .el-button+.el-button {
+
+.action-bar {
+  & .el-button + .el-button {
     margin-left: 15px;
   }
+
   & i {
     font-size: 20px;
     vertical-align: middle;
@@ -485,32 +506,37 @@ input, textarea{
   }
 }
 
-.custom-tree-node{
+.custom-tree-node {
   width: 100%;
   font-size: 14px;
-  .node-operation{
+
+  .node-operation {
     float: right;
   }
-  i[class*="el-icon"] + i[class*="el-icon"]{
+
+  i[class*="el-icon"] + i[class*="el-icon"] {
     margin-left: 6px;
   }
-  .el-icon-plus{
+
+  .el-icon-plus {
     color: #409EFF;
   }
-  .el-icon-delete{
+
+  .el-icon-delete {
     color: #157a0c;
   }
 }
 
-.left-scrollbar .el-scrollbar__view{
+.left-scrollbar .el-scrollbar__view {
   overflow-x: hidden;
 }
 
-.el-rate{
+.el-rate {
   display: inline-block;
   vertical-align: text-top;
 }
-.el-upload__tip{
+
+.el-upload__tip {
   line-height: 1.2;
 }
 
@@ -527,6 +553,7 @@ $lighterBlue: #409EFF;
   padding: 8px;
   box-sizing: border-box;
   height: 100%;
+
   .components-item {
     display: inline-block;
     width: 48%;
@@ -534,14 +561,17 @@ $lighterBlue: #409EFF;
     transition: transform 0ms !important;
   }
 }
-.components-draggable{
+
+.components-draggable {
   padding-bottom: 20px;
 }
-.components-title{
+
+.components-title {
   font-size: 14px;
   color: #222;
   margin: 6px 2px;
-  .svg-icon{
+
+  .svg-icon {
     color: #666;
     font-size: 18px;
   }
@@ -554,13 +584,16 @@ $lighterBlue: #409EFF;
   cursor: move;
   border: 1px dashed $selectedColor;
   border-radius: 3px;
-  .svg-icon{
+
+  .svg-icon {
     color: #777;
     font-size: 15px;
   }
+
   &:hover {
     border: 1px dashed #787be8;
     color: #787be8;
+
     .svg-icon {
       color: #787be8;
     }
@@ -574,10 +607,12 @@ $lighterBlue: #409EFF;
   top: 0;
   height: 100vh;
 }
-.left-scrollbar{
+
+.left-scrollbar {
   height: calc(100vh - 42px);
   overflow: hidden;
 }
+
 .center-scrollbar {
   height: calc(100vh - 42px);
   overflow: hidden;
@@ -585,13 +620,15 @@ $lighterBlue: #409EFF;
   border-right: 1px solid #f1e8e8;
   box-sizing: border-box;
 }
+
 .center-board {
   height: 100vh;
   width: auto;
   margin: 0 350px 0 260px;
   box-sizing: border-box;
 }
-.empty-info{
+
+.empty-info {
   position: absolute;
   top: 46%;
   left: 0;
@@ -601,7 +638,8 @@ $lighterBlue: #409EFF;
   color: #ccb1ea;
   letter-spacing: 4px;
 }
-.action-bar{
+
+.action-bar {
   position: relative;
   height: 42px;
   text-align: right;
@@ -610,18 +648,21 @@ $lighterBlue: #409EFF;
   border: 1px solid #f1e8e8;
   border-top: none;
   border-left: none;
-  .delete-btn{
+
+  .delete-btn {
     color: #F56C6C;
   }
 }
-.logo-wrapper{
+
+.logo-wrapper {
   position: relative;
   height: 42px;
   background: #fff;
   border-bottom: 1px solid #f1e8e8;
   box-sizing: border-box;
 }
-.logo{
+
+.logo {
   position: absolute;
   left: 12px;
   top: 6px;
@@ -630,16 +671,19 @@ $lighterBlue: #409EFF;
   font-weight: 600;
   font-size: 17px;
   white-space: nowrap;
-  > img{
+
+  > img {
     width: 30px;
     height: 30px;
     vertical-align: top;
   }
-  .github{
+
+  .github {
     display: inline-block;
     vertical-align: sub;
     margin-left: 15px;
-    > img{
+
+    > img {
       height: 22px;
     }
   }
@@ -648,23 +692,28 @@ $lighterBlue: #409EFF;
 .center-board-row {
   padding: 12px 12px 15px 12px;
   box-sizing: border-box;
+
   & > .el-form {
     // 69 = 12+15+42
     height: calc(100vh - 69px);
   }
 }
+
 .drawing-board {
   height: 100%;
   position: relative;
+
   .components-body {
     padding: 0;
     margin: 0;
     font-size: 0;
   }
+
   .sortable-ghost {
     position: relative;
     display: block;
     overflow: hidden;
+
     &::before {
       content: " ";
       position: absolute;
@@ -676,38 +725,47 @@ $lighterBlue: #409EFF;
       z-index: 2;
     }
   }
+
   .components-item.sortable-ghost {
     width: 100%;
     height: 60px;
     background-color: $selectedColor;
   }
+
   .active-from-item {
-    & > .el-form-item{
+    & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+
+    & > .drawing-item-copy, & > .drawing-item-delete {
       display: initial;
     }
-    & > .component-name{
+
+    & > .component-name {
       color: $lighterBlue;
     }
   }
-  .el-form-item{
+
+  .el-form-item {
     margin-bottom: 15px;
   }
 }
-.drawing-item{
+
+.drawing-item {
   position: relative;
   cursor: move;
-  &.unfocus-bordered:not(.activeFromItem) > div:first-child  {
+
+  &.unfocus-bordered:not(.activeFromItem) > div:first-child {
     border: 1px dashed #ccc;
   }
-  .el-form-item{
+
+  .el-form-item {
     padding: 12px 10px;
   }
 }
-.drawing-row-item{
+
+.drawing-row-item {
   position: relative;
   cursor: move;
   box-sizing: border-box;
@@ -715,22 +773,28 @@ $lighterBlue: #409EFF;
   border-radius: 3px;
   padding: 0 2px;
   margin-bottom: 15px;
+
   .drawing-row-item {
     margin-bottom: 2px;
   }
-  .el-col{
+
+  .el-col {
     margin-top: 22px;
   }
-  .el-form-item{
+
+  .el-form-item {
     margin-bottom: 0;
   }
-  .drag-wrapper{
+
+  .drag-wrapper {
     min-height: 80px;
   }
-  &.active-from-item{
+
+  &.active-from-item {
     border: 1px dashed $lighterBlue;
   }
-  .component-name{
+
+  .component-name {
     position: absolute;
     top: 0;
     left: 0;
@@ -740,17 +804,20 @@ $lighterBlue: #409EFF;
     padding: 0 6px;
   }
 }
-.drawing-item, .drawing-row-item{
+
+.drawing-item, .drawing-row-item {
   &:hover {
-    & > .el-form-item{
+    & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+
+    & > .drawing-item-copy, & > .drawing-item-delete {
       display: initial;
     }
   }
-  & > .drawing-item-copy, & > .drawing-item-delete{
+
+  & > .drawing-item-copy, & > .drawing-item-delete {
     display: none;
     position: absolute;
     top: -10px;
@@ -764,22 +831,26 @@ $lighterBlue: #409EFF;
     cursor: pointer;
     z-index: 1;
   }
-  & > .drawing-item-copy{
+
+  & > .drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
     background: #fff;
-    &:hover{
+
+    &:hover {
       background: $lighterBlue;
       color: #fff;
     }
   }
-  & > .drawing-item-delete{
+
+  & > .drawing-item-delete {
     right: 24px;
     border-color: #F56C6C;
     color: #F56C6C;
     background: #fff;
-    &:hover{
+
+    &:hover {
       background: #F56C6C;
       color: #fff;
     }

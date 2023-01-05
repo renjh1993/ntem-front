@@ -41,8 +41,8 @@ export function getFlowList(query) {
 }
 
 export function getTemplateByPk(flowTplPk) {
-    return request({
-      url: '/flow/getTemplateByTplPk?flowTplPk=' + flowTplPk,
-      method: 'get'
-    })
+  return request({
+    url: '/flow/getTemplateByTplPk?flowTplPk=' + flowTplPk,
+    method: 'get'
+  })
 }

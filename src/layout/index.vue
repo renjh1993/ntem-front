@@ -4,7 +4,7 @@
     <sidebar class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
-        <navbar v-if="isRouterAlive"/>
+        <navbar v-if="isRouterAlive" />
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
@@ -23,17 +23,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
-  data() {
-    return {
-      isRouterAlive: true,
-    };
-  },
-  provide() {
-    //提供
-    return {
-      reload: this.reload,
-    };
-  },
   components: {
     AppMain,
     Navbar,
@@ -43,6 +32,17 @@ export default {
     TagsView
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      isRouterAlive: true
+    }
+  },
+  provide() {
+    // 提供
+    return {
+      reload: this.reload
+    }
+  },
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
@@ -62,10 +62,11 @@ export default {
   },
   methods: {
     reload() {
-      this.isRouterAlive = false;
-      this.$nextTick(function () {
-        this.isRouterAlive = true;
-      })},
+      this.isRouterAlive = false
+      this.$nextTick(function() {
+        this.isRouterAlive = true
+      })
+    },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }

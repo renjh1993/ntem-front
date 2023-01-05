@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 /**
  * 分页查询
  * @param {条件} query
@@ -44,7 +44,7 @@ export function del(data) {
  * @param {模型id} id
  * @returns
  */
- export function deploy(data) {
+export function deploy(data) {
   return request({
     url: '/workflow/model/deploy',
     method: 'post',
@@ -56,7 +56,7 @@ export function del(data) {
  * @param {流程定义id} processDefinitionId
  * @returns
  */
- export function convertToModel(processDefinitionId) {
+export function convertToModel(processDefinitionId) {
   return request({
     url: '/workflow/model/convertToModel/' + processDefinitionId,
     method: 'get'

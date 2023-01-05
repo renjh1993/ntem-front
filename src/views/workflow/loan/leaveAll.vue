@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="请假类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择请假类型" clearable size="small">
           <el-option
@@ -61,23 +61,23 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['workflow:leave:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['workflow:leave:export']"
         >导出
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="leaveList" >
-      <el-table-column type="selection" width="55" align="center"/>
+    <el-table v-loading="loading" :data="leaveList">
+      <el-table-column type="selection" width="55" align="center" />
       <!--      <el-table-column label="主键ID" align="center" prop="id" />-->
-      <el-table-column label="请假类型" align="center" prop="type" :formatter="typeFormat"/>
-      <el-table-column label="标题" align="center" prop="title"/>
-      <el-table-column label="原因" align="center" prop="reason"/>
+      <el-table-column label="请假类型" align="center" prop="type" :formatter="typeFormat" />
+      <el-table-column label="标题" align="center" prop="title" />
+      <el-table-column label="原因" align="center" prop="reason" />
       <el-table-column label="开始时间" align="center" prop="leaveStartTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.leaveStartTime, '{y}-{m}-{d}') }}</span>
@@ -88,8 +88,8 @@
           <span>{{ parseTime(scope.row.leaveEndTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" align="center" prop="createBy"/>
-      <el-table-column label="状态" align="center" prop="state" :formatter="stateFormat"/>
+      <el-table-column label="创建人" align="center" prop="createBy" />
+      <el-table-column label="状态" align="center" prop="state" :formatter="stateFormat" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -97,7 +97,6 @@
             type="text"
             icon="el-icon-edit"
             @click="historyFory(scope.row)"
-            
           >审批详情
           </el-button>
         </template>
@@ -112,127 +111,125 @@
       @pagination="getList"
     />
 
-    
-    <approvalForm ref="approvalForm" :businessKey = 'businessKey' :processInstanceId = 'instanceId'/>
+    <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
 
   </div>
 </template>
 
 <script>
-  import { listLeave, exportLeave } from '@/api/workflow/leave'
-  
-  import  approvalForm from "@/views/components/approvalForm";
-  export default {
-    name: 'Leave',
-    components:{approvalForm},
-    data() {
-      return {
-        businessKey:'',
-        //用户信息
-        user: {},
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        // 显示搜索条件
-        showSearch: true,
-        // 总条数
-        total: 0,
-        // 请假表格数据
-        leaveList: [],
-        // 弹出层标题
-        title: '',
-        // 是否显示弹出层
-        open: false,
-        open2:false,
-        // 请假类型字典
-        typeOptions: [],
-        // 状态字典
-        stateOptions: [],
-        // 查询参数
-        queryParams: {
-          pageNum: 1,
-          pageSize: 10,
-          type: null,
-          title: null,
-          reason: null,
-          leaveStartTime: null,
-          leaveEndTime: null,
-          instanceId: null,
-          state: null,
-          createBy: null
-        },
+import { listLeave, exportLeave } from '@/api/workflow/leave'
 
+import approvalForm from '@/views/components/approvalForm'
+export default {
+  name: 'Leave',
+  components: { approvalForm },
+  data() {
+    return {
+      businessKey: '',
+      // 用户信息
+      user: {},
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 请假表格数据
+      leaveList: [],
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      open: false,
+      open2: false,
+      // 请假类型字典
+      typeOptions: [],
+      // 状态字典
+      stateOptions: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        type: null,
+        title: null,
+        reason: null,
+        leaveStartTime: null,
+        leaveEndTime: null,
+        instanceId: null,
+        state: null,
+        createBy: null
       }
+
+    }
+  },
+  created() {
+    this.getList()
+    this.getDicts('activiti_leave_type').then(response => {
+      this.typeOptions = response.data
+    })
+    this.getDicts('activiti_flow_type').then(response => {
+      this.stateOptions = response.data
+    })
+  },
+  methods: {
+
+    /** 查询请假列表 */
+    getList() {
+      this.loading = true
+      listLeave(this.queryParams).then(response => {
+        this.leaveList = response.rows
+        this.total = response.total
+        this.loading = false
+      })
     },
-    created() {
+    // 请假类型字典翻译
+    typeFormat(row, column) {
+      return this.selectDictLabel(this.typeOptions, row.type)
+    },
+    // 状态字典翻译
+    stateFormat(row, column) {
+      return this.selectDictLabel(this.stateOptions, row.state)
+    },
+
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1
       this.getList()
-      this.getDicts('activiti_leave_type').then(response => {
-        this.typeOptions = response.data
-      })
-      this.getDicts('activiti_flow_type').then(response => {
-        this.stateOptions = response.data
-      })
     },
-    methods: {
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
 
-      /** 查询请假列表 */
-      getList() {
-        this.loading = true
-        listLeave(this.queryParams).then(response => {
-          this.leaveList = response.rows
-          this.total = response.total
-          this.loading = false
-        })
-      },
-      // 请假类型字典翻译
-      typeFormat(row, column) {
-        return this.selectDictLabel(this.typeOptions, row.type)
-      },
-      // 状态字典翻译
-      stateFormat(row, column) {
-        return this.selectDictLabel(this.stateOptions, row.state)
-      },
+    /** 审批详情 */
+    historyFory(row) {
+      this.instanceId = row.instanceId
+      this.businessKey = row.id
+      console.log(this.instanceId)
+      this.$refs.approvalForm.visible = true
+    },
 
-      /** 搜索按钮操作 */
-      handleQuery() {
-        this.queryParams.pageNum = 1
-        this.getList()
-      },
-      /** 重置按钮操作 */
-      resetQuery() {
-        this.resetForm('queryForm')
-        this.handleQuery()
-      },
-
-      /** 审批详情 */
-      historyFory(row) {
-       this.instanceId = row.instanceId
-       this.businessKey = row.id
-       console.log(this.instanceId)
-        this.$refs.approvalForm.visible = true
-
-      },
-
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams
-        this.$confirm('是否确认导出所有请假数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function() {
-          return exportLeave(queryParams)
-        }).then(response => {
-          this.download(response.message)
-        })
-      },
-
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有请假数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportLeave(queryParams)
+      }).then(response => {
+        this.download(response.message)
+      })
     }
 
   }
+
+}
 </script>

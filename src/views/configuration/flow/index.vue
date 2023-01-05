@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-<!--      <el-form-item label="修订历史" prop="revisionHisPk">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.revisionHisPk"-->
-<!--          placeholder="请输入修订历史"-->
-<!--          clearable-->
-<!--          size="small"-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <!--      <el-form-item label="修订历史" prop="revisionHisPk">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.revisionHisPk"-->
+      <!--          placeholder="请输入修订历史"-->
+      <!--          clearable-->
+      <!--          size="small"-->
+      <!--          @keyup.enter.native="handleQuery"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item label="流程模板名" prop="tplName">
         <el-input
           v-model="queryParams.tplName"
@@ -39,65 +39,65 @@
       </el-form-item>
     </el-form>
 
-<!--    <el-row :gutter="10" class="mb8">-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['system:template:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['system:template:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--          v-hasPermi="['system:template:remove']"-->
-<!--        >删除</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['system:template:export']"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
-<!--	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
-<!--    </el-row>-->
+    <!--    <el-row :gutter="10" class="mb8">-->
+    <!--      <el-col :span="1.5">-->
+    <!--        <el-button-->
+    <!--          type="primary"-->
+    <!--          icon="el-icon-plus"-->
+    <!--          size="mini"-->
+    <!--          @click="handleAdd"-->
+    <!--          v-hasPermi="['system:template:add']"-->
+    <!--        >新增</el-button>-->
+    <!--      </el-col>-->
+    <!--      <el-col :span="1.5">-->
+    <!--        <el-button-->
+    <!--          type="success"-->
+    <!--          icon="el-icon-edit"-->
+    <!--          size="mini"-->
+    <!--          :disabled="single"-->
+    <!--          @click="handleUpdate"-->
+    <!--          v-hasPermi="['system:template:edit']"-->
+    <!--        >修改</el-button>-->
+    <!--      </el-col>-->
+    <!--      <el-col :span="1.5">-->
+    <!--        <el-button-->
+    <!--          type="danger"-->
+    <!--          icon="el-icon-delete"-->
+    <!--          size="mini"-->
+    <!--          :disabled="multiple"-->
+    <!--          @click="handleDelete"-->
+    <!--          v-hasPermi="['system:template:remove']"-->
+    <!--        >删除</el-button>-->
+    <!--      </el-col>-->
+    <!--      <el-col :span="1.5">-->
+    <!--        <el-button-->
+    <!--          type="warning"-->
+    <!--          icon="el-icon-download"-->
+    <!--          size="mini"-->
+    <!--          @click="handleExport"-->
+    <!--          v-hasPermi="['system:template:export']"-->
+    <!--        >导出</el-button>-->
+    <!--      </el-col>-->
+    <!--	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
+    <!--    </el-row>-->
 
     <el-table v-loading="loading" :data="templateList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="flowTplPk" />
       <el-table-column label="修订历史" align="center" prop="revisionHisPk" />
       <el-table-column label="流程模板名" align="center" prop="tplName" />
-      <el-table-column label="流程内容JSON" align="center" class="test" prop="tplContent" :show-overflow-tooltip='true'>
+      <el-table-column label="流程内容JSON" align="center" class="test" prop="tplContent" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <!-- tips悬浮提示 -->
-<!--          <el-tooltip-->
-<!--            placement="top"-->
-<!--            v-model="scope.row.tplContent"-->
-<!--            :open-delay="500"-->
-<!--            effect="dark"-->
-<!--            :disabled="!scope.row.showTooltip">-->
-<!--            <div slot="content">{{scope.row.note}}</div>-->
-<!--            <div @mouseenter="showTips($event,scope.row)" class='myNote'>{{scope.row.note}}</div>-->
-<!--          </el-tooltip>-->
+          <!--          <el-tooltip-->
+          <!--            placement="top"-->
+          <!--            v-model="scope.row.tplContent"-->
+          <!--            :open-delay="500"-->
+          <!--            effect="dark"-->
+          <!--            :disabled="!scope.row.showTooltip">-->
+          <!--            <div slot="content">{{scope.row.note}}</div>-->
+          <!--            <div @mouseenter="showTips($event,scope.row)" class='myNote'>{{scope.row.note}}</div>-->
+          <!--          </el-tooltip>-->
           {{ scope.row.tplContent }}
         </template>
       </el-table-column>
@@ -114,15 +114,15 @@
             >查看流程</el-button>
           </router-link>
         </template>
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="eye-open"-->
-<!--            @click="handleView(scope.row)"-->
-<!--          >查看流程</el-button>-->
-<!--&lt;!&ndash;          <router-link :to="window.location.origin +'/flow'">查看流程</router-link>&ndash;&gt;-->
-<!--        </template>-->
+        <!--        <template slot-scope="scope">-->
+        <!--          <el-button-->
+        <!--            size="mini"-->
+        <!--            type="text"-->
+        <!--            icon="eye-open"-->
+        <!--            @click="handleView(scope.row)"-->
+        <!--          >查看流程</el-button>-->
+        <!--&lt;!&ndash;          <router-link :to="window.location.origin +'/flow'">查看流程</router-link>&ndash;&gt;-->
+        <!--        </template>-->
       </el-table-column>
     </el-table>
 
@@ -144,7 +144,7 @@
           <el-input v-model="form.tplName" placeholder="请输入流程模板名" />
         </el-form-item>
         <el-form-item label="流程内容JSON">
-          <editor v-model="form.tplContent" :min-height="192"/>
+          <editor v-model="form.tplContent" :min-height="192" />
         </el-form-item>
         <el-form-item label="类型" prop="tplType">
           <el-select v-model="form.tplType" placeholder="请选择类型">
@@ -167,12 +167,10 @@
 </template>
 
 <script>
-import { getFlowList } from "@/api/flow/flow";
-import Editor from '@/components/Editor';
-import eventBus from "@/utils/flow/eventBus"
-
+import { getFlowList } from '@/api/flow/flow'
+import Editor from '@/components/Editor'
 export default {
-  name: "Flow",
+  name: 'Flow',
   components: { Editor },
   data() {
     return {
@@ -191,7 +189,7 @@ export default {
       // 【请填写功能名称】表格数据
       templateList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -203,32 +201,32 @@ export default {
         tplContent: null,
         tplType: null,
         tplState: null,
-        sdesc: null,
+        sdesc: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
       }
-    };
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     /** 查询【请填写功能名称】列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       getFlowList(this.queryParams).then(response => {
-        this.templateList = response.data.data;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+        this.templateList = response.data.data
+        this.total = response.data.total
+        this.loading = false
+      })
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -244,86 +242,86 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.flowTplPk)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加【请填写功能名称】";
+      this.reset()
+      this.open = true
+      this.title = '添加【请填写功能名称】'
     },
     /** 查看按钮操作 */
     handleView(row) {
-      let route = this.$router.resolve({name: "Flow", params: row})
-      console.log("string", JSON.stringify(row))
+      const route = this.$router.resolve({ name: 'Flow', params: row })
+      console.log('string', JSON.stringify(row))
       window.open(route.href, '_blank')
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.flowTplPk != null) {
             updateTemplate(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addTemplate(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const flowTplPks = row.flowTplPk || this.ids;
-      this.$confirm('是否确认删除【请填写功能名称】编号为"' + flowTplPks + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delTemplate(flowTplPks);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      const flowTplPks = row.flowTplPk || this.ids
+      this.$confirm('是否确认删除【请填写功能名称】编号为"' + flowTplPks + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delTemplate(flowTplPks)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有【请填写功能名称】数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportTemplate(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有【请填写功能名称】数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportTemplate(queryParams)
+      }).then(response => {
+        this.download(response.msg)
+      })
     }
   }
-};
+}
 </script>
 <style>
   /*.el-tooltip__popper{*/

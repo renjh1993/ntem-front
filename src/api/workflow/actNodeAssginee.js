@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
 export function add(data) {
   return request({
@@ -18,19 +18,19 @@ export function edit(data) {
 
 export function del(id) {
   return request({
-    url: '/workflow/actNodeAssignee/'+id,
+    url: '/workflow/actNodeAssignee/' + id,
     method: 'delete'
   })
 }
 
-export function getInfo(processDefinitionId,nodeId) {
+export function getInfo(processDefinitionId, nodeId) {
   return request({
     url: `/workflow/actNodeAssignee/${processDefinitionId}/${nodeId}`,
     method: 'get'
   })
 }
 
-export function copy(processDefinitionId,key) {
+export function copy(processDefinitionId, key) {
   return request({
     url: `/workflow/actNodeAssignee/copy/${processDefinitionId}/${key}`,
     method: 'post'

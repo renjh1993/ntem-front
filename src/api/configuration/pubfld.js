@@ -47,7 +47,7 @@ export function updatePubfld(data) {
 export function listPub() {
   return request({
     url: '/system/fmtPubfld/publist',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -85,7 +85,7 @@ export function newPasteData(currentPid, currentPubfldName, pasteArr, selectProp
 
 // 批量修改pid
 export function batchUpdatePid(parentId, ids) {
-  const data ={
+  const data = {
     parentId,
     ids
   }

@@ -10,22 +10,22 @@ export default {
     })
   },
 
-  //通过流程实例id查询流程审批记录
+  // 通过流程实例id查询流程审批记录
   getHistoryInfoList(processInstId) {
     return request({
-      url: '/workflow/processInstance/getHistoryInfoList/'+processInstId,
+      url: '/workflow/processInstance/getHistoryInfoList/' + processInstId,
       method: 'get'
     })
   },
 
-  //通过流程实例id获取历史流程图
+  // 通过流程实例id获取历史流程图
   getHistoryProcessImage(processInstId) {
     return request({
-      url: '/workflow/processInstance/getHistoryProcessImage/'+processInstId,
+      url: '/workflow/processInstance/getHistoryProcessImage/' + processInstId,
       method: 'get'
     })
   },
-  
+
   // 通过业务id查询流程实例
   // getInfoByBusinessKey(businessKey) {
   //   return request({
@@ -81,8 +81,8 @@ export default {
   // 通过流程实例ID获取对应流程业务表单组件名
   getFormNameByProcInstId(processInstId) {
     return request({
-      url: '/workflow/processInstance/getFormNameByProcInstId/'+processInstId,
-      method: 'get',
+      url: '/workflow/processInstance/getFormNameByProcInstId/' + processInstId,
+      method: 'get'
     })
   },
   // 作废流程实例，不会删除历史记录
@@ -92,7 +92,7 @@ export default {
   //     method: 'get'
   //   })
   // },
-  
+
   // 查询已完成的流程实例
   getProcessInstFinishByPage(query) {
     return request({
@@ -106,7 +106,7 @@ export default {
   getProcessInstByBusinessKey(businessKey) {
     return request({
       url: '/workflow/processInstance/getProcessInstByBusinessKey/' + businessKey,
-      method: 'get',
+      method: 'get'
     })
-  },
+  }
 }

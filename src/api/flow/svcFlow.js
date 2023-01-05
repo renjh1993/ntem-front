@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function searchSvcFlowCmpParams(data) {
   return request({
-    url: '/svcFlow/searchSvcFlowCmpParams?transCode=' + data.transCode +'&flowCmpId=' + data.flowCmpId,
+    url: '/svcFlow/searchSvcFlowCmpParams?transCode=' + data.transCode + '&flowCmpId=' + data.flowCmpId,
     method: 'get'
   })
 }

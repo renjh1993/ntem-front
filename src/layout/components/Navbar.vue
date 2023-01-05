@@ -13,7 +13,7 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
         <el-tooltip :content="noticeTips()" effect="dark" placement="bottom">
-          <Notice :total="total" id="notice" class="right-menu-item hover-effect" />
+          <Notice id="notice" :total="total" class="right-menu-item hover-effect" />
         </el-tooltip>
       </template>
 
@@ -45,9 +45,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import RuoYiGit from '@/components/RuoYi/Git'
-import RuoYiDoc from '@/components/RuoYi/Doc'
-import api from "@/api/workflow/task"
+import api from '@/api/workflow/task'
 import Notice from '@/components/HeaderNotice'
 
 export default {
@@ -57,18 +55,15 @@ export default {
     Screenfull,
     SizeSelect,
     Search,
-    RuoYiGit,
-    RuoYiDoc,
     Notice
   },
-  data: function(){
+  data: function() {
     return {
-     
       total: 0,
       queryParams: {
-            pageNum: 1,
-            pageSize: 10
-      },
+        pageNum: 1,
+        pageSize: 10
+      }
     }
   },
   computed: {
@@ -89,12 +84,15 @@ export default {
       }
     }
   },
-  inject: ["reload"],
+  inject: ['reload'],
+  mounted: function() {
+    this.count()
+  },
   methods: {
-    noticeTips(){
-      return '当前您有'+ this.total +'条待办任务'
+    noticeTips() {
+      return '当前您有' + this.total + '条待办任务'
     },
-    noticeLink(){
+    noticeLink() {
       this.$router.push('/workflowPersonal/personalWaiting')
     },
     toggleSideBar() {
@@ -107,22 +105,18 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
-          location.href = process.env.VUE_APP_NGINX_LOCATION + '/';
+          location.href = process.env.VUE_APP_NGINX_LOCATION + '/'
         })
       })
     },
 
-    count(){
+    count() {
       api.getTaskWaitByPage(this.queryParams).then(response => {
-                 console.log(response.total)
-          this.total = response.total;
-          console.log(response.total)
+        console.log(response.total)
+        this.total = response.total
+        console.log(response.total)
       })
-
-    } 
-  },
-  mounted: function () {
-    this.count();
+    }
   }
 }
 </script>
@@ -215,7 +209,7 @@ export default {
           font-size: 12px;
         }
       }
-    } 
+    }
   }
 }
 </style>

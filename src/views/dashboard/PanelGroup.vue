@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-<!--      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">-->
+      <!--      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">-->
       <div class="card-panel" @click="handleSetLineChartData('nacos')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="nacos" class-name="card-panel-icon" />
@@ -10,7 +10,7 @@
           <div class="card-panel-text">
             注册中心
           </div>
-<!--          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />-->
+          <!--          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />-->
         </div>
       </div>
     </el-col>
@@ -23,7 +23,7 @@
           <div class="card-panel-text">
             日志中心
           </div>
-<!--          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />-->
+          <!--          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />-->
         </div>
       </div>
     </el-col>
@@ -36,7 +36,7 @@
           <div class="card-panel-text">
             监控中心
           </div>
-<!--          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />-->
+          <!--          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />-->
         </div>
       </div>
     </el-col>
@@ -49,7 +49,7 @@
           <div class="card-panel-text">
             部署中心
           </div>
-<!--          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />-->
+          <!--          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />-->
         </div>
       </div>
     </el-col>
@@ -57,27 +57,23 @@
 </template>
 
 <script>
-  import CountTo from 'vue-count-to'
 
-  export default {
-    components: {
-      CountTo
-    },
-    methods: {
-      handleSetLineChartData(type) {
-        this.$emit('handleSetLineChartData', type)
-        if (type === 'nacos') {
-          window.open("http://119.91.79.168:8848/nacos/#/configurationManagement?dataId=&group=&appName=&namespace=")
-        } else if (type === 'jenkins') {
-          window.open("http://119.91.79.155:8091/jenkins/")
-        } else if (type === 'skyWalking') {
-          window.open("http://119.91.79.168:8080/")
-        } else if (type === 'elk') {
-          window.open("http://119.91.79.168:5601")
-        }
+export default {
+  methods: {
+    handleSetLineChartData(type) {
+      this.$emit('handleSetLineChartData', type)
+      if (type === 'nacos') {
+        window.open('http://119.91.79.168:8848/nacos/#/configurationManagement?dataId=&group=&appName=&namespace=')
+      } else if (type === 'jenkins') {
+        window.open('http://119.91.79.155:8091/jenkins/')
+      } else if (type === 'skyWalking') {
+        window.open('http://119.91.79.168:8080/')
+      } else if (type === 'elk') {
+        window.open('http://119.91.79.168:5601')
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

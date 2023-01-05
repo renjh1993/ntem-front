@@ -13,26 +13,26 @@
 </template>
 <script>
 export default {
-  name: "RightToolbar",
-  data() {
-    return {};
-  },
+  name: 'RightToolbar',
   props: {
     showSearch: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
+  },
+  data() {
+    return {}
   },
 
   methods: {
-    //搜索
+    // 搜索
     toggleSearch() {
-      this.$emit("update:showSearch", !this.showSearch);
+      this.$emit('update:showSearch', !this.showSearch)
     },
-    //刷新
+    // 刷新
     refresh() {
-      this.$emit("queryTable");
-    },
-  },
-};
+      this.$emit('queryTable')
+    }
+  }
+}
 </script>

@@ -11,13 +11,13 @@
       </div>
       <el-form ref="formValidate" :model="formValidate">
         <el-row v-show="currentTab === 0" :gutter="24">
-          <el-table :data="compList"  @row-click="clickComp" highlight-current-row>
+          <el-table :data="compList" highlight-current-row @row-click="clickComp">
             <el-table-column label="系统ID" align="center" prop="compId" />
             <el-table-column label="系统名称" align="center" prop="nameCn" />
             <el-table-column label="系统缩写" align="center" prop="nameEn" />
             <el-table-column label="描述" align="center" prop="sdesc" />
-            <el-table-column label="系统类型" align="center" prop="compType" >
-              <template scope="scope">
+            <el-table-column label="系统类型" align="center" prop="compType">
+              <template v-slot="scope">
                 {{ scope.row.compTypeCd + "-" + scope.row.compTypeNm }}
               </template>
             </el-table-column>
@@ -32,13 +32,13 @@
           />
         </el-row>
         <el-row v-show="currentTab === 1">
-          <el-table :data="ctxList" @row-click="clickCtx" highlight-current-row>
+          <el-table :data="ctxList" highlight-current-row @row-click="clickCtx">
             <el-table-column label="场景ID" align="center" prop="svcCtxId" />
             <el-table-column label="场景字段" align="center" prop="elmPath" />
             <el-table-column label="版本号" align="center" prop="revisionHisPk" />
             <el-table-column label="场景描述" prop="sdesc" />
             <el-table-column label="场景类型" align="center" prop="svcCtxType">
-              <template scope="scope">
+              <template v-slot="scope">
                 {{ scope.row.svcCtxTypeCd + "-" + scope.row.svcCtxTypeNm }}
               </template>
             </el-table-column>
@@ -52,7 +52,7 @@
           />
         </el-row>
         <el-row v-show="currentTab === 2">
-          <el-table :data="bndList" @row-click="clickBnd" highlight-current-row>
+          <el-table :data="bndList" highlight-current-row @row-click="clickBnd">
             <el-table-column label="主键" align="center" prop="bndAttrPk" />
             <el-table-column label="修订历史" align="center" prop="revisionHisPk" />
             <el-table-column label="协议类型" align="center" prop="profileType" />
@@ -90,13 +90,22 @@
 </template>
 
 <script>
-import { listComp } from "@/api/configuration/comp";
-import { listCtx } from "@/api/configuration/ctx";
-import { listAttr } from "@/api/configuration/attr"
-import { addCompCtxBnd } from "@/api/configuration/compCtxBnd";
+import { listComp } from '@/api/configuration/comp'
+import { listCtx } from '@/api/configuration/ctx'
+import { listAttr } from '@/api/configuration/attr'
+import { addCompCtxBnd } from '@/api/configuration/compCtxBnd'
 
 export default {
   name: 'CreateComp',
+  filters: {
+    transIsProxy: function(value) {
+      if (value === 0) {
+        return '否'
+      } else if (value === 1) {
+        return '是'
+      }
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -154,22 +163,13 @@ export default {
     this.getCtxList()
     this.getBndList()
   },
-  filters: {
-    transIsProxy: function(value) {
-      if (value === 0) {
-        return '否'
-      } else if (value === 1) {
-        return '是'
-      }
-    }
-  },
   methods: {
-    handleSubmitUp(){
+    handleSubmitUp() {
       // this.currentTab --
-      if (this.currentTab-- <0) this.currentTab = 0;
+      if (this.currentTab-- < 0) this.currentTab = 0
     },
-    handleSubmitNest(){
-      if (this.currentTab === 0){
+    handleSubmitNest() {
+      if (this.currentTab === 0) {
         if (this.isSelectedComp) {
           this.currentTab += 1
         } else {
@@ -180,9 +180,9 @@ export default {
               this.$message({
                 type: 'warning',
                 message: `还未选择系统`
-              });
+              })
             }
-          });
+          })
         }
       } else if (this.currentTab === 1) {
         if (this.isSelectedCtx) {
@@ -195,26 +195,26 @@ export default {
               this.$message({
                 type: 'warning',
                 message: `还未选择场景`
-              });
+              })
             }
-          });
+          })
         }
       }
     },
     // 提交
-    handleSubmit () {
+    handleSubmit() {
       if (this.isSelectedBnd) {
         addCompCtxBnd(this.compCtxBnd).then(response => {
           if (response.data === 'success') {
-            this.msgSuccess("新增成功");
+            this.msgSuccess('新增成功')
           } else {
             this.msgError(response.data)
           }
         })
-        if (this.currentTab === 2) {this.currentTab = 0}
+        if (this.currentTab === 2) { this.currentTab = 0 }
         // 关闭当前页面
         this.$store.state.tagsView.visitedViews.splice(this.$store.state.tagsView.visitedViews.findIndex(item => item.path === this.$route.path), 1)
-        this.$router.push(this.$store.state.tagsView.visitedViews[this.$store.state.tagsView.visitedViews.length-1].path)
+        this.$router.push(this.$store.state.tagsView.visitedViews[this.$store.state.tagsView.visitedViews.length - 1].path)
       } else {
         this.$alert('请先选择协议', '提示', {
           confirmButtonText: '确定',
@@ -223,34 +223,34 @@ export default {
             this.$message({
               type: 'warning',
               message: `还未选择协议`
-            });
+            })
           }
-        });
+        })
       }
     },
     getCompList() {
-      this.loading = true;
+      this.loading = true
       listComp(this.queryParams0).then(response => {
-        this.compList = response.data.data;
-        this.total0 = response.data.total;
-        this.loading = false;
-      });
+        this.compList = response.data.data
+        this.total0 = response.data.total
+        this.loading = false
+      })
     },
     getCtxList() {
-      this.loading = true;
+      this.loading = true
       listCtx(this.queryParams1).then(response => {
-        this.ctxList = response.data.data;
-        this.total1 = response.data.total;
-        this.loading = false;
-      });
+        this.ctxList = response.data.data
+        this.total1 = response.data.total
+        this.loading = false
+      })
     },
     getBndList() {
-      this.loading = true;
+      this.loading = true
       listAttr(this.queryParams2).then(response => {
-        this.bndList = response.data.data;
-        this.total2 = response.data.total;
-        this.loading = false;
-      });
+        this.bndList = response.data.data
+        this.total2 = response.data.total
+        this.loading = false
+      })
     },
     // 选中系统
     clickComp(row, event, column) {

@@ -109,7 +109,7 @@ const layouts = {
 const tags = {
   'el-button': el => {
     const {
-      tag, disabled
+      disabled
     } = attrBuilder(el)
     const type = el.type ? `type="${el.type}"` : ''
     const icon = el.icon ? `icon="${el.icon}"` : ''
@@ -241,7 +241,6 @@ const tags = {
   },
   'el-rate': el => {
     const { disabled, vModel } = attrBuilder(el)
-    const max = el.max ? `:max='${el.max}'` : ''
     const allowHalf = el['allow-half'] ? 'allow-half' : ''
     const showText = el['show-text'] ? 'show-text' : ''
     const showScore = el['show-score'] ? 'show-score' : ''

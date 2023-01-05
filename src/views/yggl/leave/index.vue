@@ -1,861 +1,870 @@
 <template>
-    <div class="app-container">
-        <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-            <el-form-item label="id" prop="userid">
-                <el-input
-                    v-model="queryParams.userid"
-                    placeholder="请输入id"
-                    clearable
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                />
-            </el-form-item>
-            <el-form-item label="姓名" prop="name">
-                <el-input
-                    v-model="queryParams.name"
-                    placeholder="请输入姓名"
-                    clearable
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                />
-            </el-form-item>
-            <el-form-item label="身份证号" prop="idcard">
-                <el-input
-                    v-model="queryParams.idcard"
-                    placeholder="请输入身份证号"
-                    clearable
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                />
-            </el-form-item>
-            <el-form-item label="状态" prop="status">
-                <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
-                    <el-option
-                        v-for="dict in statusOptions"
-                        :key="dict.dictValue"
-                        :label="dict.dictLabel"
-                        :value="dict.dictValue"
-                    />
-                </el-select>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            </el-form-item>
-        </el-form>
+  <div class="app-container">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="id" prop="userid">
+        <el-input
+          v-model="queryParams.userid"
+          placeholder="请输入id"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="姓名" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入姓名"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="身份证号" prop="idcard">
+        <el-input
+          v-model="queryParams.idcard"
+          placeholder="请输入身份证号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
 
-        <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5">
-                <el-button
-                    type="primary"
-                    icon="el-icon-plus"
-                    size="mini"
-                    @click="handleAdd"
-                    v-hasPermi="['emuser:tEmUser:add']"
-                >新增
-                </el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    :disabled="multiple"
-                    @click="handleDelete"
-                    v-hasPermi="['emuser:tEmUser:del']"
-                >删除
-                </el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="success"
-                    icon="el-icon-edit"
-                    size="mini"
-                    :disabled="single"
-                    @click="handleUpdate"
-                    v-hasPermi="['emuser:tEmUser:edit']"
-                >修改基础信息
-                </el-button>
-                <el-button
-                    type="success"
-                    icon="el-icon-edit"
-                    size="mini"
-                    :disabled="single"
-                    @click="handleUpdatejn"
-                    v-hasPermi="['emuser:tEmUser:edit']"
-                >修改技能信息
-                </el-button>
-                <el-button
-                    type="success"
-                    icon="el-icon-edit"
-                    size="mini"
-                    :disabled="single"
-                    @click="handleUpdatejl"
-                    v-hasPermi="['emuser:tEmUser:edit']"
-                >修改经历信息
-                </el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="warning"
-                    icon="el-icon-download"
-                    size="mini"
-                    @click="handleExport"
-                    v-hasPermi="['emuser:tEmUser:export']"
-                >导出
-                </el-button>
-            </el-col>
-            <el-col :span="1.5">
-            <el-button
-              type="info"
-              icon="el-icon-upload2"
-              size="mini"
-              @click="handleImport"
-              v-hasPermi="['system:tEmUser:import']"
-            >导入</el-button>
-          </el-col>
-            <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-        </el-row>
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['emuser:tEmUser:add']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+        >新增
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['emuser:tEmUser:del']"
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >删除
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['emuser:tEmUser:edit']"
+          type="success"
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+        >修改基础信息
+        </el-button>
+        <el-button
+          v-hasPermi="['emuser:tEmUser:edit']"
+          type="success"
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdatejn"
+        >修改技能信息
+        </el-button>
+        <el-button
+          v-hasPermi="['emuser:tEmUser:edit']"
+          type="success"
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdatejl"
+        >修改经历信息
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['emuser:tEmUser:export']"
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+        >导出
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['system:tEmUser:import']"
+          type="info"
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImport"
+        >导入</el-button>
+      </el-col>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+    </el-row>
 
-        <el-table  :data="tableList" @selection-change="handleSelectionChange" style="width: 100%">
-            <el-table-column type="expand">
-            <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-               
+    <el-table :data="tableList" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
 
             <el-container width="100%">
               <el-aside width="30%">
-                <el-form-item label="技能掌握程度"/>
+                <el-form-item label="技能掌握程度" />
                 <el-row>
-                    <el-col>
-                        <el-form-item label="熟练">
-                        <span>{{ props.row.sl}}</span>
-                        </el-form-item>
-                    </el-col>
+                  <el-col>
+                    <el-form-item label="熟练">
+                      <span>{{ props.row.sl }}</span>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
                 <el-row>
-                    <el-col>
-                        <el-form-item label="熟悉">
-                        <span>{{ props.row.sx }}</span>
-                        </el-form-item>
-                    </el-col>
+                  <el-col>
+                    <el-form-item label="熟悉">
+                      <span>{{ props.row.sx }}</span>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
                 <el-row>
-                    <el-col>
-                        <el-form-item label="了解">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
+                  <el-col>
+                    <el-form-item label="了解">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
-            </el-aside>
+              </el-aside>
               <el-main>
-                <el-form-item label="项目经历"/>
+                <el-form-item label="项目经历" />
                 <el-row>
-                    <el-col>
-                        <el-form-item label="项目名称">
-                        <span>{{ props.row.sl}}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="项目角色">
-                        <span>{{ props.row.sx }}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="项目规模">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="项目开始时间">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="项目结束时间">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="项目参与时间">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col>
-                        <el-form-item label="结束参与时间">
-                        <span>{{ props.row.lj }}</span>
-                        </el-form-item>
-                    </el-col>
+                  <el-col>
+                    <el-form-item label="项目名称">
+                      <span>{{ props.row.sl }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="项目角色">
+                      <span>{{ props.row.sx }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="项目规模">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="项目开始时间">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="项目结束时间">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="项目参与时间">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
+                  <el-col>
+                    <el-form-item label="结束参与时间">
+                      <span>{{ props.row.lj }}</span>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
               </el-main>
             </el-container>
-                
 
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column type="selection" width="55" align="center" />
+      <!-- <el-table-column label="id" align="center" prop="userid"/>  -->
+      <el-table-column label="姓名" align="center" prop="name" />
+      <el-table-column label="身份证号" align="center" prop="idcard" />
+      <el-table-column label="性别" align="center" prop="gender" />
+      <el-table-column label="手机号" align="center" prop="tel" />
+      <el-table-column label="最高学历毕业院校" align="center" prop="zgbyyx" />
+      <el-table-column label="最高学历专业" align="center" prop="zgxlzy" />
+      <el-table-column label="最高学历" align="center" prop="zgxl" />
+      <el-table-column label="证书编号" align="center" prop="zsbh" />
+      <el-table-column label="技能" align="center" prop="skills" />
+      <el-table-column label="入职日期" align="center" prop="entrydate" />
+      <el-table-column label="最高学历毕业日期" align="center" prop="zgxlbyrq" />
+      <el-table-column label="离职日期" align="center" prop="godate" />
+      <el-table-column label="base地" align="center" prop="basearea" />
+      <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="创建者" align="center" prop="crtuser" />
+      <el-table-column label="创建日期" align="center" prop="crtdate" />
+      <el-table-column label="修改者" align="center" prop="upduser" />
+      <el-table-column label="修改日期" align="center" prop="upddate" />
+      <el-table-column label="状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.status!==0">
+            {{ statusFormat(scope.row) }}
+          </div>
+          <div v-else>
+            {{ scope.row.taskName }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+          >修改
+          </el-button>
 
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDelete(scope.row)"
+          >删除
+          </el-button>
 
-            </el-form>
-            </template>
-            </el-table-column>
-            <el-table-column type="selection" width="55" align="center"/>
-            <!-- <el-table-column label="id" align="center" prop="userid"/>  -->
-            <el-table-column label="姓名" align="center" prop="name"/>
-            <el-table-column label="身份证号" align="center" prop="idcard"/>
-            <el-table-column label="性别" align="center" prop="gender"/>
-            <el-table-column label="手机号" align="center" prop="tel"/>
-            <el-table-column label="最高学历毕业院校" align="center" prop="zgbyyx"/>
-            <el-table-column label="最高学历专业" align="center" prop="zgxlzy"/>
-            <el-table-column label="最高学历" align="center" prop="zgxl"/>
-            <el-table-column label="证书编号" align="center" prop="zsbh"/>
-            <el-table-column label="技能" align="center" prop="skills"/>
-            <el-table-column label="入职日期" align="center" prop="entrydate"/>
-            <el-table-column label="最高学历毕业日期" align="center" prop="zgxlbyrq"/>
-            <el-table-column label="离职日期" align="center" prop="godate"/>
-            <el-table-column label="base地" align="center" prop="basearea"/>
-            <el-table-column label="状态" align="center" prop="status"/>
-            <el-table-column label="创建者" align="center" prop="crtuser"/>
-            <el-table-column label="创建日期" align="center" prop="crtdate"/>
-            <el-table-column label="修改者" align="center" prop="upduser"/>
-            <el-table-column label="修改日期" align="center" prop="upddate"/>
-            <el-table-column label="状态" align="center">
-                <template slot-scope="scope">
-                    <div v-if="scope.row.status!=0">
-                        {{statusFormat(scope.row)}}
-                    </div>
-                    <div v-else>
-                        {{scope.row.taskName}}
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                <template slot-scope="scope">
-                    <el-button 
-                       size="mini"
-                       type="text"
-                       icon="el-icon-edit"
-                       @click="handleUpdate(scope.row)"
-                    >修改
-                    </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-                    <el-button 
-                       size="mini"
-                       type="text"
-                       icon="el-icon-edit"
-                       @click="handleDelete(scope.row)"
-                    >删除
-                    </el-button>
-                   
-                </template>
-            </el-table-column>
-        </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+    <!-- 查看详细信息话框 -->
+    <el-dialog :title="title" :visible.sync="openDetails" width="500px" append-to-body>
+      <approvalDetail v-if="openDetails" :process-instance-id="instanceId" />
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="openDetails=!openDetails">关闭</el-button>
+      </div>
+    </el-dialog>
 
-        <pagination
-            v-show="total>0"
-            :total="total"
-            :page.sync="queryParams.pageNum"
-            :limit.sync="queryParams.pageSize"
-            @pagination="getList"
-        />
-        <!-- 查看详细信息话框 -->
-        <el-dialog :title="title" :visible.sync="openDetails" width="500px" append-to-body>
-            <approvalDetail :processInstanceId="instanceId" v-if="openDetails"/>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="openDetails=!openDetails">关闭</el-button>
-            </div>
-        </el-dialog>
+    <!-- 新增弹出框 -->
+    <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" :is-drfat="isDraft" label-width="140px">
 
-        <!-- 新增弹出框 -->
-        <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
-            <el-form ref="form" :model="form" :rules="rules" :isDrfat="isDraft" label-width="140px">
-
-                <el-row>
-                <el-col :span="12">      
-                    <el-form-item label="姓名" prop="name">
-                    <el-input v-model="form.name"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="身份证号" prop="idcard">
-                    <el-input v-model="form.idcard"/>
-                    </el-form-item>
-                </el-col>
-                </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="性别 " prop="gender" >
-                    <el-select v-model="form.gender" placeholder="请选择性别">
-                    <el-option label="男" value="0"></el-option>
-                    <el-option label="女" value="1"></el-option>
-                    </el-select>    
-                  
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="手机号" prop="tel">
-                    <el-input v-model="form.tel"/>
-                    </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业院校" prop="zgbyyx">
-                    <el-input v-model="form.zgbyyx"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="最高学历专业" prop="zgxlzy">
-
-                    <el-input v-model="form.zgxlzy"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历" prop="zgxl">
-                        <el-select v-model="form.zgxl" placeholder="请选择学历">
-                    <el-option label="博士" value="0"></el-option>
-                    <el-option label="研究生" value="1"></el-option>
-                    <el-option label="本科" value="2"></el-option>
-                    <el-option label="大专" value="3"></el-option>
-                    <el-option label="高中" value="4"></el-option>
-                    <el-option label="其他" value="5"></el-option>
-                    </el-select>   
-                 
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="证书编号" prop="zsbh">
-                    <el-input v-model="form.zsbh"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="技能" prop="skills">
-                    <el-input v-model="form.skills"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="入职日期" prop="entrydate">
-                        <el-date-picker
-                        v-model="form.entrydate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
-                        <el-date-picker
-                        v-model="form.zgxlbyrq"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="离职日期" prop="godate">
-                        <el-date-picker
-                        v-model="form.godate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-              
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="base地" prop="basearea">
-                    <el-input v-model="form.basearea"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="状态" prop="status">
-                        <el-select v-model="form.status" placeholder="请选择状态">
-                    <el-option label="离职" value="0"></el-option>
-                    <el-option label="在职" value="1"></el-option>
-                    </el-select>    
-                  
-                </el-form-item>
-                </el-col>
-               </el-row>
-         
-               <el-row>
-             
-                <el-col>
-                    <el-form-item label="掌握技能" />
-                </el-col>
-               </el-row>
-
-                 <el-form-item
-                  v-for="(domain, index) in form.jnList"
-                  :label="'专业技能' + index"
-                  :key="domain.key"
-                  :prop="'jnList.' + index + '.value'"
-               
-                >
-                  <el-input v-model="domain.skillname"
-                  style="width: 20%"
-                    placeholder="技能名称">
-                </el-input>
-                <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px" >
-                    <el-option label="熟练" value="0"></el-option>
-                    <el-option label="熟悉" value="1"></el-option>
-                    <el-option label="了解" value="2"></el-option>
-                    </el-select>
-                <el-button   
-                type="danger"
-                style="margin-left: 10px" @click.prevent="removeDomain(domain)">删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                <el-button @click="addDomain"
-                type="primary"
-                style="margin-top: 10px">新增</el-button>
-             </el-form-item>
-             <el-row>
-             <el-col>
-                    <el-form-item label="项目经历" />
-            </el-col>
-            </el-row>
-
-            <el-form-item
-                  v-for="(ygxm, index) in form.ygxms"
-                  :label="'项目经历' + index"
-                  :key="ygxm.key"
-                  :prop="'ygxms.' + index + '.value'"
-               
-                >
-                  <el-input v-model="ygxm.xmmc"
-                  style="width: 20%"
-                    placeholder="项目名称">
-                </el-input>
-                <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px" >
-                    <el-option label="开发" value="0"></el-option>
-                    <el-option label="测试" value="1"></el-option>
-                    <el-option label="项目经理" value="2"></el-option>
-                </el-select>
-                <el-select v-model="ygxm.xmgm" placeholder="项目规模" style="margin-left: 10px" >
-                    <el-option label="大型" value="0"></el-option>
-                    <el-option label="小型" value="1"></el-option>
-                    <el-option label="中型" value="2"></el-option>
-                </el-select>
-                
-                <el-date-picker
-                style="margin-left: 10px"
-                   v-model="ygxm.xmdate"
-                   type="daterange"
-                   
-                   range-separator="至"
-                   start-placeholder="项目开始日期"
-                   end-placeholder="结束日期" >
-                </el-date-picker>
-                <el-date-picker
-                style="margin-top: 10px"
-                   v-model="ygxm.ygdate"
-                   type="daterange"
-                   
-                   range-separator="至"
-                   start-placeholder="参与时间"
-                   end-placeholder="结束日期" >
-                </el-date-picker>
-                <el-button   
-                type="danger"
-                style="margin-left: 10px" @click.prevent="removeygxms(ygxm)">删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                <el-button @click="addygxms"
-                type="primary"
-                style="margin-top: 10px">新增</el-button>            
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="form.name" />
             </el-form-item>
-
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button v-if="true == isDraft" @click="asDraft">暂 存</el-button>
-                <el-button type="primary" @click="submitForm">确 定</el-button>
-                <el-button @click="cancel">取 消</el-button>
-            </div>
-        </el-dialog>
-
-        <!-- 更新弹出框 -->
-        <el-dialog :title="title" :visible.sync="openUpdate" width="1200px" append-to-body>
-            <el-form ref="updateForm" :model="updateForm" :rules="rules" :isDrfat="isDraft" label-width="140px">
-
-                <el-row>
-                <el-col :span="12">      
-                    <el-form-item label="姓名" prop="name">
-                    <el-input v-model="updateForm.name"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="身份证号" prop="idcard">
-                    <el-input v-model="updateForm.idcard"/>
-                    </el-form-item>
-                </el-col>
-                </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="性别 " prop="gender" >
-                    <el-select v-model="updateForm.gender" placeholder="请选择性别">
-                    <el-option label="男" value="0"></el-option>
-                    <el-option label="女" value="1"></el-option>
-                    </el-select>    
-                  
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="手机号" prop="tel">
-                    <el-input v-model="updateForm.tel"/>
-                    </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业院校" prop="zgbyyx">
-                    <el-input v-model="updateForm.zgbyyx"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="最高学历专业" prop="zgxlzy">
-
-                    <el-input v-model="updateForm.zgxlzy"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历" prop="zgxl">
-                        <el-select v-model="updateForm.zgxl" placeholder="请选择学历">
-                    <el-option label="博士" value="0"></el-option>
-                    <el-option label="研究生" value="1"></el-option>
-                    <el-option label="本科" value="2"></el-option>
-                    <el-option label="大专" value="3"></el-option>
-                    <el-option label="高中" value="4"></el-option>
-                    <el-option label="其他" value="5"></el-option>
-                    </el-select>   
-                 
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="证书编号" prop="zsbh">
-                    <el-input v-model="updateForm.zsbh"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="技能" prop="skills">
-                    <el-input v-model="updateForm.skills"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="入职日期" prop="entrydate">
-                        <el-date-picker
-                        v-model="updateForm.entrydate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
-                        <el-date-picker
-                        v-model="updateForm.zgxlbyrq"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="离职日期" prop="godate">
-                        <el-date-picker
-                        v-model="updateForm.godate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-              
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="base地" prop="basearea">
-                    <el-input v-model="updateForm.basearea"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="状态" prop="status">
-                        <el-select v-model="updateForm.status" placeholder="请选择状态">
-                    <el-option label="离职" value="0"></el-option>
-                    <el-option label="在职" value="1"></el-option>
-                    </el-select>    
-                  
-                </el-form-item>
-                </el-col>
-               </el-row>
-            </el-form>
-
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-                <el-button @click="cancelUpdate">取 消</el-button>
-            </div>
-        </el-dialog>
-        <!--修改技能信息-->
-        <el-dialog :title="title" :visible.sync="openUpdate2" width="1200px" append-to-body>
-            <el-form ref="updateForm" :model="updateForm" :rules="rules" :isDrfat="isDraft" label-width="140px">
-
-                <el-row>
-             
-             <el-col>
-                 <el-form-item label="掌握技能" />
-             </el-col>
-            </el-row>
-
-              <el-form-item
-               v-for="(domain, index) in updateForm"
-               :label="'专业技能' + index"
-               :key="domain.key"
-               :prop="'jnList.' + index + '.value'"
-            
-             >
-               <el-input v-model="domain.skillname"
-               style="width: 20%"
-                 placeholder="技能名称">
-             </el-input>
-             <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px" >
-                 <el-option label="熟练" value="0"></el-option>
-                 <el-option label="熟悉" value="1"></el-option>
-                 <el-option label="了解" value="2"></el-option>
-                 </el-select>
-             <el-button   
-             type="danger"
-             style="margin-left: 10px" @click.prevent="removeDomainjn(domain)">删除</el-button>
-             </el-form-item>
-             <el-form-item>
-             <el-button @click="addDomainjn"
-             type="primary"
-             style="margin-top: 10px">新增</el-button>
-          </el-form-item>
-       
-            </el-form>
-
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-                <el-button @click="cancelUpdate">取 消</el-button>
-            </div>
-        </el-dialog>
-
-
-
-
-         <!--修改经历信息信息-->
-         <el-dialog :title="title" :visible.sync="openUpdate3" width="1200px" append-to-body>
-            <el-form ref="updateForm" :model="updateForm" :rules="rules" :isDrfat="isDraft" label-width="140px">
-
-            <el-row>
-             
-             <el-col>
-                 <el-form-item label="掌握技能" />
-             </el-col>
-            </el-row>
-
-            <el-form-item
-                  v-for="(ygxm, index) in form.ygxms"
-                  :label="'项目经历' + index"
-                  :key="ygxm.key"
-                  :prop="'ygxms.' + index + '.value'"
-               
-                >
-                  <el-input v-model="ygxm.xmmc"
-                  style="width: 20%"
-                    placeholder="项目名称">
-                </el-input>
-                <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px" >
-                    <el-option label="开发" value="0"></el-option>
-                    <el-option label="测试" value="1"></el-option>
-                    <el-option label="项目经理" value="2"></el-option>
-                </el-select>
-                <el-select v-model="ygxm.xmjs" placeholder="项目规模" style="margin-left: 10px" >
-                    <el-option label="大型" value="0"></el-option>
-                    <el-option label="小型" value="1"></el-option>
-                    <el-option label="中型" value="2"></el-option>
-                </el-select>
-                
-                <el-date-picker
-                style="margin-left: 10px"
-                   v-model="xmdate"
-                   type="daterange"
-                   
-                   range-separator="至"
-                   start-placeholder="项目开始日期"
-                   end-placeholder="结束日期" >
-                </el-date-picker>
-                <el-date-picker
-                style="margin-top: 10px"
-                   v-model="ygdate"
-                   type="daterange"
-                   
-                   range-separator="至"
-                   start-placeholder="参与时间"
-                   end-placeholder="结束日期" >
-                </el-date-picker>
-                <el-button   
-                type="danger"
-                style="margin-left: 10px" @click.prevent="removeygxmsup(domain)">删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                <el-button @click="addygxmsup"
-                type="primary"
-                style="margin-top: 10px">新增</el-button>            
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号" prop="idcard">
+              <el-input v-model="form.idcard" />
             </el-form-item>
-       
-            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别 " prop="gender">
+              <el-select v-model="form.gender" placeholder="请选择性别">
+                <el-option label="男" value="0" />
+                <el-option label="女" value="1" />
+              </el-select>
 
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-                <el-button @click="cancelUpdate">取 消</el-button>
-            </div>
-        </el-dialog>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="tel">
+              <el-input v-model="form.tel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业院校" prop="zgbyyx">
+              <el-input v-model="form.zgbyyx" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最高学历专业" prop="zgxlzy">
 
-        <!-- 提交修改弹出框 -->
-        <el-dialog :title="title" :visible.sync="openEdit" width="1200px" append-to-body>
-            <el-form ref="editForm" :model="editForm" :rules="rules" :isDrfat="isDraft" label-width="140px">
-            
-                <el-row>
-                <el-col :span="12">      
-                    <el-form-item label="姓名" prop="name">
-                    <el-input v-model="editForm.name"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="身份证号" prop="idcard">
-                    <el-input v-model="editForm.idcard"/>
-                    </el-form-item>
-                </el-col>
-                </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="性别 " prop="gender" >
-                    <el-select v-model="editForm.gender" placeholder="请选择性别">
-                    <el-option label="男" value="0"></el-option>
-                    <el-option label="女" value="1"></el-option>
-                    </el-select>    
-                  
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="手机号" prop="tel">
-                    <el-input v-model="editForm.tel"/>
-                    </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业院校" prop="zgbyyx">
-                    <el-input v-model="editForm.zgbyyx"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="最高学历专业" prop="zgxlzy">
+              <el-input v-model="form.zgxlzy" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-                    <el-input v-model="editForm.zgxlzy"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历" prop="zgxl">
-                        <el-select v-model="editForm.zgxl" placeholder="请选择学历">
-                    <el-option label="博士" value="0"></el-option>
-                    <el-option label="研究生" value="1"></el-option>
-                    <el-option label="本科" value="2"></el-option>
-                    <el-option label="大专" value="3"></el-option>
-                    <el-option label="高中" value="4"></el-option>
-                    <el-option label="其他" value="5"></el-option>
-                    </el-select>   
-                 
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="证书编号" prop="zsbh">
-                    <el-input v-model="editForm.zsbh"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="技能" prop="skills">
-                    <el-input v-model="editForm.skills"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="入职日期" prop="entrydate">
-                        <el-date-picker
-                        v-model="editForm.entrydate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
-                        <el-date-picker
-                        v-model="editForm.zgxlbyrq"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="离职日期" prop="godate">
-                        <el-date-picker
-                        v-model="editForm.godate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-              
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="base地" prop="basearea">
-                    <el-input v-model="editForm.basearea"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="状态" prop="status">
-                        <el-select v-model="editForm.status" placeholder="请选择状态">
-                    <el-option label="离职" value="0"></el-option>
-                    <el-option label="在职" value="1"></el-option>
-                    </el-select>    
-                  
-                </el-form-item>
-                </el-col>
-               </el-row>
-            </el-form>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历" prop="zgxl">
+              <el-select v-model="form.zgxl" placeholder="请选择学历">
+                <el-option label="博士" value="0" />
+                <el-option label="研究生" value="1" />
+                <el-option label="本科" value="2" />
+                <el-option label="大专" value="3" />
+                <el-option label="高中" value="4" />
+                <el-option label="其他" value="5" />
+              </el-select>
 
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormEdit">确 定</el-button>
-                <el-button @click="cancelEdit">取 消</el-button>
-            </div>
-        </el-dialog>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证书编号" prop="zsbh">
+              <el-input v-model="form.zsbh" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="技能" prop="skills">
+              <el-input v-model="form.skills" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职日期" prop="entrydate">
+              <el-date-picker
+                v-model="form.entrydate"
+                type="date"
+                placeholder="选择日期"
+              />
 
-            <!-- 用户导入对话框 -->
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
+              <el-date-picker
+                v-model="form.zgxlbyrq"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="离职日期" prop="godate">
+              <el-date-picker
+                v-model="form.godate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="base地" prop="basearea">
+              <el-input v-model="form.basearea" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="form.status" placeholder="请选择状态">
+                <el-option label="离职" value="0" />
+                <el-option label="在职" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+
+          <el-col>
+            <el-form-item label="掌握技能" />
+          </el-col>
+        </el-row>
+
+        <el-form-item
+          v-for="(domain, index) in form.jnList"
+          :key="domain.key"
+          :label="'专业技能' + index"
+          :prop="'jnList.' + index + '.value'"
+        >
+          <el-input
+            v-model="domain.skillname"
+            style="width: 20%"
+            placeholder="技能名称"
+          />
+          <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
+            <el-option label="熟练" value="0" />
+            <el-option label="熟悉" value="1" />
+            <el-option label="了解" value="2" />
+          </el-select>
+          <el-button
+            type="danger"
+            style="margin-left: 10px"
+            @click.prevent="removeDomain(domain)"
+          >删除</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="margin-top: 10px"
+            @click="addDomain"
+          >新增</el-button>
+        </el-form-item>
+        <el-row>
+          <el-col>
+            <el-form-item label="项目经历" />
+          </el-col>
+        </el-row>
+
+        <el-form-item
+          v-for="(ygxm, index) in form.ygxms"
+          :key="ygxm.key"
+          :label="'项目经历' + index"
+          :prop="'ygxms.' + index + '.value'"
+        >
+          <el-input
+            v-model="ygxm.xmmc"
+            style="width: 20%"
+            placeholder="项目名称"
+          />
+          <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px">
+            <el-option label="开发" value="0" />
+            <el-option label="测试" value="1" />
+            <el-option label="项目经理" value="2" />
+          </el-select>
+          <el-select v-model="ygxm.xmgm" placeholder="项目规模" style="margin-left: 10px">
+            <el-option label="大型" value="0" />
+            <el-option label="小型" value="1" />
+            <el-option label="中型" value="2" />
+          </el-select>
+
+          <el-date-picker
+            v-model="ygxm.xmdate"
+            style="margin-left: 10px"
+            type="daterange"
+
+            range-separator="至"
+            start-placeholder="项目开始日期"
+            end-placeholder="结束日期"
+          />
+          <el-date-picker
+            v-model="ygxm.ygdate"
+            style="margin-top: 10px"
+            type="daterange"
+
+            range-separator="至"
+            start-placeholder="参与时间"
+            end-placeholder="结束日期"
+          />
+          <el-button
+            type="danger"
+            style="margin-left: 10px"
+            @click.prevent="removeygxms(ygxm)"
+          >删除</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="margin-top: 10px"
+            @click="addygxms"
+          >新增</el-button>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-if="true === isDraft" @click="asDraft">暂 存</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 更新弹出框 -->
+    <el-dialog :title="title" :visible.sync="openUpdate" width="1200px" append-to-body>
+      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="updateForm.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号" prop="idcard">
+              <el-input v-model="updateForm.idcard" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别 " prop="gender">
+              <el-select v-model="updateForm.gender" placeholder="请选择性别">
+                <el-option label="男" value="0" />
+                <el-option label="女" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="tel">
+              <el-input v-model="updateForm.tel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业院校" prop="zgbyyx">
+              <el-input v-model="updateForm.zgbyyx" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最高学历专业" prop="zgxlzy">
+
+              <el-input v-model="updateForm.zgxlzy" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历" prop="zgxl">
+              <el-select v-model="updateForm.zgxl" placeholder="请选择学历">
+                <el-option label="博士" value="0" />
+                <el-option label="研究生" value="1" />
+                <el-option label="本科" value="2" />
+                <el-option label="大专" value="3" />
+                <el-option label="高中" value="4" />
+                <el-option label="其他" value="5" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证书编号" prop="zsbh">
+              <el-input v-model="updateForm.zsbh" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="技能" prop="skills">
+              <el-input v-model="updateForm.skills" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职日期" prop="entrydate">
+              <el-date-picker
+                v-model="updateForm.entrydate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
+              <el-date-picker
+                v-model="updateForm.zgxlbyrq"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="离职日期" prop="godate">
+              <el-date-picker
+                v-model="updateForm.godate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="base地" prop="basearea">
+              <el-input v-model="updateForm.basearea" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="updateForm.status" placeholder="请选择状态">
+                <el-option label="离职" value="0" />
+                <el-option label="在职" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
+        <el-button @click="cancelUpdate">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!--修改技能信息-->
+    <el-dialog :title="title" :visible.sync="openUpdate2" width="1200px" append-to-body>
+      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+
+        <el-row>
+
+          <el-col>
+            <el-form-item label="掌握技能" />
+          </el-col>
+        </el-row>
+
+        <el-form-item
+          v-for="(domain, index) in updateForm"
+          :key="domain.key"
+          :label="'专业技能' + index"
+          :prop="'jnList.' + index + '.value'"
+        >
+          <el-input
+            v-model="domain.skillname"
+            style="width: 20%"
+            placeholder="技能名称"
+          />
+          <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
+            <el-option label="熟练" value="0" />
+            <el-option label="熟悉" value="1" />
+            <el-option label="了解" value="2" />
+          </el-select>
+          <el-button
+            type="danger"
+            style="margin-left: 10px"
+            @click.prevent="removeDomainjn(domain)"
+          >删除</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="margin-top: 10px"
+            @click="addDomainjn"
+          >新增</el-button>
+        </el-form-item>
+
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
+        <el-button @click="cancelUpdate">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!--修改经历信息信息-->
+    <el-dialog :title="title" :visible.sync="openUpdate3" width="1200px" append-to-body>
+      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+
+        <el-row>
+
+          <el-col>
+            <el-form-item label="掌握技能" />
+          </el-col>
+        </el-row>
+
+        <el-form-item
+          v-for="(ygxm, index) in form.ygxms"
+          :key="ygxm.key"
+          :label="'项目经历' + index"
+          :prop="'ygxms.' + index + '.value'"
+        >
+          <el-input
+            v-model="ygxm.xmmc"
+            style="width: 20%"
+            placeholder="项目名称"
+          />
+          <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px">
+            <el-option label="开发" value="0" />
+            <el-option label="测试" value="1" />
+            <el-option label="项目经理" value="2" />
+          </el-select>
+          <el-select v-model="ygxm.xmjs" placeholder="项目规模" style="margin-left: 10px">
+            <el-option label="大型" value="0" />
+            <el-option label="小型" value="1" />
+            <el-option label="中型" value="2" />
+          </el-select>
+
+          <el-date-picker
+            v-model="xmdate"
+            style="margin-left: 10px"
+            type="daterange"
+
+            range-separator="至"
+            start-placeholder="项目开始日期"
+            end-placeholder="结束日期"
+          />
+          <el-date-picker
+            v-model="ygdate"
+            style="margin-top: 10px"
+            type="daterange"
+
+            range-separator="至"
+            start-placeholder="参与时间"
+            end-placeholder="结束日期"
+          />
+          <el-button
+            type="danger"
+            style="margin-left: 10px"
+            @click.prevent="removeygxmsup(domain)"
+          >删除</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="margin-top: 10px"
+            @click="addygxmsup"
+          >新增</el-button>
+        </el-form-item>
+
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
+        <el-button @click="cancelUpdate">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 提交修改弹出框 -->
+    <el-dialog :title="title" :visible.sync="openEdit" width="1200px" append-to-body>
+      <el-form ref="editForm" :model="editForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="editForm.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号" prop="idcard">
+              <el-input v-model="editForm.idcard" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别 " prop="gender">
+              <el-select v-model="editForm.gender" placeholder="请选择性别">
+                <el-option label="男" value="0" />
+                <el-option label="女" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="tel">
+              <el-input v-model="editForm.tel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业院校" prop="zgbyyx">
+              <el-input v-model="editForm.zgbyyx" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最高学历专业" prop="zgxlzy">
+
+              <el-input v-model="editForm.zgxlzy" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历" prop="zgxl">
+              <el-select v-model="editForm.zgxl" placeholder="请选择学历">
+                <el-option label="博士" value="0" />
+                <el-option label="研究生" value="1" />
+                <el-option label="本科" value="2" />
+                <el-option label="大专" value="3" />
+                <el-option label="高中" value="4" />
+                <el-option label="其他" value="5" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证书编号" prop="zsbh">
+              <el-input v-model="editForm.zsbh" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="技能" prop="skills">
+              <el-input v-model="editForm.skills" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职日期" prop="entrydate">
+              <el-date-picker
+                v-model="editForm.entrydate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
+              <el-date-picker
+                v-model="editForm.zgxlbyrq"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="离职日期" prop="godate">
+              <el-date-picker
+                v-model="editForm.godate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="base地" prop="basearea">
+              <el-input v-model="editForm.basearea" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="editForm.status" placeholder="请选择状态">
+                <el-option label="离职" value="0" />
+                <el-option label="在职" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFormEdit">确 定</el-button>
+        <el-button @click="cancelEdit">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 用户导入对话框 -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
       <el-upload
         ref="upload"
@@ -869,16 +878,16 @@
         :auto-upload="false"
         drag
       >
-        <i class="el-icon-upload"></i>
+        <i class="el-icon-upload" />
         <div class="el-upload__text">
           将文件拖到此处，或
           <em>点击上传</em>
         </div>
-        <div class="el-upload__tip" slot="tip">
+        <div slot="tip" class="el-upload__tip">
           <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据
           <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
         </div>
-        <div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
+        <div slot="tip" class="el-upload__tip" style="color:red">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
@@ -886,137 +895,137 @@
       </div>
     </el-dialog>
 
-        <!-- 重新提交弹出框 -->
-        <el-dialog :title="title" :visible.sync="openRe" width="1200px" append-to-body>
-            <el-form ref="reForm" :model="reForm" :rules="rules" :isDrfat="isDraft" label-width="140px">
+    <!-- 重新提交弹出框 -->
+    <el-dialog :title="title" :visible.sync="openRe" width="1200px" append-to-body>
+      <el-form ref="reForm" :model="reForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
 
-                <el-row>
-                <el-col :span="12">      
-                    <el-form-item label="姓名" prop="name">
-                    <el-input v-model="reForm.name"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="身份证号" prop="idcard">
-                    <el-input v-model="reForm.idcard"/>
-                    </el-form-item>
-                </el-col>
-                </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="性别 " prop="gender" >
-                    <el-select v-model="reForm.gender" placeholder="请选择性别">
-                    <el-option label="男" value="0"></el-option>
-                    <el-option label="女" value="1"></el-option>
-                    </el-select>    
-                  
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="手机号" prop="tel">
-                    <el-input v-model="reForm.tel"/>
-                    </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业院校" prop="zgbyyx">
-                    <el-input v-model="reForm.zgbyyx"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="最高学历专业" prop="zgxlzy">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="reForm.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号" prop="idcard">
+              <el-input v-model="reForm.idcard" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别 " prop="gender">
+              <el-select v-model="reForm.gender" placeholder="请选择性别">
+                <el-option label="男" value="0" />
+                <el-option label="女" value="1" />
+              </el-select>
 
-                    <el-input v-model="reForm.zgxlzy"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历" prop="zgxl">
-                        <el-select v-model="reForm.zgxl" placeholder="请选择学历">
-                    <el-option label="博士" value="0"></el-option>
-                    <el-option label="研究生" value="1"></el-option>
-                    <el-option label="本科" value="2"></el-option>
-                    <el-option label="大专" value="3"></el-option>
-                    <el-option label="高中" value="4"></el-option>
-                    <el-option label="其他" value="5"></el-option>
-                    </el-select>   
-                 
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="证书编号" prop="zsbh">
-                    <el-input v-model="reForm.zsbh"/>
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="技能" prop="skills">
-                    <el-input v-model="reForm.skills"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="入职日期" prop="entrydate">
-                        <el-date-picker
-                        v-model="reForm.entrydate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
-                        <el-date-picker
-                        v-model="reForm.zgxlbyrq"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-                
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="离职日期" prop="godate">
-                        <el-date-picker
-                        v-model="reForm.godate"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
-              
-                </el-form-item>
-                </el-col>
-               </el-row>
-               <el-row>
-                <el-col :span="12">
-                    <el-form-item label="base地" prop="basearea">
-                    <el-input v-model="reForm.basearea"/>
-                </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="状态" prop="status">
-                        <el-select v-model="reForm.status" placeholder="请选择状态">
-                    <el-option label="离职" value="0"></el-option>
-                    <el-option label="在职" value="1"></el-option>
-                    </el-select>    
-                  
-                </el-form-item>
-                </el-col>
-               </el-row>
-            </el-form>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="tel">
+              <el-input v-model="reForm.tel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业院校" prop="zgbyyx">
+              <el-input v-model="reForm.zgbyyx" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最高学历专业" prop="zgxlzy">
 
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormRe">确 定</el-button>
-                <el-button @click="cancelRe">取 消</el-button>
-            </div>
-        </el-dialog>
+              <el-input v-model="reForm.zgxlzy" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <approvalForm ref="approvalForm" :businessKey = 'businessKey' :processInstanceId = 'instanceId'/>
-    </div>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历" prop="zgxl">
+              <el-select v-model="reForm.zgxl" placeholder="请选择学历">
+                <el-option label="博士" value="0" />
+                <el-option label="研究生" value="1" />
+                <el-option label="本科" value="2" />
+                <el-option label="大专" value="3" />
+                <el-option label="高中" value="4" />
+                <el-option label="其他" value="5" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="证书编号" prop="zsbh">
+              <el-input v-model="reForm.zsbh" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="技能" prop="skills">
+              <el-input v-model="reForm.skills" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职日期" prop="entrydate">
+              <el-date-picker
+                v-model="reForm.entrydate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
+              <el-date-picker
+                v-model="reForm.zgxlbyrq"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="离职日期" prop="godate">
+              <el-date-picker
+                v-model="reForm.godate"
+                type="date"
+                placeholder="选择日期"
+              />
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="base地" prop="basearea">
+              <el-input v-model="reForm.basearea" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="reForm.status" placeholder="请选择状态">
+                <el-option label="离职" value="0" />
+                <el-option label="在职" value="1" />
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFormRe">确 定</el-button>
+        <el-button @click="cancelRe">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
+  </div>
 </template>
 
 <style>
@@ -1035,588 +1044,556 @@
 </style>
 
 <script>
-    import { getToken } from "@/utils/auth";
-    import api from '@/api/em/tEmUser'
-    import {getDefinitionsByInstanceId} from '@/api/activiti/definition'
-    import approvalForm from "@/views/components/approvalForm";
+import { getToken } from '@/utils/auth'
+import api from '@/api/em/tEmUser'
+import { getDefinitionsByInstanceId } from '@/api/activiti/definition'
+import approvalForm from '@/views/components/approvalForm'
 
-    export default {
-        name: 'TEmUser',
-        components: {
-            approvalForm
-        },
-        data() {
-            return {
-                form: {
-                    jnList: [{
-                        skillname: '',
-                        skillstatus:''
-          }],
-          ygxms:[{
-            xmmc:'',
-            xmgm:'',
-            xmdate:'',
-            ygdate:'',
-            xmjs:''
-          }]
-         
-      
-        },
+export default {
+  name: 'TEmUser',
+  components: {
+    approvalForm
+  },
+  data() {
+    return {
+      form: {
+        jnList: [{
+          skillname: '',
+          skillstatus: ''
+        }],
+        ygxms: [{
+          xmmc: '',
+          xmgm: '',
+          xmdate: '',
+          ygdate: '',
+          xmjs: ''
+        }]
 
-                modelVisible: false,
-                modelerUrl: '',
-                userName: '',
-                createName:'',
-                businessKey: '',
-                instanceId: null,
-                //是否显示暂存按钮
-                isDraft: false,
-                visible: false,
-                //用户信息
-                user: {},
-                // 遮罩层
-                loading: true,
-                // 选中数组
-                ids: [],
-                // 非单个禁用
-                single: true,
-                // 非多个禁用
-                multiple: true,
-                // 显示搜索条件
-                showSearch: true,
-                // 总条数
-                total: 0,
-                // 表格数据
-                tableList:[],
-                // 弹出层标题
-                title: '',
-                // 是否显示弹出层
-                open: false,
-                openDetails: false,
-                openUpdate: false,
-                openUpdate2: false,
-                openUpdate3: false,
-                openRe: false,
-                openEdit: false,
-                // 状态字典
-                statusOptions: [],
-                // 查询参数
-                queryParams: {
-                    pageNum: 1,
-                    pageSize: 10,
-                    userid: null,
-                    name: null,
-                    idcard: null,
-                    gender: null,
-                    tel: null,
-                    zgbyyx: null,
-                    zgxlzy: null,
-                    zgxl: null,
-                    zsbh: null,
-                    skills: null,
-                    entrydate: null,
-                    zgxlbyrq: null,
-                    godate: null,
-                    basearea: null,
-                    status: null,
-                    crtuser: null,
-                    crtdate: null,
-                    upduser: null,
-                    upddate: null,
-                    status: null,
-                  
-                },
+      },
 
-                upload: {
+      modelVisible: false,
+      modelerUrl: '',
+      userName: '',
+      createName: '',
+      businessKey: '',
+      instanceId: null,
+      // 是否显示暂存按钮
+      isDraft: false,
+      visible: false,
+      // 用户信息
+      user: {},
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 表格数据
+      tableList: [],
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      open: false,
+      openDetails: false,
+      openUpdate: false,
+      openUpdate2: false,
+      openUpdate3: false,
+      openRe: false,
+      openEdit: false,
+      // 状态字典
+      statusOptions: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        userid: null,
+        name: null,
+        idcard: null,
+        gender: null,
+        tel: null,
+        zgbyyx: null,
+        zgxlzy: null,
+        zgxl: null,
+        zsbh: null,
+        skills: null,
+        entrydate: null,
+        zgxlbyrq: null,
+        godate: null,
+        basearea: null,
+        status: null,
+        crtuser: null,
+        crtdate: null,
+        upduser: null,
+        upddate: null
+      },
+      upload: {
         // 是否显示弹出层（用户导入）
         open: false,
         // 弹出层标题（用户导入）
-        title: "",
+        title: '',
         // 是否禁用上传
         isUploading: false,
         // 是否更新已经存在的用户数据
         updateSupport: 0,
         // 设置上传的请求头部
-        headers: { Authorization: "Bearer " + getToken() },
+        headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/user/importData"
-        },
-                //表单参数
-                // form: {
-                // },
-                //更新 表单参数
-                updateForm: {},
-                //提交修改 表单参数
-                editForm: {},
-                //重新提交 表单参数
-                reForm: {},
-                //表单校验 下拉框、日期框时trigger: 'change',值发生改变时校验，输入框trigger: 'blur',失去焦点时校验
-                rules: {
-                    id: [
-                        {required: true, message: 'id不能为空', trigger: 'blur'}
-                    ],
-                }
-            }
-        },
-        created() {
-            this.getList()
-            this.getDicts('activiti_flow_type').then(response => {
-                this.statusOptions = response.data
-            })
-        },
-        methods: {
-            //员工基础信息移除
-        removeDomain(item) {
-        var index = this.form.jnList.indexOf(item)
-        if (index !== -1) {
-          this.form.jnList.splice(index, 1)
-        }
-        },
-        //技能页面修改
-        removeDomainjn(item) {
-        var index = this.updateForm.indexOf(item)
-        if (index !== -1) {
-          this.updateForm.splice(index, 1)
-        }
-        },
-        //员工基础信息添加
-            addDomain() {
-        this.form.jnList.push({
-         skillname:'',
-         skillstatus:''
-        });
-        },
-        //技能添加
-        addDomainjn() {
-        this.updateForm.push({
-         skillname:'',
-         skillstatus:''
-        });
-        },
-        //经历移除
-        removeygxms(item) {
-        var index = this.form.ygxms.indexOf(item)
-        if (index !== -1) {
-          this.form.ygxms.splice(index, 1)
-        }
-        },
-
-        //修改经历移除
-        removeygxmsup(item) {
-        var index = this.updateForm.indexOf(item)
-        if (index !== -1) {
-          this.updateForm.splice(index, 1)
-        }
-        },
-        
-         //经历添加
-            addygxms() {
-        this.form.ygxms.push({
-            xmmc:'',
-            xmgm:'',
-            xmdate:'',
-            ygdate:'',
-            xmjs:''
-        });
-        
-        },
-        //修改经历添加
-        addygxmsup() {
-        this.updateForm.push({
-            xmmc:'',
-            xmgm:'',
-            xmdate:'',
-            ygdate:'',
-            xmjs:''
-        });
-        
-        },
-            /** 查询列表 */
-            getList() {
-                this.loading = true
-                console.log(this.queryParams)
-                api.query(this.queryParams).then(response => {      
-                    this.tableList = response.rows
-                 console.log(response)
-                    for(let i =0 ; i<this.tableList.length;i++){
-
-                       this.tableList[i]["sl"]=""
-                       this.tableList[i]["sx"]=""
-                       this.tableList[i]["lj"]=""
-                       
-                        
-                        for(let j=0;j<this.tableList[i].jnList.length;j++){
-                        if(this.tableList[i].jnList[j].skillstatus=="0"){
-                            this.tableList[i].sl=this.tableList[i].sl+this.tableList[i].jnList[j].skillname+"  "
-                        }
-                        if(this.tableList[i].jnList[j].skillstatus=="1"){
-                            this.tableList[i].sx=this.tableList[i].sx+this.tableList[i].jnList[j].skillname+"  "
-                        }
-                        if(this.tableList[i].jnList[j].skillstatus=="2"){
-                            this.tableList[i].lj=this.tableList[i].lj+this.tableList[i].jnList[j].skillname+"  "
-                        }
-                    }
-                   
-                    }
-                
-                
-                    this.total = response.total
-                    this.loading = false
-                })
-            },
-            // 状态字典翻译
-            statusFormat(row, column) {
-                return this.selectDictLabel(this.statusOptions, row.status)
-            },
-            // 取消按钮
-            cancel() {
-                this.open = false
-                this.reset()
-            },
-            cancelUpdate() {
-                this.openUpdate = false
-                this.openUpdate2 = false
-                this.openUpdate3 = false
-                this.reset()
-            },
-            cancelRe() {
-                this.openRe = false
-                this.reset()
-            },
-            cancelEdit() {
-                this.openEdit = false
-                this.reset()
-            },
-
-         
-
-            // 表单重置
-            reset() {
-                this.form = {
-                    userid: null,
-                    name: null,
-                    idcard: null,
-                    gender: null,
-                    tel: null,
-                    zgbyyx: null,
-                    zgxlzy: null,
-                    zgxl: null,
-                    zsbh: null,
-                    skills: null,
-                    entrydate: null,
-                    zgxlbyrq: null,
-                    godate: null,
-                    basearea: null,
-                    status: null,
-                    crtuser: null,
-                    crtdate: null,
-                    upduser: null,
-                    upddate: null,
-                    status: null,
-                    jnList:[{
-                        skillname:null,
-                        skillstatus:null
-                    }],
-                    ygxms:[{
-                    xmmc:null,
-                    xmgm:null,
-                    xmdate:null,
-                    ygdate:null,
-                    xmjs:null
-                  }]
-                   
-                   
-                }
-                this.resetForm('form')
-            },
-            /** 搜索按钮操作 */
-            handleQuery() {
-                this.queryParams.pageNum = 1
-                this.getList()
-            },
-            /** 重置按钮操作 */
-            resetQuery() {
-                this.resetForm('queryForm')
-                this.handleQuery()
-            },
-            // 多选框选中数据
-            handleSelectionChange(selection) {
-                console.log(selection)
-                this.ids = selection.map(item => item.userid)
-                this.single = selection.length !== 1
-                this.multiple = !selection.length
-            },
-            /** 新增按钮操作 */
-            handleAdd() {
-                this.createName = this.$store.getters.nickName
-                if (this.$store.getters.name != "admins") {
-                    this.reset()
-                    this.isDraft = true
-                    this.open = true
-                    this.title = '添加'
-                } else {
-                    this.$alert('管理员不能创建流程', '管理员不能创建流程', {
-                        confirmButtonText: '确定',
-                    });
-                }
-            },
-            /** 更新按钮操作 */
-            handleUpdate(row) {
-                let updateId = null
-                if(row.id != null){
-                    updateId = row.id
-                }else{
-                    updateId = this.ids[0];
-                }
-                this.reset()
-                console.log(this.ids)
-                api.getOne({ userid: updateId }).then(response => {
-                    this.updateForm = response.data
-                    this.openUpdate = true
-                    this.title = '更新'
-                })
-            },
-
-            /** 更新技能按钮操作 */
-            handleUpdatejn(row) {
-                
-                let updateId = null
-                if(row.id != null){
-                    updateId = row.id
-                }else{
-                    updateId = this.ids[0];
-                }
-                this.reset()
-                api.getOnejn({ userid: updateId }).then(response => {
-                   
-                    this.updateForm = response.data
-                    console.log(this.updateForm)
-                    this.openUpdate2 = true
-                    this.title = '技能修改'
-                })
-            },
-            /** 更新经历按钮操作 */
-            handleUpdatejl(row) {
-                
-                let updateId = null
-                if(row.id != null){
-                    updateId = row.id
-                }else{
-                    updateId = this.ids[0];
-                }
-                this.reset()
-                api.getOnejn({ userid: updateId }).then(response => {
-                   
-                    this.updateForm = response.data
-                    console.log(this.updateForm)
-                    this.openUpdate3 = true
-                    this.title = '经历修改'
-                })
-            },
-            /** 提交修改按钮操作 */
-            handleEdit(row) {
-                this.reset()
-                api.getOne({ id: row.id }).then(response => {
-                    this.editForm = response.data
-                    this.editForm.instanceId = row.instanceId
-                    this.openEdit = true
-                    this.title = '提交修改'
-                })
-            },
-            /** 重新提交 */
-            reSubmit(row) {
-                this.reset()
-                api.getOne({ id: row.id }).then(response => {
-                    this.reForm = response.data
-                    this.openRe = true
-                    this.title = '重新提交'
-                })
-            },
-            /** 审批详情 */
-            historyFory(row) {
-                this.instanceId = row.instanceId
-                this.businessKey = row.id
-                console.log("this.instanceId ===> "+this.instanceId)
-                console.log("this.businessKey ===> "+this.businessKey)
-                this.$refs.approvalForm.visible = true
-            },
-            /** 进度查看 */
-            checkTheSchedule(row) {
-                getDefinitionsByInstanceId(row.instanceId).then(response => {
-                    let data = response.data
-                    this.modelerUrl = '/bpmnjs/index.html?type=lookBpmn&instanceId=' + row.instanceId + '&deploymentFileUUID=' + data.deploymentID + '&deploymentName=' + encodeURI(data.resourceName);
-                    this.modelVisible = true
-                })
-            },
-            handleSub(row) {
-                row.businessRoute = this.$route.name
-                api.add(row).then(response => {
-                    this.msgSuccess('提交成功')
-                    this.getList()
-                })
-            },
-            /** 提交按钮 */
-            submitForm() {
-                this.$refs['form'].validate(valid => {
-                    if (valid) {
-                        if (this.form.id != null) {
-                            api.update(this.form).then(response => {
-                                this.msgSuccess('修改成功')
-                                this.open = false
-                                this.getList()
-                        })
-                    } else {
-                        this.form.businessRoute = this.$route.name
-                            api.add(this.form).then(response => {
-                                this.msgSuccess('新增成功')
-                                this.open = false
-                                this.getList()
-                            })
-                        }
-                    }
-                })
-            },
-            submitFormUpdate() {
-                this.$refs['updateForm'].validate(valid => {
-                    if (valid) {
-                        this.form.businessRoute = this.$route.name
-                        api.update(this.updateForm).then(response => {
-                            this.msgSuccess('更新成功')
-                            this.openUpdate = false
-                            this.getList()
-                        })
-                    }
-                })
-            },
-            //技能更新增加
-            submitFormUpdate() {
-                this.$refs['updateForm'].validate(valid => {
-                    if (valid) {
-                        this.form.businessRoute = this.$route.name
-                        api.update(this.updateForm).then(response => {
-                            this.msgSuccess('更新成功')
-                            this.openUpdate = false
-                            this.getList()
-                        })
-                    }
-                })
-            },
-
-            submitFormUpdatejn() {
-                this.$refs['updateForm'].validate(valid => {
-                    if (valid) {
-                        this.form.businessRoute = this.$route.name
-                        api.update(this.updateForm).then(response => {
-                            this.msgSuccess('更新成功')
-                            this.openUpdate = false
-                            this.getList()
-                        })
-                    }
-                })
-            },
-            submitFormRe() {
-                this.$refs['reForm'].validate(valid => {
-                    if (valid) {
-                        this.form.businessRoute = this.$route.name
-                        api.add(this.reForm).then(response => {
-                            this.msgSuccess('重新提交成功')
-                            this.openRe = false
-                            this.getList()
-                        })
-                    }
-                })
-            },
-            submitFormEdit() {
-                this.$refs['editForm'].validate(valid => {
-                    if (valid) {
-                        this.form.businessRoute = this.$route.name
-                        this.form.instanceId = this.instanceId
-                        api.edit(this.editForm).then(response => {
-                            this.msgSuccess('提交修改成功')
-                            this.openEdit = false
-                            this.getList()
-                        })
-                    }
-                })
-            },
-            /** 暂存按钮 */
-            asDraft() {
-                this.$refs['form'].validate(valid => {
-                    api.draft(this.form).then(response => {
-                        this.msgSuccess('暂存成功')
-                        this.open = false
-                        this.getList()
-                    })
-                })
-            },
-            chooseMedicine() {
-                this.form.title = this.createName + "的" + this.form.type + "申请";
-            },
-            /** 删除按钮操作 */
-            handleDelete(row) {
-                let ids = []
-                if(row.id == null){
-                    ids = this.ids
-                }else{
-                    ids = [row.id]
-                }
-                // const ids = row.id || this.ids
-                this.$confirm('是否确认删除员工编号为"' + ids + '"的数据项?', '警告', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(function () {
-                    var param = {
-                        'ids' : ids
-                    };
-                    return api.del(param)
-                }).then(() => {
-                    this.getList()
-                    this.msgSuccess('删除成功')
-                })
-            },
-            /** 导出按钮操作 */
-            handleExport() {
-                const queryParams = this.queryParams
-                this.$confirm('是否确认导出?', '警告', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(function () {
-                    return api.exportExcel(queryParams)
-                }).then(response => {
-                    this.download(response.message)
-                })
-            },
-            /** 导入按钮操作 */
-             handleImport() {
-               this.upload.title = "用户导入";
-               this.upload.open = true;
-               console.log("点击导入按钮")
-            
-             },
-             /** 下载模板操作 */
-             importTemplate() {
-               api.importTemplate().then(response => {
-                 this.download(response.message);
-               });
-             },
-             // 文件上传中处理
-             handleFileUploadProgress(event, file, fileList) {
-               this.upload.isUploading = true;
-             },
-             // 文件上传成功处理
-             handleFileSuccess(response, file, fileList) {
-               this.upload.open = false;
-               this.upload.isUploading = false;
-               this.$refs.upload.clearFiles();
-               this.$alert(response.msg, "导入结果", { dangerouslyUseHTMLString: true });
-               this.getList();
-             },
-             // 提交上传文件
-             submitFileForm() {
-               this.$refs.upload.submit();
-             }
-        }
+        url: process.env.VUE_APP_BASE_API + '/system/user/importData'
+      },
+      // 表单参数
+      // form: {
+      // },
+      // 更新 表单参数
+      updateForm: {},
+      // 提交修改 表单参数
+      editForm: {},
+      // 重新提交 表单参数
+      reForm: {},
+      // 表单校验 下拉框、日期框时trigger: 'change',值发生改变时校验，输入框trigger: 'blur',失去焦点时校验
+      rules: {
+        id: [
+          { required: true, message: 'id不能为空', trigger: 'blur' }
+        ]
+      }
     }
+  },
+  created() {
+    this.getList()
+    this.getDicts('activiti_flow_type').then(response => {
+      this.statusOptions = response.data
+    })
+  },
+  methods: {
+    // 员工基础信息移除
+    removeDomain(item) {
+      var index = this.form.jnList.indexOf(item)
+      if (index !== -1) {
+        this.form.jnList.splice(index, 1)
+      }
+    },
+    // 技能页面修改
+    removeDomainjn(item) {
+      var index = this.updateForm.indexOf(item)
+      if (index !== -1) {
+        this.updateForm.splice(index, 1)
+      }
+    },
+    // 员工基础信息添加
+    addDomain() {
+      this.form.jnList.push({
+        skillname: '',
+        skillstatus: ''
+      })
+    },
+    // 技能添加
+    addDomainjn() {
+      this.updateForm.push({
+        skillname: '',
+        skillstatus: ''
+      })
+    },
+    // 经历移除
+    removeygxms(item) {
+      var index = this.form.ygxms.indexOf(item)
+      if (index !== -1) {
+        this.form.ygxms.splice(index, 1)
+      }
+    },
+
+    // 修改经历移除
+    removeygxmsup(item) {
+      var index = this.updateForm.indexOf(item)
+      if (index !== -1) {
+        this.updateForm.splice(index, 1)
+      }
+    },
+
+    // 经历添加
+    addygxms() {
+      this.form.ygxms.push({
+        xmmc: '',
+        xmgm: '',
+        xmdate: '',
+        ygdate: '',
+        xmjs: ''
+      })
+    },
+    // 修改经历添加
+    addygxmsup() {
+      this.updateForm.push({
+        xmmc: '',
+        xmgm: '',
+        xmdate: '',
+        ygdate: '',
+        xmjs: ''
+      })
+    },
+    /** 查询列表 */
+    getList() {
+      this.loading = true
+      console.log(this.queryParams)
+      api.query(this.queryParams).then(response => {
+        this.tableList = response.rows
+        console.log(response)
+        for (let i = 0; i < this.tableList.length; i++) {
+          this.tableList[i]['sl'] = ''
+          this.tableList[i]['sx'] = ''
+          this.tableList[i]['lj'] = ''
+
+          for (let j = 0; j < this.tableList[i].jnList.length; j++) {
+            if (this.tableList[i].jnList[j].skillstatus === '0') {
+              this.tableList[i].sl = this.tableList[i].sl + this.tableList[i].jnList[j].skillname + '  '
+            }
+            if (this.tableList[i].jnList[j].skillstatus === '1') {
+              this.tableList[i].sx = this.tableList[i].sx + this.tableList[i].jnList[j].skillname + '  '
+            }
+            if (this.tableList[i].jnList[j].skillstatus === '2') {
+              this.tableList[i].lj = this.tableList[i].lj + this.tableList[i].jnList[j].skillname + '  '
+            }
+          }
+        }
+
+        this.total = response.total
+        this.loading = false
+      })
+    },
+    // 状态字典翻译
+    statusFormat(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status)
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false
+      this.reset()
+    },
+    cancelUpdate() {
+      this.openUpdate = false
+      this.openUpdate2 = false
+      this.openUpdate3 = false
+      this.reset()
+    },
+    cancelRe() {
+      this.openRe = false
+      this.reset()
+    },
+    cancelEdit() {
+      this.openEdit = false
+      this.reset()
+    },
+
+    // 表单重置
+    reset() {
+      this.form = {
+        userid: null,
+        name: null,
+        idcard: null,
+        gender: null,
+        tel: null,
+        zgbyyx: null,
+        zgxlzy: null,
+        zgxl: null,
+        zsbh: null,
+        skills: null,
+        entrydate: null,
+        zgxlbyrq: null,
+        godate: null,
+        basearea: null,
+        status: null,
+        crtuser: null,
+        crtdate: null,
+        upduser: null,
+        upddate: null,
+        jnList: [{
+          skillname: null,
+          skillstatus: null
+        }],
+        ygxms: [{
+          xmmc: null,
+          xmgm: null,
+          xmdate: null,
+          ygdate: null,
+          xmjs: null
+        }]
+
+      }
+      this.resetForm('form')
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1
+      this.getList()
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      console.log(selection)
+      this.ids = selection.map(item => item.userid)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.createName = this.$store.getters.nickName
+      if (this.$store.getters.name !== 'admins') {
+        this.reset()
+        this.isDraft = true
+        this.open = true
+        this.title = '添加'
+      } else {
+        this.$alert('管理员不能创建流程', '管理员不能创建流程', {
+          confirmButtonText: '确定'
+        })
+      }
+    },
+    /** 更新按钮操作 */
+    handleUpdate(row) {
+      let updateId = null
+      if (row.id != null) {
+        updateId = row.id
+      } else {
+        updateId = this.ids[0]
+      }
+      this.reset()
+      console.log(this.ids)
+      api.getOne({ userid: updateId }).then(response => {
+        this.updateForm = response.data
+        this.openUpdate = true
+        this.title = '更新'
+      })
+    },
+
+    /** 更新技能按钮操作 */
+    handleUpdatejn(row) {
+      let updateId = null
+      if (row.id != null) {
+        updateId = row.id
+      } else {
+        updateId = this.ids[0]
+      }
+      this.reset()
+      api.getOnejn({ userid: updateId }).then(response => {
+        this.updateForm = response.data
+        console.log(this.updateForm)
+        this.openUpdate2 = true
+        this.title = '技能修改'
+      })
+    },
+    /** 更新经历按钮操作 */
+    handleUpdatejl(row) {
+      let updateId = null
+      if (row.id != null) {
+        updateId = row.id
+      } else {
+        updateId = this.ids[0]
+      }
+      this.reset()
+      api.getOnejn({ userid: updateId }).then(response => {
+        this.updateForm = response.data
+        console.log(this.updateForm)
+        this.openUpdate3 = true
+        this.title = '经历修改'
+      })
+    },
+    /** 提交修改按钮操作 */
+    handleEdit(row) {
+      this.reset()
+      api.getOne({ id: row.id }).then(response => {
+        this.editForm = response.data
+        this.editForm.instanceId = row.instanceId
+        this.openEdit = true
+        this.title = '提交修改'
+      })
+    },
+    /** 重新提交 */
+    reSubmit(row) {
+      this.reset()
+      api.getOne({ id: row.id }).then(response => {
+        this.reForm = response.data
+        this.openRe = true
+        this.title = '重新提交'
+      })
+    },
+    /** 审批详情 */
+    historyFory(row) {
+      this.instanceId = row.instanceId
+      this.businessKey = row.id
+      console.log('this.instanceId ===> ' + this.instanceId)
+      console.log('this.businessKey ===> ' + this.businessKey)
+      this.$refs.approvalForm.visible = true
+    },
+    /** 进度查看 */
+    checkTheSchedule(row) {
+      getDefinitionsByInstanceId(row.instanceId).then(response => {
+        const data = response.data
+        this.modelerUrl = '/bpmnjs/index.html?type=lookBpmn&instanceId=' + row.instanceId + '&deploymentFileUUID=' + data.deploymentID + '&deploymentName=' + encodeURI(data.resourceName)
+        this.modelVisible = true
+      })
+    },
+    handleSub(row) {
+      row.businessRoute = this.$route.name
+      api.add(row).then(response => {
+        this.msgSuccess('提交成功')
+        this.getList()
+      })
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            api.update(this.form).then(response => {
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
+          } else {
+            this.form.businessRoute = this.$route.name
+            api.add(this.form).then(response => {
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
+          }
+        }
+      })
+    },
+    // 技能更新增加
+    submitFormUpdate() {
+      this.$refs['updateForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.update(this.updateForm).then(response => {
+            this.msgSuccess('更新成功')
+            this.openUpdate = false
+            this.getList()
+          })
+        }
+      })
+    },
+    submitFormUpdatejn() {
+      this.$refs['updateForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.update(this.updateForm).then(response => {
+            this.msgSuccess('更新成功')
+            this.openUpdate = false
+            this.getList()
+          })
+        }
+      })
+    },
+    submitFormRe() {
+      this.$refs['reForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.add(this.reForm).then(response => {
+            this.msgSuccess('重新提交成功')
+            this.openRe = false
+            this.getList()
+          })
+        }
+      })
+    },
+    submitFormEdit() {
+      this.$refs['editForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          this.form.instanceId = this.instanceId
+          api.edit(this.editForm).then(response => {
+            this.msgSuccess('提交修改成功')
+            this.openEdit = false
+            this.getList()
+          })
+        }
+      })
+    },
+    /** 暂存按钮 */
+    asDraft() {
+      this.$refs['form'].validate(valid => {
+        api.draft(this.form).then(response => {
+          this.msgSuccess('暂存成功')
+          this.open = false
+          this.getList()
+        })
+      })
+    },
+    chooseMedicine() {
+      this.form.title = this.createName + '的' + this.form.type + '申请'
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      let ids = []
+      if (row.id == null) {
+        ids = this.ids
+      } else {
+        ids = [row.id]
+      }
+      // const ids = row.id || this.ids
+      this.$confirm('是否确认删除员工编号为"' + ids + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        var param = {
+          'ids': ids
+        }
+        return api.del(param)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return api.exportExcel(queryParams)
+      }).then(response => {
+        this.download(response.message)
+      })
+    },
+    /** 导入按钮操作 */
+    handleImport() {
+      this.upload.title = '用户导入'
+      this.upload.open = true
+      console.log('点击导入按钮')
+    },
+    /** 下载模板操作 */
+    importTemplate() {
+      api.importTemplate().then(response => {
+        this.download(response.message)
+      })
+    },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      this.upload.open = false
+      this.upload.isUploading = false
+      this.$refs.upload.clearFiles()
+      this.$alert(response.msg, '导入结果', { dangerouslyUseHTMLString: true })
+      this.getList()
+    },
+    // 提交上传文件
+    submitFileForm() {
+      this.$refs.upload.submit()
+    }
+  }
+}
 </script>

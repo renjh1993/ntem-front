@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="场景描述" prop="sdesc">
         <el-input
           v-model="queryParams.sdesc"
@@ -11,8 +11,8 @@
         />
       </el-form-item>
       <el-form-item label="场景类型" prop="svcCtxTypeCd">
-        <el-select style="width: 100%" v-model="queryParams.compTypeCd" placeholder="请选择场景类型">
-          <el-option v-for="dict in sceneTypeList" :key="dict.dictValue" :label="dict.dictValue + '-' +dict.dictLabel" :value="dict.dictValue"></el-option>
+        <el-select v-model="queryParams.compTypeCd" style="width: 100%" placeholder="请选择场景类型">
+          <el-option v-for="dict in sceneTypeList" :key="dict.dictValue" :label="dict.dictValue + '-' +dict.dictLabel" :value="dict.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -24,46 +24,46 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:ctx:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:ctx:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:ctx:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:ctx:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:ctx:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:ctx:remove']"
         >删除</el-button>
       </el-col>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="warning"-->
-<!--          icon="el-icon-download"-->
-<!--          size="mini"-->
-<!--          @click="handleExport"-->
-<!--          v-hasPermi="['system:ctx:export']"-->
-<!--        >导出</el-button>-->
-<!--      </el-col>-->
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <!--      <el-col :span="1.5">-->
+      <!--        <el-button-->
+      <!--          type="warning"-->
+      <!--          icon="el-icon-download"-->
+      <!--          size="mini"-->
+      <!--          @click="handleExport"-->
+      <!--          v-hasPermi="['system:ctx:export']"-->
+      <!--        >导出</el-button>-->
+      <!--      </el-col>-->
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table border v-loading="loading" :data="ctxList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" border :data="ctxList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="场景ID" align="center" prop="svcCtxId" />
       <el-table-column label="版本号" align="center" prop="revisionHisPk" />
@@ -77,18 +77,18 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-hasPermi="['system:ctx:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:ctx:edit']"
           >修改</el-button>
           <el-button
+            v-hasPermi="['system:ctx:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:ctx:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -108,8 +108,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="修订历史" prop="revisionHisPk">
-              <el-select style="width: 100%" v-model="form.revisionHisPk" placeholder="请选择修订历史版本">
-                <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionNbr + '-' + item.markNm" :value="item.revisionHisPk"></el-option>
+              <el-select v-model="form.revisionHisPk" style="width: 100%" placeholder="请选择修订历史版本">
+                <el-option v-for="item in hisList" :key="item.revisionHisPk" :label="item.revisionNbr + '-' + item.markNm" :value="item.revisionHisPk" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -135,9 +135,9 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="场景类型" prop="svcCtxType">
-<!--              <el-input v-model="form.svcCtxTypeCd" placeholder="请输入场景类型代码" />-->
-              <el-select style="width: 100%" v-model="form.svcCtxTypeCd" @change="typeSelect(form.svcCtxTypeCd)" placeholder="请选择组件类型">
-                <el-option v-for="item in svcCtxTypeList" :key="item.svcCtxTypeCd" :label="item.svcCtxTypeCd + '-' + item.svcCtxTypeNm" :value="item.svcCtxTypeCd"></el-option>
+              <!--              <el-input v-model="form.svcCtxTypeCd" placeholder="请输入场景类型代码" />-->
+              <el-select v-model="form.svcCtxTypeCd" style="width: 100%" placeholder="请选择组件类型" @change="typeSelect(form.svcCtxTypeCd)">
+                <el-option v-for="item in svcCtxTypeList" :key="item.svcCtxTypeCd" :label="item.svcCtxTypeCd + '-' + item.svcCtxTypeNm" :value="item.svcCtxTypeCd" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -182,11 +182,11 @@
 </template>
 
 <script>
-import { listCtx, getCtx, delCtx, addCtx, updateCtx, exportCtx } from "@/api/configuration/ctx";
-import { listHis } from "@/api/configuration/his"
+import { listCtx, getCtx, delCtx, addCtx, updateCtx, exportCtx } from '@/api/configuration/ctx'
+import { listHis } from '@/api/configuration/his'
 
 export default {
-  name: "Ctx",
+  name: 'Ctx',
   data() {
     return {
       // 遮罩层
@@ -204,7 +204,7 @@ export default {
       // 服务访问场景表格数据
       ctxList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -222,7 +222,7 @@ export default {
         elmPath: null,
         regExp: null,
         refVal: null,
-        ruleOrd: null,
+        ruleOrd: null
       },
       // 场景类型列表
       sceneTypeList: [],
@@ -233,52 +233,52 @@ export default {
       // 表单校验
       rules: {
         revisionHisPk: [
-          { required: true, message: "修订历史不能为空", trigger: "blur" }
-        ],
+          { required: true, message: '修订历史不能为空', trigger: 'blur' }
+        ]
       },
       svcCtxTypeList: [{
         svcCtxTypeCd: '1510',
         svcCtxTypeNm: '默认场景'
-      },{
+      }, {
         svcCtxTypeCd: '1520',
         svcCtxTypeNm: '与TCP请求报文值相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1530',
         svcCtxTypeNm: '与XML请求报文值相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1531',
         svcCtxTypeNm: '与服务请求方相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1550',
         svcCtxTypeNm: '与TCP返回报文值相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1560',
         svcCtxTypeNm: '与XML返回报文值相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1570',
         svcCtxTypeNm: '与请求协议相关的相关的场景'
-      },{
+      }, {
         svcCtxTypeCd: '1580',
         svcCtxTypeNm: '通过JS实现选择的与响应相关的场景'
       }]
-    };
+    }
   },
   created() {
-    this.getList();
-    this.getHisList();
-    this.getDicts("svc_ctx_type").then(response => {
-      this.sceneTypeList = response.data;
-    });
+    this.getList()
+    this.getHisList()
+    this.getDicts('svc_ctx_type').then(response => {
+      this.sceneTypeList = response.data
+    })
   },
   methods: {
     /** 查询服务访问场景列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       listCtx(this.queryParams).then(response => {
-        this.ctxList = response.data.data;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+        this.ctxList = response.data.data
+        this.total = response.data.total
+        this.loading = false
+      })
     },
     // 获取版本号列表
     getHisList() {
@@ -288,8 +288,8 @@ export default {
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -311,87 +311,87 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.svcCtxPk)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加服务访问场景";
+      this.reset()
+      this.open = true
+      this.title = '添加服务访问场景'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.reset()
       const svcCtxPk = row.svcCtxPk || this.ids
       getCtx(svcCtxPk).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改服务访问场景";
-      });
+        this.form = response.data
+        this.open = true
+        this.title = '修改服务访问场景'
+      })
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.svcCtxPk != null) {
             updateCtx(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addCtx(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const svcCtxPks = row.svcCtxPk || this.ids;
-      this.$confirm('是否确认删除服务访问场景编号为"' + svcCtxPks + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delCtx(svcCtxPks);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      const svcCtxPks = row.svcCtxPk || this.ids
+      this.$confirm('是否确认删除服务访问场景编号为"' + svcCtxPks + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delCtx(svcCtxPks)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有服务访问场景数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportCtx(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      const queryParams = this.queryParams
+      this.$confirm('是否确认导出所有服务访问场景数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportCtx(queryParams)
+      }).then(response => {
+        this.download(response.msg)
+      })
     },
     typeSelect(svcCtxTypeCd) {
       if (svcCtxTypeCd === '1510') {
@@ -413,5 +413,5 @@ export default {
       }
     }
   }
-};
+}
 </script>

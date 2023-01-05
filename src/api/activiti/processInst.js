@@ -22,7 +22,7 @@ export default {
   // getHistoryProcessImage(processInstId) {
   //   return process.env.VUE_APP_BASE_API+`/workflow/processInstance/getHistoryProcessImage?processInstId=${processInstId}&t=` + Math.random()
   // },
-  
+
   // 通过业务id查询流程实例
   // getInfoByBusinessKey(businessKey) {
   //   return request({
@@ -83,7 +83,7 @@ export default {
   //     method: 'get'
   //   })
   // },
-  
+
   // 查询已完成的流程实例
   getProcessInstFinishByPage(query) {
     return request({

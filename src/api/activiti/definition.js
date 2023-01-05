@@ -22,10 +22,9 @@ export function suspendOrActiveApply(data) {
   return request({
     url: '/processDefinition/suspendOrActiveApply',
     method: 'post',
-    data:data
+    data: data
   })
 }
-
 
 // 删除Modeler
 export function delDefinition(id) {
@@ -34,5 +33,4 @@ export function delDefinition(id) {
     method: 'delete'
   })
 }
-
 

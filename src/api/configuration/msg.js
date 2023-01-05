@@ -45,8 +45,8 @@ export function delMsg(fmtMsgPk) {
 
 // 批量删除报文格式转换明细
 export function delMsgs(fmtMsgPks) {
-  console.log("fmtMsgPks:", fmtMsgPks)
-  const data ={
+  console.log('fmtMsgPks:', fmtMsgPks)
+  const data = {
     fmtMsgPks
   }
   return request({
@@ -67,7 +67,7 @@ export function exportMsg(query) {
 
 // 批量修改pid
 export function batchUpdatePid(parentId, ids) {
-  const data ={
+  const data = {
     parentId,
     ids
   }

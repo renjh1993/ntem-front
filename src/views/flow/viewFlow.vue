@@ -1,6 +1,6 @@
 <template>
   <div id="mountNode" :style="{width:width}">
-    <div class="editor" >
+    <div class="editor">
       <context-menu />
       <div class="bottom-container">
         <!--detailpannel 参数详情-->
@@ -16,82 +16,76 @@
 </template>
 
 <script>
-  import Toolbar from "@/components/flow/Toolbar";
-  import ItemPanel from "@/components/flow/ItemPanel";
-  import TradingDetail from "@/components/flow/DetailPanel/tradingDetail";
-  import ViewDetail from "@/components/flow/DetailPanel/viewDetail"
-  import Minimap from "@/components/flow/Minimap";
-  import Page from "@/components/flow/Page";
-  import Flow from "@/components/flow/Flow"
-  import ContextMenu from "@/components/flow/ContextMenu";
-  import Editor from "@/components/flow/Base/Editor";
-  import command from "@/command";
-  import eventBus from "@/utils/flow/eventBus"
-  import { getTemplateByPk } from "@/api/flow/flow"
-  export default {
-    name: "ViewFlow",
-    components: {
-      Toolbar,
-      ItemPanel,
-      TradingDetail,
-      ViewDetail,
-      Minimap,
-      Page,
-      ContextMenu,
-      Flow
+import ViewDetail from '@/components/flow/DetailPanel/viewDetail'
+import Minimap from '@/components/flow/Minimap'
+import Page from '@/components/flow/Page'
+import Flow from '@/components/flow/Flow'
+import ContextMenu from '@/components/flow/ContextMenu'
+import Editor from '@/components/flow/Base/Editor'
+import Command from '@/command'
+import eventBus from '@/utils/flow/eventBus'
+import { getTemplateByPk } from '@/api/flow/flow'
+export default {
+  name: 'ViewFlow',
+  components: {
+    ViewDetail,
+    Minimap,
+    Page,
+    ContextMenu,
+    Flow
+  },
+  props: {
+    height: {
+      type: Number,
+      default: document.documentElement.clientHeight - 42
     },
-    props: {
-      height: {
-        type: Number,
-        default: document.documentElement.clientHeight -42
-      },
-      width: {
-        type: Number,
-        default: document.documentElement.clientWidth - 250
-      },
-      data: {
-        type: Object,
-        default: () => {}
-      }
+    width: {
+      type: Number,
+      default: document.documentElement.clientWidth - 250
     },
-    created() {
-      this.init();
-      this.flowTplPk = this.$route.query.flowTplPk
-      this.getFlow(this.flowTplPk)
-    },
-    data() {
-      return {
-        editor: {},
-        command: null,
-        ProjectData: {
-          'name': '',
-          'id': '',
-          'type': '',
-          'describe': '',
-          'nodes': [],
-          'edges': []
-        },
-        intfData: [],
-        flowTplPk: null
-      };
-    },
-    methods: {
-      init() {
-        this.editor = new Editor();
-        this.command = new command(this.editor);
-      },
-      getFlow(flowTplPk) {
-        getTemplateByPk(flowTplPk).then(response => {
-          let tplData = response.data
-          console.log("tplData", tplData)
-          eventBus.$emit("observer-flow", tplData)
-        })
-      }
+    data: {
+      type: Object,
+      default: () => {}
     }
-  };
+  },
+  data() {
+    return {
+      editor: {},
+      command: null,
+      ProjectData: {
+        'name': '',
+        'id': '',
+        'type': '',
+        'describe': '',
+        'nodes': [],
+        'edges': []
+      },
+      intfData: [],
+      flowTplPk: null
+    }
+  },
+  created() {
+    this.init()
+    this.flowTplPk = this.$route.query.flowTplPk
+    this.getFlow(this.flowTplPk)
+  },
+  methods: {
+    init() {
+      this.editor = new Editor()
+      this.command = new Command(this.editor)
+    },
+    getFlow(flowTplPk) {
+      getTemplateByPk(flowTplPk).then(response => {
+        const tplData = response.data
+        console.log('tplData', tplData)
+        eventBus.$emit('observer-flow', tplData)
+      })
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   @import '../../assets/flow/iconfont/iconfont.css';
   .editor {
     position: relative;

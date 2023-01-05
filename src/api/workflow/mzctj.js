@@ -25,7 +25,6 @@ export function getMzctj(id) {
   })
 }
 
-
 // 新增请假
 export function addMzctj(data) {
   return request({
@@ -62,7 +61,7 @@ export function editMzctj(data) {
 export function delMzctj(data) {
   return request({
     url: '/workflowMzctj/del',
-    
+
     method: 'post',
     data: data
   })

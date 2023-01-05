@@ -3,9 +3,9 @@
 </router-view>
 
 <script>
-  export default {
-    name: 'newPage'
-  }
+export default {
+  name: 'NewPage'
+}
 </script>
 
 <style scoped>
