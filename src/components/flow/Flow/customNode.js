@@ -1,6 +1,5 @@
-import G6 from "@antv/g6/build/g6";
+import G6 from "@antv/g6";
 import { uniqueId } from '@/utils/flow'
-import Shape from '@antv/g/src/shapes'
 const customNode = {
     init() {
         G6.registerNode("customNode", {

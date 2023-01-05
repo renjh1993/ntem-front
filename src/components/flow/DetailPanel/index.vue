@@ -261,7 +261,7 @@
     import BndDia from "./bndDia"
     import SubFlowParam from './subFlowParam'
     import eventBus from "@/utils/flow/eventBus";
-    import Grid from "@antv/g6/build/grid";
+    import {Grid} from "@antv/g6";
     import {
         getFlowTplCmpParams,
         searchCmpParams,

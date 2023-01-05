@@ -1,4 +1,4 @@
-import G6 from "@antv/g6/build/g6";
+import G6 from "@antv/g6";
 // import { pointsToPolygon } from '@antv/g6/lib/util/path';
 // import { pathFinder } from '@antv/g6/router'; // 折线
 // const Util = require('@antv/g6/lib/util/index');

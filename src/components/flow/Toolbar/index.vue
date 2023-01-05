@@ -133,7 +133,7 @@
 
 <script>
     import eventBus from "@/utils/flow/eventBus";
-    import Util from "@antv/g6/src/util";
+    import {Util} from "@antv/g6";
     import {
         uniqueId,
         getBox
