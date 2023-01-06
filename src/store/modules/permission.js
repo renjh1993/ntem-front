@@ -1,4 +1,3 @@
-import { constantRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index'
 
@@ -10,7 +9,7 @@ const permission = {
   mutations: {
     SET_ROUTES: (state, routes) => {
       state.addRoutes = routes
-      state.routes = constantRoutes.concat(routes)
+      state.routes = routes
     }
   },
   actions: {
@@ -31,20 +30,33 @@ const permission = {
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap) {
-  return asyncRouterMap.filter(route => {
-    if (route.component) {
-      // Layout组件特殊处理
-      if (route.component === 'Layout') {
-        route.component = Layout
-      } else {
-        route.component = loadView(route.component)
+  return asyncRouterMap
+    .filter(route => {
+      try {
+        if (route.component === 'Layout') {
+          return true
+        }
+        require(`@/views/${route.component}`)
+        return true
+      } catch (e) {
+        console.error(`can\`t find component @/views/${route.component}`)
+        return false
       }
-    }
-    if (route.children != null && route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children)
-    }
-    return true
-  })
+    })
+    .map(route => {
+      if (route.component) {
+        // Layout组件特殊处理
+        if (route.component === 'Layout') {
+          route.component = Layout
+        } else {
+          route.component = loadView(route.component)
+        }
+      }
+      if (route.children != null && route.children && route.children.length) {
+        route.children = filterAsyncRouter(route.children)
+      }
+      return route
+    })
 }
 
 export const loadView = (view) => { // 路由懒加载

@@ -15,8 +15,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   // 是否需要设置 token
-  const isToken = (config.headers || {}).isToken === false
-  if (getToken() && !isToken) {
+  if (getToken()) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
   return config
@@ -31,7 +30,6 @@ service.interceptors.response.use(res => {
   const code = res.data.code || res.code
   // 获取错误信息
   const msg = errorCode[code] || res.data.message || errorCode['default'] || res.data
-  console.log('request7878:', res, code, msg)
   if (code === 401) {
     MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
       confirmButtonText: '重新登录',
@@ -42,7 +40,8 @@ service.interceptors.response.use(res => {
       store.dispatch('LogOut').then(() => {
         location.href = process.env.VUE_APP_NGINX_LOCATION + '/'
       })
-    }).catch(() => {})
+    }).catch(() => {
+    })
     return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
   } else if (code === 500 || code === '500') {
     Message({

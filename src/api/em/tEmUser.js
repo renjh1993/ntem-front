@@ -4,9 +4,6 @@ import request from '@/utils/request'
 export function query(query) {
   return request({
     url: '/emuser/tEmUser/query',
-    headers: {
-      isToken: false
-    },
     method: 'get',
     params: query
   })
@@ -16,9 +13,6 @@ export function query(query) {
 export function getOne(query) {
   return request({
     url: '/emuser/tEmUser/getOne',
-    headers: {
-      isToken: false
-    },
     method: 'get',
     params: query
   })
@@ -28,9 +22,6 @@ export function getOne(query) {
 export function getOnejn(query) {
   return request({
     url: '/emuser/tEmUserSkill/getOne',
-    headers: {
-      isToken: false
-    },
     method: 'get',
     params: query
   })
@@ -40,9 +31,6 @@ export function getOnejn(query) {
 export function add(data) {
   return request({
     url: '/emuser/tEmUser/create',
-    headers: {
-      isToken: false
-    },
     method: 'post',
     data: data
   })
@@ -71,9 +59,6 @@ export function update(data) {
   return request({
     url: '/emuser/tEmUser/update',
     method: 'post',
-    headers: {
-      isToken: false
-    },
     data: data
   })
 }
@@ -91,9 +76,6 @@ export function draft(data) {
 export function exportExcel(query) {
   return request({
     url: '/emuser/tEmUser/export',
-    headers: {
-      isToken: false
-    },
     method: 'get',
     params: query
   })
@@ -103,9 +85,6 @@ export function exportExcel(query) {
 export function importTemplate() {
   return request({
     url: '/emuser/tEmUser/importTemplate',
-    headers: {
-      isToken: false
-    },
     method: 'get'
   })
 }

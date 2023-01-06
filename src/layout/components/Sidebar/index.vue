@@ -36,7 +36,6 @@ export default {
     ...mapGetters(['permission_routes', 'sidebar']),
     activeMenu() {
       const route = this.$route
-      console.log(90908, route, this.permission_routes)
       const { meta, path } = route
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {

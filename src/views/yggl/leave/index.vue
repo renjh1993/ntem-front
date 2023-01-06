@@ -112,7 +112,8 @@
           icon="el-icon-upload2"
           size="mini"
           @click="handleImport"
-        >导入</el-button>
+        >导入
+        </el-button>
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -213,7 +214,7 @@
       <el-table-column label="修改者" align="center" prop="upduser" />
       <el-table-column label="修改日期" align="center" prop="upddate" />
       <el-table-column label="状态" align="center">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div v-if="scope.row.status!==0">
             {{ statusFormat(scope.row) }}
           </div>
@@ -223,23 +224,27 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改
-          </el-button>
-
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleDelete(scope.row)"
-          >删除
-          </el-button>
-
+        <template v-slot="{row}">
+          <el-button-group>
+            <el-button
+              size="medium"
+              type="text"
+              icon="el-icon-upload"
+              @click="attachment(row)"
+            />
+            <el-button
+              size="medium"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(row)"
+            />
+            <el-button
+              size="medium"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(row)"
+            />
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
@@ -408,14 +413,16 @@
             type="danger"
             style="margin-left: 10px"
             @click.prevent="removeDomain(domain)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             style="margin-top: 10px"
             @click="addDomain"
-          >新增</el-button>
+          >新增
+          </el-button>
         </el-form-item>
         <el-row>
           <el-col>
@@ -467,14 +474,16 @@
             type="danger"
             style="margin-left: 10px"
             @click.prevent="removeygxms(ygxm)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             style="margin-top: 10px"
             @click="addygxms"
-          >新增</el-button>
+          >新增
+          </el-button>
         </el-form-item>
 
       </el-form>
@@ -644,14 +653,16 @@
             type="danger"
             style="margin-left: 10px"
             @click.prevent="removeDomainjn(domain)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             style="margin-top: 10px"
             @click="addDomainjn"
-          >新增</el-button>
+          >新增
+          </el-button>
         </el-form-item>
 
       </el-form>
@@ -696,7 +707,7 @@
           </el-select>
 
           <el-date-picker
-            v-model="xmdate"
+            v-model="ygxm.xmdate"
             style="margin-left: 10px"
             type="daterange"
 
@@ -705,7 +716,7 @@
             end-placeholder="结束日期"
           />
           <el-date-picker
-            v-model="ygdate"
+            v-model="ygxm.ygdate"
             style="margin-top: 10px"
             type="daterange"
 
@@ -717,14 +728,16 @@
             type="danger"
             style="margin-left: 10px"
             @click.prevent="removeygxmsup(domain)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             style="margin-top: 10px"
             @click="addygxmsup"
-          >新增</el-button>
+          >新增
+          </el-button>
         </el-form-item>
 
       </el-form>
@@ -884,7 +897,8 @@
           <em>点击上传</em>
         </div>
         <div slot="tip" class="el-upload__tip">
-          <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据
+          <el-checkbox v-model="upload.updateSupport" />
+          是否更新已经存在的用户数据
           <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
         </div>
         <div slot="tip" class="el-upload__tip" style="color:red">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
@@ -1029,18 +1043,20 @@
 </template>
 
 <style>
-  .demo-table-expand {
-    font-size: 0;
-  }
-  .demo-table-expand label {
-    width: 120px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 100%;
-  }
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 120px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
 </style>
 
 <script>
@@ -1237,10 +1253,8 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true
-      console.log(this.queryParams)
       api.query(this.queryParams).then(response => {
         this.tableList = response.rows
-        console.log(response)
         for (let i = 0; i < this.tableList.length; i++) {
           this.tableList[i]['sl'] = ''
           this.tableList[i]['sx'] = ''
@@ -1336,7 +1350,6 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection)
       this.ids = selection.map(item => item.userid)
       this.single = selection.length !== 1
       this.multiple = !selection.length
@@ -1355,23 +1368,25 @@ export default {
         })
       }
     },
+    /** 附件按钮操作 */
+    attachment(row) {
+      console.log(row)
+    },
     /** 更新按钮操作 */
     handleUpdate(row) {
       let updateId = null
-      if (row.id != null) {
-        updateId = row.id
+      if (row.userid != null) {
+        updateId = row.userid
       } else {
         updateId = this.ids[0]
       }
       this.reset()
-      console.log(this.ids)
       api.getOne({ userid: updateId }).then(response => {
         this.updateForm = response.data
         this.openUpdate = true
         this.title = '更新'
       })
     },
-
     /** 更新技能按钮操作 */
     handleUpdatejn(row) {
       let updateId = null
@@ -1383,7 +1398,6 @@ export default {
       this.reset()
       api.getOnejn({ userid: updateId }).then(response => {
         this.updateForm = response.data
-        console.log(this.updateForm)
         this.openUpdate2 = true
         this.title = '技能修改'
       })
@@ -1399,7 +1413,6 @@ export default {
       this.reset()
       api.getOnejn({ userid: updateId }).then(response => {
         this.updateForm = response.data
-        console.log(this.updateForm)
         this.openUpdate3 = true
         this.title = '经历修改'
       })
@@ -1427,8 +1440,6 @@ export default {
     historyFory(row) {
       this.instanceId = row.instanceId
       this.businessKey = row.id
-      console.log('this.instanceId ===> ' + this.instanceId)
-      console.log('this.businessKey ===> ' + this.businessKey)
       this.$refs.approvalForm.visible = true
     },
     /** 进度查看 */
@@ -1533,10 +1544,10 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       let ids = []
-      if (row.id == null) {
+      if (row.userid == null) {
         ids = this.ids
       } else {
-        ids = [row.id]
+        ids = [row.userid]
       }
       // const ids = row.id || this.ids
       this.$confirm('是否确认删除员工编号为"' + ids + '"的数据项?', '警告', {
@@ -1570,7 +1581,6 @@ export default {
     handleImport() {
       this.upload.title = '用户导入'
       this.upload.open = true
-      console.log('点击导入按钮')
     },
     /** 下载模板操作 */
     importTemplate() {

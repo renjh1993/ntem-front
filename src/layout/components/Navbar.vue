@@ -112,9 +112,7 @@ export default {
 
     count() {
       api.getTaskWaitByPage(this.queryParams).then(response => {
-        console.log(response.total)
         this.total = response.total
-        console.log(response.total)
       })
     }
   }
