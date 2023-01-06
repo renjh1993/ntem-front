@@ -70,15 +70,6 @@
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <!--        <el-button
-                  v-hasPermi="['emuser:tEmUser:edit']"
-                  type="success"
-                  icon="el-icon-edit"
-                  size="mini"
-                  :disabled="single"
-                  @click="handleUpdate"
-                >修改基础信息
-                </el-button>-->
         <el-button
           v-hasPermi="['emuser:tEmUser:edit']"
           type="success"
@@ -151,48 +142,7 @@
                   </el-col>
                 </el-row>
               </el-aside>
-              <!--              <el-main>
-                              <el-form-item label="项目经历"/>
-                              <el-row>
-                                <el-col>
-                                  <el-form-item label="项目名称">
-                                    <span>{{ props.row.sl }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="项目角色">
-                                    <span>{{ props.row.sx }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="项目规模">
-                                    <span>{{ props.row.lj }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="项目开始时间">
-                                    <span>{{ props.row.lj }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="项目结束时间">
-                                    <span>{{ props.row.lj }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="项目参与时间">
-                                    <span>{{ props.row.lj }}</span>
-                                  </el-form-item>
-                                </el-col>
-                                <el-col>
-                                  <el-form-item label="结束参与时间">
-                                    <span>{{ props.row.lj }}</span>
-                                  </el-form-item>
-                                </el-col>
-                              </el-row>
-                            </el-main>-->
             </el-container>
-
           </el-form>
         </template>
       </el-table-column>
@@ -228,16 +178,6 @@
       <el-table-column label="创建日期" align="center" prop="crtdate" min-width="150" />
       <el-table-column label="修改者" align="center" prop="upduser" min-width="120" />
       <el-table-column label="修改日期" align="center" prop="upddate" min-width="150" />
-      <!--      <el-table-column label="状态" align="center" min-width="120">
-              <template v-slot="scope">
-                <div v-if="scope.row.status!=0">
-                  {{ statusFormat(scope.row) }}
-                </div>
-                <div v-else>
-                  {{ scope.row.taskName }}
-                </div>
-              </template>
-            </el-table-column>-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" min-width="120">
         <template v-slot="{row}">
           <el-button-group>
@@ -306,37 +246,6 @@
         <el-table-column label="项目结束时间" align="center" prop="programEndTime" min-width="200" />
         <el-table-column label="员工参与起始时间" align="center" prop="staffStartTime" min-width="200" />
         <el-table-column label="员工参与结束时间" align="center" prop="staffEndTime" min-width="160" />
-        <!--        <el-table-column label="创建者" align="center" prop="crtuser" min-width="120"/>
-                <el-table-column label="创建日期" align="center" prop="crtdate" min-width="150"/>
-                <el-table-column label="修改者" align="center" prop="upduser" min-width="120"/>
-                <el-table-column label="修改日期" align="center" prop="upddate" min-width="150"/>-->
-        <!--        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" min-width="120">
-                  <template v-slot="scope">
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-document"
-                      @click="handleProgram(scope.row)"
-                    >项目履历
-                    </el-button>
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-edit"
-                      @click="handleUpdate(scope.row)"
-                    >修改
-                    </el-button>
-
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-delete"
-                      @click="handleDelete(scope.row)"
-                    >删除
-                    </el-button>
-
-                  </template>
-                </el-table-column>-->
       </el-table>
       <pagination
         v-show="programerTotal>0"
@@ -370,8 +279,8 @@
             <el-col :span="12">
               <el-form-item label="性别 " prop="gender">
                 <el-select v-model="form.gender" placeholder="请选择性别">
-                  <el-option label="男" value="0" />
-                  <el-option label="女" value="1" />
+                  <el-option label="女" value="0" />
+                  <el-option label="男" value="1" />
                 </el-select>
 
               </el-form-item>
@@ -428,6 +337,7 @@
                   v-model="form.entrydate"
                   type="date"
                   placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
                 />
 
               </el-form-item>
@@ -440,6 +350,7 @@
                   v-model="form.zgxlbyrq"
                   type="date"
                   placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
                 />
 
               </el-form-item>
@@ -450,6 +361,7 @@
                   v-model="form.godate"
                   type="date"
                   placeholder="选择日期"
+                  value-format="yyyy-MM-dd"
                 />
 
               </el-form-item>
@@ -474,15 +386,11 @@
           <hr>
           <el-row>
             <span style="color: #1a1a1a;font-size: medium;"><b>掌握技能</b></span>
-            <!--          <el-col>
-                        <el-form-item label="掌握技能"/>
-                      </el-col>-->
           </el-row>
-
           <el-form-item
             v-for="(domain, index) in form.jnList"
             :key="domain.key"
-            :label="'专业技能' + index"
+            :label="'专业技能' + (index+1)"
             :prop="'jnList.' + index + '.value'"
             style="padding-top: 1%"
           >
@@ -513,72 +421,78 @@
           </el-form-item>
           <hr>
           <el-row><span style="color: #1a1a1a;font-size: medium;"><b>项目履历</b></span>
-            <!--          <el-col>
-                        <el-form-item label="项目经历"/>
-                      </el-col>-->
           </el-row>
-
           <el-form-item
             v-for="(ygxm, index) in form.ygxms"
             :key="ygxm.key"
-            :label="'项目经历' + index"
+            :label="'项目经历' + (index+1)"
             :prop="'ygxms.' + index + '.value'"
             style="padding-top: 1%"
           >
-            <el-input
-              v-model="ygxm.programName"
-              style="width: 20%"
-              placeholder="项目名称"
-            />
-            <el-input
-              v-model="ygxm.firstPartyName"
-              style="width: 20%;padding-left: 10px"
-              placeholder="甲方名称"
-            />
-            <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
-              <el-option label="开发" value="0" />
-              <el-option label="测试" value="1" />
-              <el-option label="项目经理" value="2" />
-            </el-select>
-            <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
-              <el-option label="大型" value="0" />
-              <el-option label="小型" value="1" />
-              <el-option label="中型" value="2" />
-            </el-select>
-            <el-date-picker
-              v-model="ygxm.programStartTime"
-              type="date"
-              placeholder="项目开始日期"
-            />
-            <el-date-picker
-              v-model="ygxm.programEndTime"
-              type="date"
-              placeholder="项目开始日期"
-            />
-            <!--            <el-date-picker
-                          v-model="ygxm.programStartTime"
-                          style="margin-left: 10px"
-                          type="daterange"
+            <el-row>
+              <el-col>
+                <el-input
+                  v-model="ygxm.programName"
+                  style="width: 20%"
+                  placeholder="项目名称"
+                />
+                <el-input
+                  v-model="ygxm.firstPartyName"
+                  style="width: 20%;padding-left: 10px"
+                  placeholder="甲方名称"
+                />
+                <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
+                  <el-option label="开发" value="0" />
+                  <el-option label="测试" value="1" />
+                  <el-option label="项目经理" value="2" />
+                </el-select>
+                <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
+                  <el-option label="大型" value="0" />
+                  <el-option label="中型" value="1" />
+                  <el-option label="小型" value="2" />
+                </el-select>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col style="padding-top: 1%">
+                <el-date-picker
+                  v-model="ygxm.programStartTime"
+                  type="date"
+                  placeholder="项目开始日期"
+                  style="width: 20%"
+                  value-format="yyyy-MM-dd"
+                />
+                <span style="padding-left: 2px;padding-right: 2px">-</span>
+                <el-date-picker
+                  v-model="ygxm.programEndTime"
+                  type="date"
+                  placeholder="项目结束日期"
+                  value-format="yyyy-MM-dd"
+                />
+                <el-date-picker
+                  v-model="ygxm.staffStartTime"
+                  type="date"
+                  placeholder="参与项目开始日期"
+                  style="margin-left: 10px;width: 18%"
+                  value-format="yyyy-MM-dd"
+                />
+                <span style="padding-left: 2px;padding-right: 2px">-</span>
+                <el-date-picker
+                  v-model="ygxm.staffEndTime"
+                  type="date"
+                  placeholder="结束日期"
+                  style="width: 18%"
+                  value-format="yyyy-MM-dd"
+                />
 
-                          range-separator="至"
-                          start-placeholder="项目开始日期"
-                          end-placeholder="结束日期"
-                        />
-                        <el-date-picker
-                          v-model="ygxm.staffStartTime"
-                          style="margin-top: 10px"
-                          type="daterange"
-
-                          range-separator="至"
-                          start-placeholder="参与时间"
-                          end-placeholder="结束日期"
-                        />-->
-            <el-button
-              type="danger"
-              style="margin-left: 10px"
-              @click.prevent="removeygxms(ygxm)"
-            >删除
-            </el-button>
+                <el-button
+                  type="danger"
+                  style="margin-left: 10px"
+                  @click.prevent="removeygxms(ygxm)"
+                >删除
+                </el-button>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -1220,7 +1134,7 @@ export default {
       openUpdate3: false,
       openRe: false,
       openEdit: false,
-      // 状态字典
+      // 在职状态
       statusOptions: [
         { label: '离职', key: '0' },
         { label: '在职', key: '1' }
@@ -1579,7 +1493,7 @@ export default {
         this.getList()
       })
     },
-    /** 提交按钮 */
+    /** 新增提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
