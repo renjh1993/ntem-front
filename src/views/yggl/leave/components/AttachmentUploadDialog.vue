@@ -1,17 +1,27 @@
 <template>
-  <el-dialog :visible.sync="isShow">
-    <!--    <el-upload action="" :multiple="false" name="2寸照片" />-->
-    <uploader name="照片" :value="fileOne" />
+  <el-dialog
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :visible.sync="isShow"
+    :title="title"
+  >
+    <attachment-upload-form ref="uploadForm" :items="items" />
+    <template v-slot:footer>
+      <div style="text-align: center">
+        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button type="danger" @click="cancel">取消</el-button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
 <script>
-import uploader from '@/views/yggl/leave/components/Uploader.vue'
+import attachmentUploadForm from '@/views/yggl/leave/components/AttachmentUploadForm.vue'
 
 export default {
   name: 'AttachmentUploadDialog',
   components: {
-    uploader
+    attachmentUploadForm
   },
   model: {
     prop: 'show',
@@ -22,12 +32,19 @@ export default {
       type: Boolean,
       default: false,
       require: true
+    },
+    title: {
+      type: String,
+      default: '上传文件',
+      require: false
+    },
+    items: {
+      type: Array,
+      require: true
     }
   },
   data() {
-    return {
-      fileOne: null
-    }
+    return {}
   },
   computed: {
     isShow: {
@@ -39,7 +56,17 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    submit() {
+      this.$emit('submit')
+    },
+    cancel() {
+      this.$emit('cancel')
+    },
+    clear() {
+      this.$refs.uploadForm.clear()
+    }
+  }
 }
 </script>
 

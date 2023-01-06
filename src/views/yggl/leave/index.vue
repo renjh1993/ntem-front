@@ -1055,7 +1055,14 @@
         <el-button @click="cancelRe">取 消</el-button>
       </div>
     </el-dialog>
-    <attachment-upload-dialog v-model="uploadDialog.show" />
+    <attachment-upload-dialog
+      ref="attachmentDialog"
+      v-model="uploadDialog.show"
+      :items="uploadDialog.items"
+      :title="uploadDialog.title"
+      @cancel="cancelUpload"
+      @submit="submitUpload"
+    />
     <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
   </div>
 </template>
@@ -1066,6 +1073,24 @@ import api from '@/api/em/tEmUser'
 import { getDefinitionsByInstanceId } from '@/api/activiti/definition'
 import approvalForm from '@/views/components/approvalForm'
 import attachmentUploadDialog from '@/views/yggl/leave/components/AttachmentUploadDialog.vue'
+
+const generateDefaultList = function() {
+  return [
+    { name: '2吋证件照', type: 'TOINPHOTO', value: null },
+    { name: '身份证正面照片', type: 'IDCARDZM', value: null },
+    { name: '身份证反面照片', type: 'IDCARDFM', value: null },
+    { name: '毕业证', type: 'DIPLOMA', value: null },
+    { name: '学位证', type: 'XWZ', value: null },
+    { name: '学信网学历证明', type: 'XXWZMXM', value: null },
+    { name: '学信网学位证明', type: 'XXWZM', value: null },
+    { name: '体检报告', type: 'TJBG', value: null },
+    { name: '征信报告', type: 'ZXBG', value: null },
+    { name: '社保证明', type: 'SBZM', value: null },
+    { name: '其他证书1(可选)', type: 'QTZS_1', value: null },
+    { name: '其他证书2(可选)', type: 'QTZS_2', value: null },
+    { name: '其他证书3(可选)', type: 'QTZS_2', value: null }
+  ]
+}
 
 export default {
   name: 'TEmUser',
@@ -1093,7 +1118,10 @@ export default {
 
       },
       uploadDialog: {
-        show: false
+        show: false,
+        userId: null,
+        title: '上传附件',
+        items: generateDefaultList()
       },
       modelVisible: false,
       modelerUrl: '',
@@ -1406,7 +1434,29 @@ export default {
     /** 附件按钮操作 */
     attachment(row) {
       console.log(row)
+      this.uploadDialog.userId = row.userid
+      console.log(this.uploadDialog.items)
       this.uploadDialog.show = true
+    },
+    /* 取消上传，重置表单 */
+    cancelUpload() {
+      this.$refs.attachmentDialog.clear()
+      this.uploadDialog.show = false
+      this.uploadDialog.items = generateDefaultList()
+    },
+    /* 提交上传，重置表单 */
+    submitUpload() {
+      try {
+        console.log(this.uploadDialog.items)
+        console.log('submitUpload')
+        this.$refs.attachmentDialog.clear()
+      } catch (e) {
+        console.error(e)
+        this.$message.error('提交失败，请重试或联系管理员')
+      } finally {
+        this.uploadDialog.show = false
+        this.uploadDialog.items = generateDefaultList()
+      }
     },
     /** 更新按钮操作 */
     handleUpdate(row) {
