@@ -1,21 +1,23 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="id" prop="userid">
-        <el-input
-          v-model="queryParams.userid"
-          placeholder="请输入id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
+      <!--        <el-form-item label="id" prop="userid">
+                <el-input
+                  v-model="queryParams.userid"
+                  placeholder="请输入id"
+                  clearable
+                  size="small"
+                  style="width: 240px"
+                  @keyup.enter.native="handleQuery"
+                />
+              </el-form-item>-->
       <el-form-item label="姓名" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入姓名"
           clearable
           size="small"
+          style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -25,16 +27,17 @@
           placeholder="请输入身份证号"
           clearable
           size="small"
+          style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+      <el-form-item label="状态(是否在职)" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small" style="width: 240px">
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            v-for="element in statusOptions"
+            :key="element.key"
+            :label="element.label"
+            :value="element.key"
           />
         </el-select>
       </el-form-item>
@@ -497,6 +500,7 @@
             >新增
             </el-button>
           </el-form-item>
+          <hr>
           <el-row>
             <span style="color: #1a1a1a;font-size: medium;"><b>项目履历</b></span>
             <!--          <el-col>
@@ -512,44 +516,53 @@
             style="padding-top: 1%"
           >
             <el-input
-              v-model="ygxm.xmmc"
+              v-model="ygxm.programName"
               style="width: 20%"
               placeholder="项目名称"
             />
             <el-input
-              v-model="ygxm.jfmc"
+              v-model="ygxm.firstPartyName"
               style="width: 20%;padding-left: 10px"
               placeholder="甲方名称"
             />
-            <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px">
+            <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
               <el-option label="开发" value="0" />
               <el-option label="测试" value="1" />
               <el-option label="项目经理" value="2" />
             </el-select>
-            <el-select v-model="ygxm.xmgm" placeholder="项目规模" style="margin-left: 10px">
+            <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
               <el-option label="大型" value="0" />
               <el-option label="小型" value="1" />
               <el-option label="中型" value="2" />
             </el-select>
-
             <el-date-picker
-              v-model="ygxm.xmdate"
-              style="margin-left: 10px"
-              type="daterange"
-
-              range-separator="至"
-              start-placeholder="项目开始日期"
-              end-placeholder="结束日期"
+              v-model="ygxm.programStartTime"
+              type="date"
+              placeholder="项目开始日期"
             />
             <el-date-picker
-              v-model="ygxm.ygdate"
-              style="margin-top: 10px"
-              type="daterange"
-
-              range-separator="至"
-              start-placeholder="参与时间"
-              end-placeholder="结束日期"
+              v-model="ygxm.programEndTime"
+              type="date"
+              placeholder="项目开始日期"
             />
+            <!--            <el-date-picker
+                          v-model="ygxm.programStartTime"
+                          style="margin-left: 10px"
+                          type="daterange"
+
+                          range-separator="至"
+                          start-placeholder="项目开始日期"
+                          end-placeholder="结束日期"
+                        />
+                        <el-date-picker
+                          v-model="ygxm.staffStartTime"
+                          style="margin-top: 10px"
+                          type="daterange"
+
+                          range-separator="至"
+                          start-placeholder="参与时间"
+                          end-placeholder="结束日期"
+                        />-->
             <el-button
               type="danger"
               style="margin-left: 10px"
@@ -635,7 +648,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="证书编号" prop="zsbh">
+            <el-form-item label="毕业证编号" prop="zsbh">
               <el-input v-model="updateForm.zsbh" />
             </el-form-item>
           </el-col>
@@ -752,7 +765,6 @@
         <el-button @click="cancelUpdate">取 消</el-button>
       </div>
     </el-dialog>
-
     <!--修改经历信息信息-->
     <el-dialog :title="title" :visible.sync="openUpdate3" width="1200px" append-to-body>
       <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
@@ -832,7 +844,6 @@
         <el-button @click="cancelUpdate">取 消</el-button>
       </div>
     </el-dialog>
-
     <!-- 提交修改弹出框 -->
     <el-dialog :title="title" :visible.sync="openEdit" width="1200px" append-to-body>
       <el-form ref="editForm" :model="editForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
@@ -961,7 +972,6 @@
         <el-button @click="cancelEdit">取 消</el-button>
       </div>
     </el-dialog>
-
     <!-- 用户导入对话框 -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
       <el-upload
@@ -993,7 +1003,6 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
-
     <!-- 重新提交弹出框 -->
     <el-dialog :title="title" :visible.sync="openRe" width="1200px" append-to-body>
       <el-form ref="reForm" :model="reForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
@@ -1122,7 +1131,6 @@
         <el-button @click="cancelRe">取 消</el-button>
       </div>
     </el-dialog>
-
     <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
   </div>
 </template>
@@ -1165,12 +1173,14 @@ export default {
           skillstatus: ''
         }],
         ygxms: [{
-          xmmc: '',
-          jfmc: '',
-          xmgm: '',
-          xmdate: '',
-          ygdate: '',
-          xmjs: ''
+          programName: '',
+          firstPartyName: '',
+          staffRole: '',
+          programInfo: '',
+          programStartTime: '',
+          programEndTime: '',
+          staffStartTime: '',
+          staffEndTime: ''
         }]
 
       },
@@ -1215,7 +1225,10 @@ export default {
       openRe: false,
       openEdit: false,
       // 状态字典
-      statusOptions: [],
+      statusOptions: [
+        { label: '离职', key: '0' },
+        { label: '在职', key: '1' }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -1280,9 +1293,9 @@ export default {
   },
   created() {
     this.getList()
-    this.getDicts('activiti_flow_type').then(response => {
+    /* this.getDicts('activiti_flow_type').then(response => {
       this.statusOptions = response.data
-    })
+    })*/
   },
   methods: {
     // 员工基础信息移除
@@ -1378,7 +1391,7 @@ export default {
     },
     // 项目经历查询
     handleProgram(row) {
-      this.title = '项目履历'
+      this.title = row.name + '-项目履历'
       this.programDialog = true
       this.loading = true
       this.programeParams.staffId = row.userid
