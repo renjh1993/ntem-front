@@ -123,7 +123,7 @@
 
     <el-table v-loading="loading" :data="tableList" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="expand">
-        <template slot-scope="props">
+        <template v-slot="props">
           <el-form label-position="left" inline class="demo-table-expand">
 
             <el-container width="100%">
@@ -201,7 +201,7 @@
       <el-table-column label="姓名" align="center" prop="name" min-width="120" />
       <el-table-column label="身份证号" align="center" prop="idcard" min-width="200" />
       <el-table-column label="性别" align="center" prop="gender" min-width="80">
-        <template slot-scope="{row}">
+        <template v-slot="{row}">
           <span v-if="row.gender==='0'">女</span>
           <span v-else-if="row.gender==='1'">男</span>
           <span v-else>{{ row.gender }}</span>
@@ -218,7 +218,7 @@
       <el-table-column label="离职日期" align="center" prop="godate" min-width="150" />
       <el-table-column label="base地(入职地)" align="center" prop="basearea" min-width="160" />
       <el-table-column label="状态(是否在职)" align="center" prop="status" min-width="120">
-        <template slot-scope="{row}">
+        <template v-slot="{row}">
           <span v-if="row.status==='0'">离职</span>
           <span v-else-if="row.status==='1'">在职</span>
           <span v-else>{{ row.status }}</span>
@@ -241,32 +241,39 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" min-width="120">
         <template v-slot="{row}">
           <el-button-group>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-document"
-              @click="handleProgram(scope.row)"
-            >项目履历
-            </el-button>
-            <el-button
-              v-hasPermi="['emuser:tEmUser:edit']"
-              size="medium"
-              type="text"
-              icon="el-icon-upload"
-              @click="attachment(row)"
-            />
-            <el-button
-              size="medium"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(row)"
-            />
-            <el-button
-              size="medium"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(row)"
-            />
+            <el-tooltip placement="bottom" content="项目履历">
+              <el-button
+                size="medium"
+                type="text"
+                icon="el-icon-document"
+                @click="handleProgram(row)"
+              />
+            </el-tooltip>
+            <el-tooltip placement="bottom" content="上传附件">
+              <el-button
+                v-hasPermi="['emuser:tEmUser:edit']"
+                size="medium"
+                type="text"
+                icon="el-icon-upload"
+                @click="attachment(row)"
+              />
+            </el-tooltip>
+            <el-tooltip placement="bottom" content="编辑">
+              <el-button
+                size="medium"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(row)"
+              />
+            </el-tooltip>
+            <el-tooltip placement="bottom" content="删除">
+              <el-button
+                size="medium"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(row)"
+              />
+            </el-tooltip>
           </el-button-group>
         </template>
       </el-table-column>
@@ -304,7 +311,7 @@
                 <el-table-column label="修改者" align="center" prop="upduser" min-width="120"/>
                 <el-table-column label="修改日期" align="center" prop="upddate" min-width="150"/>-->
         <!--        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" min-width="120">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-button
                       size="mini"
                       type="text"
@@ -1134,37 +1141,23 @@
         <el-button @click="cancelRe">取 消</el-button>
       </div>
     </el-dialog>
+    <attachment-upload-dialog v-model="uploadDialog.show" />
     <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
   </div>
 </template>
-
-<style>
-.demo-table-expand {
-  font-size: 0;
-}
-
-.demo-table-expand label {
-  width: 120px;
-  color: #99a9bf;
-}
-
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 100%;
-}
-</style>
 
 <script>
 import { getToken } from '@/utils/auth'
 import api from '@/api/em/tEmUser'
 import { getDefinitionsByInstanceId } from '@/api/activiti/definition'
 import approvalForm from '@/views/components/approvalForm'
+import attachmentUploadDialog from '@/views/yggl/leave/components/AttachmentUploadDialog.vue'
 
 export default {
   name: 'TEmUser',
   components: {
-    approvalForm
+    approvalForm,
+    attachmentUploadDialog
   },
   data() {
     return {
@@ -1185,7 +1178,9 @@ export default {
         }]
 
       },
-
+      uploadDialog: {
+        show: false
+      },
       modelVisible: false,
       modelerUrl: '',
       userName: '',
@@ -1497,6 +1492,7 @@ export default {
     /** 附件按钮操作 */
     attachment(row) {
       console.log(row)
+      this.uploadDialog.show = true
     },
     /** 更新按钮操作 */
     handleUpdate(row) {
@@ -1734,9 +1730,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .score-lock {
   height: 70vh;
   overflow: auto;
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 120px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
 }
 </style>
