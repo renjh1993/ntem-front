@@ -9,6 +9,18 @@ export function query(query) {
   })
 }
 
+// 查询履历列表
+export function programDetails(query) {
+  return request({
+    url: '/emuser/tEmProgram/query',
+    headers: {
+      isToken: true
+    },
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询详细信息
 export function getOne(query) {
   return request({
@@ -89,4 +101,4 @@ export function importTemplate() {
   })
 }
 
-export default { query, getOne, add, del, draft, edit, update, exportExcel, importTemplate, getOnejn }
+export default { query, programDetails, getOne, add, del, draft, edit, update, exportExcel, importTemplate, getOnejn }
