@@ -640,50 +640,52 @@
       </div>
     </el-dialog>
     <!--修改技能信息-->
-    <el-dialog :title="title" :visible.sync="openUpdate2" width="1200px" append-to-body>
-      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+    <el-dialog :title="title" :visible.sync="openUpdate2" width="45%" append-to-body>
+      <div style="height: 50vh;overflow: auto">
+        <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="30%">
 
-        <el-row>
+          <el-row>
 
-          <el-col>
+            <!--          <el-col>
             <el-form-item label="掌握技能" />
-          </el-col>
-        </el-row>
+          </el-col>-->
+          </el-row>
 
-        <el-form-item
-          v-for="(domain, index) in updateForm"
-          :key="domain.key"
-          :label="'专业技能' + index"
-          :prop="'jnList.' + index + '.value'"
-        >
-          <el-input
-            v-model="domain.skillname"
-            style="width: 20%"
-            placeholder="技能名称"
-          />
-          <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
-            <el-option label="熟练" value="0" />
-            <el-option label="熟悉" value="1" />
-            <el-option label="了解" value="2" />
-          </el-select>
-          <el-button
-            type="danger"
-            style="margin-left: 10px"
-            @click.prevent="removeDomainjn(domain)"
-          >删除
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            style="margin-top: 10px"
-            @click="addDomainjn"
-          >新增
-          </el-button>
-        </el-form-item>
+          <el-form-item
+            v-for="(domain, index) in updateForm"
+            :key="domain.key"
+            :label="'专业技能' + (index+1)"
+            :prop="'jnList.' + index + '.value'"
+          >
+            <el-input
+              v-model="domain.skillname"
+              style="width: 20%"
+              placeholder="技能名称"
+            />
+            <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
+              <el-option label="熟练" value="0" />
+              <el-option label="熟悉" value="1" />
+              <el-option label="了解" value="2" />
+            </el-select>
+            <el-button
+              type="danger"
+              style="margin-left: 10px"
+              @click.prevent="removeDomainjn(domain)"
+            >删除
+            </el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              style="margin-top: 10px"
+              @click="addDomainjn"
+            >新增
+            </el-button>
+          </el-form-item>
 
-      </el-form>
-
+        </el-form>
+      </div>
+      <hr>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
         <el-button @click="cancelUpdate">取 消</el-button>
@@ -1216,7 +1218,7 @@ export default {
       // form: {
       // },
       // 更新 表单参数
-      updateForm: {},
+      updateForm: [],
       // 提交修改 表单参数
       editForm: {},
       // 重新提交 表单参数
@@ -1245,9 +1247,20 @@ export default {
     },
     // 技能页面修改
     removeDomainjn(item) {
-      var index = this.updateForm.indexOf(item)
-      if (index !== -1) {
-        this.updateForm.splice(index, 1)
+      if (item.skillid) {
+        api.delSkill(item).then(response => {
+          this.msgSuccess('删除成功')
+          const index = this.updateForm.indexOf(item)
+          if (index !== -1) {
+            this.updateForm.splice(index, 1)
+          }
+        })
+      } else {
+        const index = this.updateForm.indexOf(item)
+        if (index !== -1) {
+          this.updateForm.splice(index, 1)
+        }
+        this.$message.success('删除成功')
       }
     },
     // 员工基础信息添加
@@ -1260,6 +1273,7 @@ export default {
     // 技能添加
     addDomainjn() {
       this.updateForm.push({
+        userid: this.ids[0],
         skillname: '',
         skillstatus: ''
       })
@@ -1391,11 +1405,14 @@ export default {
           skillstatus: null
         }],
         ygxms: [{
-          xmmc: null,
-          xmgm: null,
-          xmdate: null,
-          ygdate: null,
-          xmjs: null
+          programName: '',
+          firstPartyName: '',
+          staffRole: '',
+          programInfo: '',
+          programStartTime: '',
+          programEndTime: '',
+          staffStartTime: '',
+          staffEndTime: ''
         }]
 
       }
@@ -1481,7 +1498,7 @@ export default {
       } else {
         updateId = this.ids[0]
       }
-      this.reset()
+      // this.reset()
       api.getOnejn({ userid: updateId }).then(response => {
         this.updateForm = response.data
         this.openUpdate2 = true
@@ -1569,9 +1586,9 @@ export default {
       this.$refs['updateForm'].validate(valid => {
         if (valid) {
           this.form.businessRoute = this.$route.name
-          api.update(this.updateForm).then(response => {
+          api.updateSkill({ jnList: this.updateForm }).then(response => {
             this.msgSuccess('更新成功')
-            this.openUpdate = false
+            this.openUpdate2 = false
             this.getList()
           })
         }
@@ -1629,24 +1646,21 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      let ids = []
-      if (row.userid == null) {
-        ids = this.ids
-      } else {
+      let ids = null
+      if (row.userid) {
         ids = [row.userid]
+      } else {
+        ids = this.ids
       }
-      // const ids = row.id || this.ids
-      this.$confirm('是否确认删除员工编号为"' + ids + '"的数据项?', '警告', {
+      console.log({ ids: ids })
+      this.$confirm('是否确认删除选择的员工数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        var param = {
-          'ids': ids
-        }
-        return api.del(param)
+        return api.del({ ids: ids })
       }).then(() => {
-        this.getList()
+        this.handleQuery()
         this.msgSuccess('删除成功')
       })
     },

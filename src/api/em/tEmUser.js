@@ -66,10 +66,28 @@ export function del(data) {
   })
 }
 
+// 删除技能
+export function delSkill(data) {
+  return request({
+    url: '/emuser/tEmUserSkill/remove',
+    method: 'post',
+    data: data
+  })
+}
+
 // 更新
 export function update(data) {
   return request({
     url: '/emuser/tEmUser/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新
+export function updateSkill(data) {
+  return request({
+    url: '/emuser/tEmUserSkill/update',
     method: 'post',
     data: data
   })
@@ -101,4 +119,18 @@ export function importTemplate() {
   })
 }
 
-export default { query, programDetails, getOne, add, del, draft, edit, update, exportExcel, importTemplate, getOnejn }
+export default {
+  query,
+  programDetails,
+  getOne,
+  add,
+  del,
+  delSkill,
+  draft,
+  edit,
+  update,
+  updateSkill,
+  exportExcel,
+  importTemplate,
+  getOnejn
+}
