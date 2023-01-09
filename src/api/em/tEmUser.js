@@ -119,6 +119,17 @@ export function importTemplate() {
   })
 }
 
+function uploadAttachment(data) {
+  return request({
+    url: '/annexInfo/tEmAnnexinfo/upload',
+    method: 'post',
+    data: data,
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  })
+}
+
 export default {
   query,
   programDetails,
@@ -132,5 +143,12 @@ export default {
   updateSkill,
   exportExcel,
   importTemplate,
-  getOnejn
+  getOnejn,
+  uploadAttachment,
+  queryAttachment(userid) {
+    return request({
+      url: `/annexInfo/tEmAnnexinfo/query/${userid}`,
+      method: 'get'
+    })
+  }
 }

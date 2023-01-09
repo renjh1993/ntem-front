@@ -1062,8 +1062,9 @@
       v-model="uploadDialog.show"
       :items="uploadDialog.items"
       :title="uploadDialog.title"
+      :uploading="uploadDialog.loading"
+      :user-id="uploadDialog.userId"
       @cancel="cancelUpload"
-      @submit="submitUpload"
     />
     <approvalForm ref="approvalForm" :business-key="businessKey" :process-instance-id="instanceId" />
   </div>
@@ -1075,6 +1076,7 @@ import api from '@/api/em/tEmUser'
 import { getDefinitionsByInstanceId } from '@/api/activiti/definition'
 import approvalForm from '@/views/components/approvalForm'
 import attachmentUploadDialog from '@/views/yggl/leave/components/AttachmentUploadDialog.vue'
+import request from '@/utils/request'
 
 const generateDefaultList = function() {
   return [
@@ -1085,9 +1087,24 @@ const generateDefaultList = function() {
     { name: '学位证', type: 'XWZ', value: null },
     { name: '学信网学历证明', type: 'XXWZMXM', value: null },
     { name: '学信网学位证明', type: 'XXWZM', value: null },
-    { name: '体检报告', type: 'TJBG', value: null },
-    { name: '征信报告', type: 'ZXBG', value: null },
-    { name: '社保证明', type: 'SBZM', value: null },
+    {
+      name: '体检报告',
+      type: 'TJBG',
+      value: null,
+      extra: { name: '体检时间', type: 'TJSJ', comp: 'date', value: null, placeholder: '请选择体检日期' }
+    },
+    {
+      name: '征信报告',
+      type: 'ZXBG',
+      value: null,
+      extra: { name: '征信导出时间', type: 'ZXSJ', comp: 'date', value: null, placeholder: '请选择导出日期' }
+    },
+    {
+      name: '社保证明',
+      type: 'SBZM',
+      value: null,
+      extra: { name: '社保时间范围', type: 'SBSJ', comp: 'daterange', value: null, placeholder: '请选择时间范围' }
+    },
     { name: '其他证书1(可选)', type: 'QTZS_1', value: null },
     { name: '其他证书2(可选)', type: 'QTZS_2', value: null },
     { name: '其他证书3(可选)', type: 'QTZS_2', value: null }
@@ -1123,6 +1140,7 @@ export default {
         show: false,
         userId: null,
         title: '上传附件',
+        loading: false,
         items: generateDefaultList()
       },
       modelVisible: false,
@@ -1449,10 +1467,25 @@ export default {
       }
     },
     /** 附件按钮操作 */
-    attachment(row) {
-      console.log(row)
+    async attachment(row) {
       this.uploadDialog.userId = row.userid
-      console.log(this.uploadDialog.items)
+      const data = await api.queryAttachment(row.userid)
+      console.log(data)
+      this.uploadDialog.items.forEach(item => {
+        const attachment = data.data.items.find(o => {
+          return o.type === item.type
+        })
+        if (attachment != null) {
+          item.value = request.defaults.baseURL + `/profile/attachment/${this.uploadDialog.userId}/` + attachment.value
+          if (item.extra) {
+            if (attachment.extra.value.indexOf(',') === -1) {
+              item.extra.value = attachment.extra.value.toString()
+            } else {
+              item.extra.value = attachment.extra.value.split(',')
+            }
+          }
+        }
+      })
       this.uploadDialog.show = true
     },
     /* 取消上传，重置表单 */
@@ -1460,20 +1493,6 @@ export default {
       this.$refs.attachmentDialog.clear()
       this.uploadDialog.show = false
       this.uploadDialog.items = generateDefaultList()
-    },
-    /* 提交上传，重置表单 */
-    submitUpload() {
-      try {
-        console.log(this.uploadDialog.items)
-        console.log('submitUpload')
-        this.$refs.attachmentDialog.clear()
-      } catch (e) {
-        console.error(e)
-        this.$message.error('提交失败，请重试或联系管理员')
-      } finally {
-        this.uploadDialog.show = false
-        this.uploadDialog.items = generateDefaultList()
-      }
     },
     /** 更新按钮操作 */
     handleUpdate(row) {

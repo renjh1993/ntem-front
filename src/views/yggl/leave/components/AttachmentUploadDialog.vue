@@ -2,14 +2,14 @@
   <el-dialog
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :show-close="false"
     :visible.sync="isShow"
     :title="title"
   >
-    <attachment-upload-form ref="uploadForm" :items="items" />
+    <attachment-upload-form ref="uploadForm" :items="items" :user-id="userId" />
     <template v-slot:footer>
       <div style="text-align: center">
-        <el-button type="primary" @click="submit">提交</el-button>
-        <el-button type="danger" @click="cancel">取消</el-button>
+        <el-button type="danger" @click="cancel">关闭</el-button>
       </div>
     </template>
   </el-dialog>
@@ -33,6 +33,11 @@ export default {
       default: false,
       require: true
     },
+    uploading: {
+      type: Boolean,
+      default: false,
+      require: true
+    },
     title: {
       type: String,
       default: '上传文件',
@@ -40,6 +45,10 @@ export default {
     },
     items: {
       type: Array,
+      require: true
+    },
+    userId: {
+      type: String,
       require: true
     }
   },
@@ -57,9 +66,6 @@ export default {
     }
   },
   methods: {
-    submit() {
-      this.$emit('submit')
-    },
     cancel() {
       this.$emit('cancel')
     },

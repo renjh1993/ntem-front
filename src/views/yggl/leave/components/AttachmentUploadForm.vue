@@ -1,8 +1,18 @@
 <template>
   <el-form ref="uploadForm" label-position="right" label-width="120px" class="form-margin">
-    <el-form-item v-for="(item,index) in items" :key="index" :label="item.name" class="mb">
-      <attachment-uploader ref="uploader" v-model="item.value" :name="item.name" :placeholder="item.placeholder" />
-    </el-form-item>
+    <div v-for="(item,index) in items" :key="index">
+      <attachment-uploader
+        v-if="!item.comp"
+        ref="uploader"
+        v-model="item.value"
+        :user-id="userId"
+        :type="item.type"
+        :name="item.name"
+        :placeholder="item.placeholder"
+        :extra="item.extra"
+      />
+      <hr style="background-color:#bdbcbc; height:1px; border:none;">
+    </div>
   </el-form>
 </template>
 
@@ -17,6 +27,10 @@ export default {
   props: {
     items: {
       type: Array,
+      require: true
+    },
+    userId: {
+      type: String,
       require: true
     }
   },
@@ -35,7 +49,4 @@ export default {
   margin: 0 20px;
 }
 
-.mb {
-  margin-bottom: 12px;
-}
 </style>
