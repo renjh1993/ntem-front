@@ -99,6 +99,16 @@
         >导出
         </el-button>
       </el-col>
+      <el-dropdown @command="handleExportResume">
+        <el-button size="mini" type="primary">
+          导出简历<i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu v-slot:default>
+          <el-dropdown-item command="abc">农行简历</el-dropdown-item>
+          <el-dropdown-item command="hf">恒丰简历</el-dropdown-item>
+          <el-dropdown-item command="bai">备案信息表</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-col :span="1.5">
         <el-button
           v-hasPermi="['system:tEmUser:import']"
@@ -1694,6 +1704,20 @@ export default {
         return api.exportExcel(queryParams)
       }).then(response => {
         this.download(response.message)
+      })
+    },
+    /** 导出按钮操作 */
+    handleExportResume(command) {
+      if (this.ids.length === 0) {
+        this.$message.warning('请先选择需要导出的员工')
+        return
+      }
+      this.$confirm('是否确认导出?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return api.exportResume(command, this.ids.join(','))
       })
     },
     /** 导入按钮操作 */

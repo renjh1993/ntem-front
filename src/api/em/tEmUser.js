@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { downLoadZip } from '@/utils/zipdownload'
 
 // 查询列表
 export function query(query) {
@@ -150,5 +151,8 @@ export default {
       url: `/annexInfo/tEmAnnexinfo/query/${userid}`,
       method: 'get'
     })
+  },
+  exportResume(type, ids) {
+    downLoadZip(`/emuser/tEmUser/download/resume?type=${type}&ids=${ids}`, '简历.zip')
   }
 }
