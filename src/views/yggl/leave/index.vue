@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!-- 查询区 -->
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
       <!--        <el-form-item label="id" prop="userid">
                 <el-input
@@ -46,7 +47,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <!-- 按钮区 -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -121,7 +122,7 @@
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
-
+    <!-- 数据展示区 -->
     <el-table v-loading="loading" :data="tableList" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="expand">
         <template v-slot="props">
@@ -170,7 +171,17 @@
       <el-table-column label="手机号" align="center" prop="tel" min-width="150" />
       <el-table-column label="最高学历毕业院校" align="center" prop="zgbyyx" min-width="200" />
       <el-table-column label="最高学历专业" align="center" prop="zgxlzy" min-width="200" />
-      <el-table-column label="最高学历" align="center" prop="zgxl" min-width="160" />
+      <el-table-column label="最高学历" align="center" prop="zgxl" min-width="160">
+        <template v-slot="{row}">
+          <span v-if="row.zgxl==='0'">博士</span>
+          <span v-else-if="row.zgxl==='1'">研究生</span>
+          <span v-else-if="row.zgxl==='2'">本科</span>
+          <span v-else-if="row.zgxl==='3'">大专</span>
+          <span v-else-if="row.zgxl==='4'">高中</span>
+          <span v-else-if="row.zgxl==='5'">其他</span>
+          <span v-else>{{ row.zgxl }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="毕业证编号" align="center" prop="zsbh" min-width="200" />
       <el-table-column label="技能" align="center" prop="skills" min-width="200" />
       <el-table-column label="入职日期" align="center" prop="entrydate" min-width="150" />
@@ -228,7 +239,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <!-- 分页区 -->
     <pagination
       v-show="total>0"
       :total="total"
@@ -237,41 +248,23 @@
       @pagination="getList"
     />
     <!-- 查看详细信息话框 -->
-    <el-dialog :title="title" :visible.sync="openDetails" width="500px" append-to-body>
-      <approvalDetail v-if="openDetails" :process-instance-id="instanceId" />
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="openDetails=!openDetails">关闭</el-button>
-      </div>
-    </el-dialog>
-    <!--项目经历对话框-->
-    <el-dialog :title="title" :visible.sync="programDialog" width="65%" append-to-body>
-      <el-table v-loading="loading" :data="programList" style="width: 100%" @selection-change="handleSelectionChange">
-        <!--        <el-table-column type="selection" width="55" align="center"/>-->
-        <!-- <el-table-column label="id" align="center" prop="userid"/>  -->
-        <el-table-column label="项目名称" align="center" prop="programName" min-width="120" />
-        <el-table-column label="甲方名称" align="center" prop="firstPartyName" min-width="200" />
-        <el-table-column label="项目规模" align="center" prop="programInfo" min-width="80" />
-        <el-table-column label="项目角色" align="center" prop="staffRole" min-width="200" />
-        <el-table-column label="项目起始时间" align="center" prop="programStartTime" min-width="150" />
-        <el-table-column label="项目结束时间" align="center" prop="programEndTime" min-width="200" />
-        <el-table-column label="员工参与起始时间" align="center" prop="staffStartTime" min-width="200" />
-        <el-table-column label="员工参与结束时间" align="center" prop="staffEndTime" min-width="160" />
-      </el-table>
-      <pagination
-        v-show="programerTotal>0"
-        :total="programerTotal"
-        :page.sync="programeParams.pageNum"
-        :limit.sync="programeParams.pageSize"
-        @pagination="handleProgram()"
-      />
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="programDialog=!programDialog">关闭</el-button>
-      </div>
-    </el-dialog>
+    <!--    <el-dialog :title="title" :visible.sync="openDetails" width="500px" append-to-body>
+          <approvalDetail v-if="openDetails" :process-instance-id="instanceId" />
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="openDetails=!openDetails">关闭</el-button>
+          </div>
+        </el-dialog>-->
     <!-- 新增弹出框 -->
-    <el-dialog :title="title" :visible.sync="open" width="70%" :destroy-on-close="true">
+    <el-dialog :title="title" :visible.sync="addDialog" width="70%" :destroy-on-close="true">
       <div class="score-lock">
-        <el-form ref="form" :model="form" :rules="rules" :is-drfat="isDraft" label-width="140px">
+        <el-form
+          ref="addForm"
+          :model="form"
+          :rules="rules"
+          :is-drfat="isDraft"
+          label-width="140px"
+          :inline-message="false"
+        >
           <span style="color: #1a1a1a;font-size: medium"><b>基础信息</b></span>
           <el-row style="padding-top: 1%">
             <el-col :span="12">
@@ -516,31 +509,70 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="true === isDraft" @click="asDraft">暂 存</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <!--        <el-button v-if="true === isDraft" @click="asDraft">暂 存</el-button>-->
+        <el-button type="primary" @click="submitAddForm">确 定</el-button>
+        <el-button @click="addCancel">取 消</el-button>
       </div>
     </el-dialog>
-    <!-- 更新弹出框 -->
-    <el-dialog :title="title" :visible.sync="openUpdate" width="1200px" append-to-body>
-      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+    <!--项目履历对话框展示区-->
+    <el-dialog :title="title" :visible.sync="programDialog" width="75%" append-to-body>
+      <div style="height: 50vh;overflow: auto">
+        <el-table v-loading="loading" :data="programList" style="width: 100%">
+          <el-table-column label="项目名称" align="center" prop="programName" min-width="120" />
+          <el-table-column label="甲方名称" align="center" prop="firstPartyName" min-width="200" />
+          <el-table-column label="项目规模" align="center" prop="programInfo" min-width="80">
+            <template slot-scope="{row}">
+              <span v-if="row.programInfo==='0'">大型</span>
+              <span v-else-if="row.programInfo==='1'">中型</span>
+              <span v-else-if="row.programInfo==='2'">小型</span>
+              <span v-else>{{ row.programInfo }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="项目角色" align="center" prop="staffRole" min-width="200">
+            <template slot-scope="{row}">
+              <span v-if="row.staffRole==='0'">开发</span>
+              <span v-else-if="row.staffRole==='1'">测试</span>
+              <span v-else-if="row.staffRole==='2'">项目经理</span>
+              <span v-else>{{ row.staffRole }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="项目起始时间" align="center" prop="programStartTime" min-width="150" />
+          <el-table-column label="项目结束时间" align="center" prop="programEndTime" min-width="200" />
+          <el-table-column label="员工参与起始时间" align="center" prop="staffStartTime" min-width="200" />
+          <el-table-column label="员工参与结束时间" align="center" prop="staffEndTime" min-width="160" />
+        </el-table>
+        <pagination
+          v-show="programerTotal>0"
+          :total="programerTotal"
+          :page.sync="programeParams.pageNum"
+          :limit.sync="programeParams.pageSize"
+          @pagination="handleProgram()"
+        />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="programDialog=!programDialog">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 基础信息更新弹出框 -->
+    <el-dialog :title="title" :visible.sync="baseUpdateDialog" width="65%" append-to-body>
+      <el-form ref="updateBaseForm" :model="updateBaseForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
 
         <el-row>
           <el-col :span="12">
             <el-form-item label="姓名" prop="name">
-              <el-input v-model="updateForm.name" />
+              <el-input v-model="updateBaseForm.name" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="身份证号" prop="idcard">
-              <el-input v-model="updateForm.idcard" />
+              <el-input v-model="updateBaseForm.idcard" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="性别 " prop="gender">
-              <el-select v-model="updateForm.gender" placeholder="请选择性别">
+              <el-select v-model="updateBaseForm.gender" placeholder="请选择性别">
                 <el-option label="男" value="0" />
                 <el-option label="女" value="1" />
               </el-select>
@@ -549,20 +581,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="手机号" prop="tel">
-              <el-input v-model="updateForm.tel" />
+              <el-input v-model="updateBaseForm.tel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="最高学历毕业院校" prop="zgbyyx">
-              <el-input v-model="updateForm.zgbyyx" />
+              <el-input v-model="updateBaseForm.zgbyyx" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="最高学历专业" prop="zgxlzy">
 
-              <el-input v-model="updateForm.zgxlzy" />
+              <el-input v-model="updateBaseForm.zgxlzy" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -570,7 +602,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="最高学历" prop="zgxl">
-              <el-select v-model="updateForm.zgxl" placeholder="请选择学历">
+              <el-select v-model="updateBaseForm.zgxl" placeholder="请选择学历">
                 <el-option label="博士" value="0" />
                 <el-option label="研究生" value="1" />
                 <el-option label="本科" value="2" />
@@ -583,20 +615,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="毕业证编号" prop="zsbh">
-              <el-input v-model="updateForm.zsbh" />
+              <el-input v-model="updateBaseForm.zsbh" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="技能" prop="skills">
-              <el-input v-model="updateForm.skills" />
+              <el-input v-model="updateBaseForm.skills" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="入职日期" prop="entrydate">
               <el-date-picker
-                v-model="updateForm.entrydate"
+                v-model="updateBaseForm.entrydate"
                 type="date"
                 placeholder="选择日期"
               />
@@ -608,7 +640,7 @@
           <el-col :span="12">
             <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
               <el-date-picker
-                v-model="updateForm.zgxlbyrq"
+                v-model="updateBaseForm.zgxlbyrq"
                 type="date"
                 placeholder="选择日期"
               />
@@ -618,7 +650,7 @@
           <el-col :span="12">
             <el-form-item label="离职日期" prop="godate">
               <el-date-picker
-                v-model="updateForm.godate"
+                v-model="updateBaseForm.godate"
                 type="date"
                 placeholder="选择日期"
               />
@@ -629,12 +661,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="base地(入职地)" prop="basearea">
-              <el-input v-model="updateForm.basearea" />
+              <el-input v-model="updateBaseForm.basearea" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态(是否在职)" prop="status">
-              <el-select v-model="updateForm.status" placeholder="请选择状态">
+              <el-select v-model="updateBaseForm.status" placeholder="请选择状态">
                 <el-option label="离职" value="0" />
                 <el-option label="在职" value="1" />
               </el-select>
@@ -645,44 +677,63 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-        <el-button @click="cancelUpdate">取 消</el-button>
+        <el-button type="primary" @click="submitBaseFormUpdate">确 定</el-button>
+        <el-button @click="baseUpdateDialog=!baseUpdateDialog">取 消</el-button>
       </div>
     </el-dialog>
     <!--修改技能信息-->
-    <el-dialog :title="title" :visible.sync="openUpdate2" width="45%" append-to-body>
+    <el-dialog :title="title" :visible.sync="skillUpdateDialog" width="50%" append-to-body>
       <div style="height: 50vh;overflow: auto">
-        <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="30%">
-
-          <el-row>
-
-            <!--          <el-col>
-            <el-form-item label="掌握技能" />
-          </el-col>-->
-          </el-row>
-
+        <el-form ref="skillUpdateForm" :model="skillUpdateForm" :is-drfat="isDraft" label-width="30%">
           <el-form-item
-            v-for="(domain, index) in updateForm"
+            v-for="(domain, index) in skillUpdateForm.jnList"
             :key="domain.key"
+            style="width: 100%"
             :label="'专业技能' + (index+1)"
-            :prop="'jnList.' + index + '.value'"
+            required
           >
-            <el-input
-              v-model="domain.skillname"
-              style="width: 20%"
-              placeholder="技能名称"
-            />
-            <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
-              <el-option label="熟练" value="0" />
-              <el-option label="熟悉" value="1" />
-              <el-option label="了解" value="2" />
-            </el-select>
-            <el-button
-              type="danger"
-              style="margin-left: 10px"
-              @click.prevent="removeDomainjn(domain)"
-            >删除
-            </el-button>
+            <el-row :span="24">
+              <el-col :span="7">
+                <el-form-item
+                  :prop="'jnList.' + index + '.skillname'"
+                  :rules="{
+                    required: true, message: '专业技能不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="domain.skillname"
+                    placeholder="技能名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'jnList.' + index + '.skillstatus'"
+                  :rules="{
+                    required: true, message: '掌握水平不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="domain.skillstatus" clearable placeholder="掌握水平" style="margin-left: 10px">
+                    <el-option label="熟练" value="0" />
+                    <el-option label="熟悉" value="1" />
+                    <el-option label="了解" value="2" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item
+                  label-width="0px"
+                >
+                  <el-button
+                    type="danger"
+                    style="margin-left: 10px"
+                    @click.prevent="removeDomainjn(domain)"
+                  >删除
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -697,8 +748,8 @@
       </div>
       <hr>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-        <el-button @click="cancelUpdate">取 消</el-button>
+        <el-button type="primary" @click="submitFormUpdateSkill">确 定</el-button>
+        <el-button @click="skillUpdateDialog=!skillUpdateDialog">取 消</el-button>
       </div>
     </el-dialog>
     <!--修改经历信息信息-->
@@ -1129,7 +1180,24 @@ export default {
   },
   data() {
     return {
+      // 新增弹出框
+      addDialog: false,
+      // 新增请求参数
       form: {
+        name: null,
+        idcard: null,
+        gender: null,
+        tel: null,
+        zgbyyx: null,
+        zgxlzy: null,
+        zgxl: null,
+        zsbh: null,
+        skills: null,
+        entrydate: null,
+        zgxlbyrq: null,
+        godate: null,
+        basearea: null,
+        status: null,
         jnList: [{
           skillname: '',
           skillstatus: ''
@@ -1145,6 +1213,50 @@ export default {
           staffEndTime: ''
         }]
 
+      },
+      // 新增字段校验
+      rules: {
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
+        ]
+      },
+      // 项目履历弹出标志
+      programDialog: false,
+      // 履历信息条数
+      programerTotal: 0,
+      // 履历信息查询参数
+      programeParams: {
+        pageNum: 1,
+        pageSize: 10,
+        staffId: null
+      },
+      // 基础信息更新弹出框
+      baseUpdateDialog: false,
+      // 基础信息更新请求参数
+      updateBaseForm: {
+        name: '',
+        idcard: '',
+        gender: '',
+        tel: '',
+        zgbyyx: '',
+        zgxlzy: '',
+        zgxl: '',
+        zsbh: '',
+        skills: '',
+        entrydate: '',
+        zgxlbyrq: '',
+        godate: '',
+        basearea: '',
+        status: ''
+      },
+      // 技能修改展示框
+      skillUpdateDialog: false,
+      // 技能修改请求参数
+      skillUpdateForm: {
+        jnList: [{
+          skillname: '',
+          skillstatus: ''
+        }]
       },
       uploadDialog: {
         show: false,
@@ -1180,15 +1292,14 @@ export default {
       tableList: [],
       // 弹出层标题
       title: '',
-      // 是否显示弹出层
       open: false,
-      // 项目经历弹出标志
-      programDialog: false,
       // 项目经历数据
       programList: null,
       openDetails: false,
       openUpdate: false,
+      // 技能显示框
       openUpdate2: false,
+      // 经历显示框
       openUpdate3: false,
       openRe: false,
       openEdit: false,
@@ -1221,13 +1332,6 @@ export default {
         upduser: null,
         upddate: null
       },
-      programerTotal: 0,
-      // 履历信息查询参数
-      programeParams: {
-        pageNum: 1,
-        pageSize: 10,
-        staffId: null
-      },
       upload: {
         // 是否显示弹出层（用户导入）
         open: false,
@@ -1245,18 +1349,14 @@ export default {
       // 表单参数
       // form: {
       // },
-      // 更新 表单参数
+      // 更新技能 接收参数
       updateForm: [],
       // 提交修改 表单参数
       editForm: {},
       // 重新提交 表单参数
-      reForm: {},
+      reForm: {}
       // 表单校验 下拉框、日期框时trigger: 'change',值发生改变时校验，输入框trigger: 'blur',失去焦点时校验
-      rules: {
-        id: [
-          { required: true, message: 'id不能为空', trigger: 'blur' }
-        ]
-      }
+
     }
   },
   created() {
@@ -1266,81 +1366,10 @@ export default {
     })*/
   },
   methods: {
-    // 员工基础信息移除
-    removeDomain(item) {
-      var index = this.form.jnList.indexOf(item)
-      if (index !== -1) {
-        this.form.jnList.splice(index, 1)
-      }
-    },
-    // 技能页面修改
-    removeDomainjn(item) {
-      if (item.skillid) {
-        api.delSkill(item).then(response => {
-          this.msgSuccess('删除成功')
-          const index = this.updateForm.indexOf(item)
-          if (index !== -1) {
-            this.updateForm.splice(index, 1)
-          }
-        })
-      } else {
-        const index = this.updateForm.indexOf(item)
-        if (index !== -1) {
-          this.updateForm.splice(index, 1)
-        }
-        this.$message.success('删除成功')
-      }
-    },
-    // 员工基础信息添加
-    addDomain() {
-      this.form.jnList.push({
-        skillname: '',
-        skillstatus: ''
-      })
-    },
-    // 技能添加
-    addDomainjn() {
-      this.updateForm.push({
-        userid: this.ids[0],
-        skillname: '',
-        skillstatus: ''
-      })
-    },
-    // 经历移除
-    removeygxms(item) {
-      var index = this.form.ygxms.indexOf(item)
-      if (index !== -1) {
-        this.form.ygxms.splice(index, 1)
-      }
-    },
-
-    // 修改经历移除
-    removeygxmsup(item) {
-      var index = this.updateForm.indexOf(item)
-      if (index !== -1) {
-        this.updateForm.splice(index, 1)
-      }
-    },
-
-    // 经历添加
-    addygxms() {
-      this.form.ygxms.push({
-        xmmc: '',
-        xmgm: '',
-        xmdate: '',
-        ygdate: '',
-        xmjs: ''
-      })
-    },
-    // 修改经历添加
-    addygxmsup() {
-      this.updateForm.push({
-        xmmc: '',
-        xmgm: '',
-        xmdate: '',
-        ygdate: '',
-        xmjs: ''
-      })
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 查询列表 */
     getList() {
@@ -1369,7 +1398,69 @@ export default {
         this.loading = false
       })
     },
-    // 项目经历查询
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.createName = this.$store.getters.nickName
+      if (this.$store.getters.name !== 'admins') {
+        // this.reset()
+        this.isDraft = true
+        this.addDialog = true
+        this.title = '添加'
+      } else {
+        this.$alert('管理员不能创建流程', '管理员不能创建流程', {
+          confirmButtonText: '确定'
+        })
+      }
+    },
+    /** 新增提交按钮 */
+    submitAddForm() {
+      this.$refs['addForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.add(this.form).then(response => {
+            this.msgSuccess('新增成功')
+            this.addDialog = false
+            this.getList()
+          })
+        }
+      })
+    },
+    /** 新增对话框取消按钮 */
+    addCancel() {
+      this.addDialog = false
+    },
+    /** 员工技能信息信息删除 */
+    removeDomain(item) {
+      var index = this.form.jnList.indexOf(item)
+      if (index !== -1) {
+        this.form.jnList.splice(index, 1)
+      }
+    },
+    /** 员工技能信息增加 */
+    addDomain() {
+      this.form.jnList.push({
+        skillname: '',
+        skillstatus: ''
+      })
+    },
+    /** 项目履历删除 */
+    removeygxms(item) {
+      var index = this.form.ygxms.indexOf(item)
+      if (index !== -1) {
+        this.form.ygxms.splice(index, 1)
+      }
+    },
+    /** 项目履历增加 */
+    addygxms() {
+      this.form.ygxms.push({
+        xmmc: '',
+        xmgm: '',
+        xmdate: '',
+        ygdate: '',
+        xmjs: ''
+      })
+    },
+    /** 项目履历查询 */
     handleProgram(row) {
       this.title = row.name + '-项目履历'
       this.programDialog = true
@@ -1382,15 +1473,132 @@ export default {
         this.loading = false
       })
     },
+    /** 基础信息更新按钮操作 */
+    handleUpdate(row) {
+      let updateId = null
+      if (row.userid != null) {
+        updateId = row.userid
+      } else {
+        updateId = this.ids[0]
+      }
+      // this.reset()
+      api.getOne({ userid: updateId }).then(response => {
+        this.updateBaseForm = response.data
+        this.baseUpdateDialog = true
+        this.title = '更新'
+      })
+    },
+    /** 基础信息更新确定 */
+    submitBaseFormUpdate() {
+      this.$refs['updateBaseForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.update(this.updateBaseForm).then(response => {
+            this.msgSuccess('更新成功')
+            this.baseUpdateDialog = false
+            this.getList()
+          })
+        }
+      })
+    },
+    /** 更新技能按钮操作 */
+    handleUpdatejn(row) {
+      let updateId = null
+      if (row.userid != null) {
+        updateId = row.userid
+      } else {
+        updateId = this.ids[0]
+      }
+      api.getOnejn({ userid: updateId }).then(response => {
+        this.skillUpdateForm.jnList = response.data
+        this.skillUpdateDialog = true
+        this.title = '技能修改'
+      })
+    },
+    /** 修改技能页面删除 */
+    removeDomainjn(item) {
+      if (item.skillid) {
+        api.delSkill(item).then(response => {
+          this.msgSuccess('删除成功')
+          const index = this.skillUpdateForm.jnList.indexOf(item)
+          if (index !== -1) {
+            this.skillUpdateForm.jnList.splice(index, 1)
+          }
+        })
+      } else {
+        const index = this.skillUpdateForm.jnList.indexOf(item)
+        if (index !== -1) {
+          this.skillUpdateForm.jnList.splice(index, 1)
+        }
+        this.$message.success('删除成功')
+      }
+    },
+    /** 修改技能页面添加 */
+    addDomainjn() {
+      this.skillUpdateForm.jnList.push({
+        userid: this.ids[0],
+        skillname: '',
+        skillstatus: ''
+      })
+    },
+    /** 技能确定更新 */
+    submitFormUpdateSkill() {
+      this.$refs['skillUpdateForm'].validate(valid => {
+        if (valid) {
+          this.form.businessRoute = this.$route.name
+          api.updateSkill({ jnList: this.skillUpdateForm.jnList }).then(response => {
+            this.msgSuccess('更新成功')
+            this.skillUpdateDialog = false
+            this.getList()
+          })
+        }
+      })
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      let ids = null
+      if (row.userid) {
+        ids = [row.userid]
+      } else {
+        ids = this.ids
+      }
+      console.log({ ids: ids })
+      this.$confirm('是否确认删除选择的员工数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return api.del({ ids: ids })
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('删除成功')
+      })
+    },
+
+    // 修改经历移除
+    removeygxmsup(item) {
+      var index = this.updateForm.indexOf(item)
+      if (index !== -1) {
+        this.updateForm.splice(index, 1)
+      }
+    },
+
+    // 修改经历添加
+    addygxmsup() {
+      this.updateForm.push({
+        xmmc: '',
+        xmgm: '',
+        xmdate: '',
+        ygdate: '',
+        xmjs: ''
+      })
+    },
+
     // 状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status)
     },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
+
     cancelUpdate() {
       this.openUpdate = false
       this.openUpdate2 = false
@@ -1446,11 +1654,6 @@ export default {
       }
       this.resetForm('form')
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
-    },
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
@@ -1462,20 +1665,7 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.createName = this.$store.getters.nickName
-      if (this.$store.getters.name !== 'admins') {
-        this.reset()
-        this.isDraft = true
-        this.open = true
-        this.title = '添加'
-      } else {
-        this.$alert('管理员不能创建流程', '管理员不能创建流程', {
-          confirmButtonText: '确定'
-        })
-      }
-    },
+
     /** 附件按钮操作 */
     async attachment(row) {
       this.uploadDialog.userId = row.userid
@@ -1503,36 +1693,6 @@ export default {
       this.$refs.attachmentDialog.clear()
       this.uploadDialog.show = false
       this.uploadDialog.items = generateDefaultList()
-    },
-    /** 更新按钮操作 */
-    handleUpdate(row) {
-      let updateId = null
-      if (row.userid != null) {
-        updateId = row.userid
-      } else {
-        updateId = this.ids[0]
-      }
-      this.reset()
-      api.getOne({ userid: updateId }).then(response => {
-        this.updateForm = response.data
-        this.openUpdate = true
-        this.title = '更新'
-      })
-    },
-    /** 更新技能按钮操作 */
-    handleUpdatejn(row) {
-      let updateId = null
-      if (row.userid != null) {
-        updateId = row.userid
-      } else {
-        updateId = this.ids[0]
-      }
-      // this.reset()
-      api.getOnejn({ userid: updateId }).then(response => {
-        this.updateForm = response.data
-        this.openUpdate2 = true
-        this.title = '技能修改'
-      })
     },
     /** 更新经历按钮操作 */
     handleUpdatejl(row) {
@@ -1589,41 +1749,8 @@ export default {
         this.getList()
       })
     },
-    /** 新增提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            api.update(this.form).then(response => {
-              this.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            this.form.businessRoute = this.$route.name
-            api.add(this.form).then(response => {
-              this.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-    // 技能更新增加
+    /** 基础信息更新确定 */
     submitFormUpdate() {
-      this.$refs['updateForm'].validate(valid => {
-        if (valid) {
-          this.form.businessRoute = this.$route.name
-          api.updateSkill({ jnList: this.updateForm }).then(response => {
-            this.msgSuccess('更新成功')
-            this.openUpdate2 = false
-            this.getList()
-          })
-        }
-      })
-    },
-    submitFormUpdatejn() {
       this.$refs['updateForm'].validate(valid => {
         if (valid) {
           this.form.businessRoute = this.$route.name
@@ -1672,26 +1799,6 @@ export default {
     },
     chooseMedicine() {
       this.form.title = this.createName + '的' + this.form.type + '申请'
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      let ids = null
-      if (row.userid) {
-        ids = [row.userid]
-      } else {
-        ids = this.ids
-      }
-      console.log({ ids: ids })
-      this.$confirm('是否确认删除选择的员工数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return api.del({ ids: ids })
-      }).then(() => {
-        this.handleQuery()
-        this.msgSuccess('删除成功')
-      })
     },
     /** 导出按钮操作 */
     handleExport() {
