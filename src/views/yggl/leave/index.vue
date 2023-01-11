@@ -1166,9 +1166,9 @@ const generateDefaultList = function() {
       value: null,
       extra: { name: '社保时间范围', type: 'SBSJ', comp: 'daterange', value: null, placeholder: '请选择时间范围' }
     },
-    { name: '其他证书1(可选)', type: 'QTZS_1', value: null },
-    { name: '其他证书2(可选)', type: 'QTZS_2', value: null },
-    { name: '其他证书3(可选)', type: 'QTZS_2', value: null }
+    { name: '其他证书1(可选)', type: 'QTZS1', value: null },
+    { name: '其他证书2(可选)', type: 'QTZS2', value: null },
+    { name: '其他证书3(可选)', type: 'QTZS3', value: null }
   ]
 }
 

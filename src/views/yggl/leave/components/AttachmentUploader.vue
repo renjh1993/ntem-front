@@ -184,8 +184,10 @@ export default {
       form.set('userId', this.userId)
       form.set('type', this.type)
       form.set('file', this.value)
-      form.set('extraType', this.extra.type)
-      form.set('extraValue', this.extra.value)
+      if (this.extra) {
+        form.set('extraType', this.extra.type)
+        form.set('extraValue', this.extra.value)
+      }
       return form
     }
   }
