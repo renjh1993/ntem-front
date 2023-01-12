@@ -87,7 +87,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdatejl"
-        >修改经历信息
+        >修改项目履历
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -631,6 +631,7 @@
                 v-model="updateBaseForm.entrydate"
                 type="date"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               />
 
             </el-form-item>
@@ -643,6 +644,7 @@
                 v-model="updateBaseForm.zgxlbyrq"
                 type="date"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               />
 
             </el-form-item>
@@ -653,6 +655,7 @@
                 v-model="updateBaseForm.godate"
                 type="date"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               />
 
             </el-form-item>
@@ -697,7 +700,7 @@
                 <el-form-item
                   :prop="'jnList.' + index + '.skillname'"
                   :rules="{
-                    required: true, message: '专业技能不能为空', trigger: 'blur'
+                    required: true, message: '技能名称不能为空', trigger: 'blur'
                   }"
                 >
                   <el-input
@@ -752,83 +755,96 @@
         <el-button @click="skillUpdateDialog=!skillUpdateDialog">取 消</el-button>
       </div>
     </el-dialog>
-    <!--修改经历信息信息-->
-    <el-dialog :title="title" :visible.sync="openUpdate3" width="1200px" append-to-body>
-      <el-form ref="updateForm" :model="updateForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
+    <!--修改项目履历信息-->
+    <el-dialog :title="title" :visible.sync="programUpdateDialog" width="65%" append-to-body>
+      <div style="height: 50vh;overflow: auto">
+        <el-form ref="programUpdateForm" :model="programUpdateForm" label-width="140px">
+          <el-form-item
+            v-for="(ygxm, index) in programUpdateForm.ygxms"
+            :key="ygxm.key"
+            :label="'项目经历' + (index+1)"
+            :prop="'ygxms.' + index + '.value'"
+            style="padding-top: 1%"
+          >
+            <el-row>
+              <el-col>
+                <el-input
+                  v-model="ygxm.programName"
+                  style="width: 20%"
+                  placeholder="项目名称"
+                />
+                <el-input
+                  v-model="ygxm.firstPartyName"
+                  style="width: 20%;padding-left: 10px"
+                  placeholder="甲方名称"
+                />
+                <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
+                  <el-option label="开发" value="0" />
+                  <el-option label="测试" value="1" />
+                  <el-option label="项目经理" value="2" />
+                </el-select>
+                <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
+                  <el-option label="大型" value="0" />
+                  <el-option label="中型" value="1" />
+                  <el-option label="小型" value="2" />
+                </el-select>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col style="padding-top: 1%">
+                <el-date-picker
+                  v-model="ygxm.programStartTime"
+                  type="date"
+                  placeholder="项目开始日期"
+                  style="width: 20%"
+                  value-format="yyyy-MM-dd"
+                />
+                <span style="padding-left: 2px;padding-right: 2px">-</span>
+                <el-date-picker
+                  v-model="ygxm.programEndTime"
+                  type="date"
+                  placeholder="项目结束日期"
+                  value-format="yyyy-MM-dd"
+                />
+                <el-date-picker
+                  v-model="ygxm.staffStartTime"
+                  type="date"
+                  placeholder="参与项目开始日期"
+                  style="margin-left: 10px;width: 18%"
+                  value-format="yyyy-MM-dd"
+                />
+                <span style="padding-left: 2px;padding-right: 2px">-</span>
+                <el-date-picker
+                  v-model="ygxm.staffEndTime"
+                  type="date"
+                  placeholder="结束日期"
+                  style="width: 18%"
+                  value-format="yyyy-MM-dd"
+                />
 
-        <el-row>
+                <el-button
+                  type="danger"
+                  style="margin-left: 10px"
+                  @click.prevent="removeDomainjl(ygxm)"
+                >删除
+                </el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              style="margin-top: 10px"
+              @click="addDomainjl"
+            >新增
+            </el-button>
+          </el-form-item>
 
-          <el-col>
-            <el-form-item label="掌握技能" />
-          </el-col>
-        </el-row>
-
-        <el-form-item
-          v-for="(ygxm, index) in form.ygxms"
-          :key="ygxm.key"
-          :label="'项目经历' + index"
-          :prop="'ygxms.' + index + '.value'"
-        >
-          <el-input
-            v-model="ygxm.xmmc"
-            style="width: 20%"
-            placeholder="项目名称"
-          />
-          <el-input
-            v-model="ygxm.xmmc"
-            style="width: 20%"
-            placeholder="项目名称"
-          />
-          <el-select v-model="ygxm.xmjs" placeholder="项目角色" style="margin-left: 10px">
-            <el-option label="开发" value="0" />
-            <el-option label="测试" value="1" />
-            <el-option label="项目经理" value="2" />
-          </el-select>
-          <el-select v-model="ygxm.xmjs" placeholder="项目规模" style="margin-left: 10px">
-            <el-option label="大型" value="0" />
-            <el-option label="小型" value="1" />
-            <el-option label="中型" value="2" />
-          </el-select>
-
-          <el-date-picker
-            v-model="ygxm.xmdate"
-            style="margin-left: 10px"
-            type="daterange"
-
-            range-separator="至"
-            start-placeholder="项目开始日期"
-            end-placeholder="结束日期"
-          />
-          <el-date-picker
-            v-model="ygxm.ygdate"
-            style="margin-top: 10px"
-            type="daterange"
-
-            range-separator="至"
-            start-placeholder="参与时间"
-            end-placeholder="结束日期"
-          />
-          <el-button
-            type="danger"
-            style="margin-left: 10px"
-            @click.prevent="removeygxmsup(domain)"
-          >删除
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            style="margin-top: 10px"
-            @click="addygxmsup"
-          >新增
-          </el-button>
-        </el-form-item>
-
-      </el-form>
-
+        </el-form>
+      </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFormUpdate">确 定</el-button>
-        <el-button @click="cancelUpdate">取 消</el-button>
+        <el-button type="primary" @click="submitFormUpdateProgram">确 定</el-button>
+        <el-button @click="programUpdateDialog=!programUpdateDialog">取 消</el-button>
       </div>
     </el-dialog>
     <!-- 提交修改弹出框 -->
@@ -1258,6 +1274,21 @@ export default {
           skillstatus: ''
         }]
       },
+      // 修改项目履历弹出框
+      programUpdateDialog: false,
+      // 项目履历请求参数
+      programUpdateForm: {
+        ygxms: [{
+          programName: '',
+          firstPartyName: '',
+          staffRole: '',
+          programInfo: '',
+          programStartTime: '',
+          programEndTime: '',
+          staffStartTime: '',
+          staffEndTime: ''
+        }]
+      },
       uploadDialog: {
         show: false,
         userId: null,
@@ -1453,11 +1484,14 @@ export default {
     /** 项目履历增加 */
     addygxms() {
       this.form.ygxms.push({
-        xmmc: '',
-        xmgm: '',
-        xmdate: '',
-        ygdate: '',
-        xmjs: ''
+        programName: '',
+        firstPartyName: '',
+        staffRole: '',
+        programInfo: '',
+        programStartTime: '',
+        programEndTime: '',
+        staffStartTime: '',
+        staffEndTime: ''
       })
     },
     /** 项目履历查询 */
@@ -1501,7 +1535,7 @@ export default {
         }
       })
     },
-    /** 更新技能按钮操作 */
+    /** 修改技能按钮操作 */
     handleUpdatejn(row) {
       let updateId = null
       if (row.userid != null) {
@@ -1545,7 +1579,7 @@ export default {
     submitFormUpdateSkill() {
       this.$refs['skillUpdateForm'].validate(valid => {
         if (valid) {
-          this.form.businessRoute = this.$route.name
+          // this.form.businessRoute = this.$route.name
           api.updateSkill({ jnList: this.skillUpdateForm.jnList }).then(response => {
             this.msgSuccess('更新成功')
             this.skillUpdateDialog = false
@@ -1562,7 +1596,6 @@ export default {
       } else {
         ids = this.ids
       }
-      console.log({ ids: ids })
       this.$confirm('是否确认删除选择的员工数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1574,7 +1607,59 @@ export default {
         this.msgSuccess('删除成功')
       })
     },
-
+    /** 修改项目经历按钮操作 */
+    handleUpdatejl(row) {
+      api.getOnejl({ staffId: this.ids[0] }).then(response => {
+        this.programUpdateForm.ygxms = response.data
+        this.programUpdateDialog = true
+        this.title = '履历修改'
+      })
+    },
+    /** 修改项目履历页面删除 */
+    removeDomainjl(ygxm) {
+      if (ygxm.id) {
+        api.delProgram(ygxm).then(response => {
+          this.msgSuccess('删除成功')
+          const index = this.programUpdateForm.ygxms.indexOf(ygxm)
+          if (index !== -1) {
+            this.programUpdateForm.ygxms.splice(index, 1)
+          }
+        })
+      } else {
+        const index = this.programUpdateForm.ygxms.indexOf(ygxm)
+        if (index !== -1) {
+          this.programUpdateForm.ygxms.splice(index, 1)
+        }
+        this.$message.success('删除成功')
+      }
+    },
+    /** 修改项目履历页面添加 */
+    addDomainjl() {
+      this.programUpdateForm.ygxms.push({
+        staffId: this.ids[0],
+        programName: '',
+        firstPartyName: '',
+        staffRole: '',
+        programInfo: '',
+        programStartTime: '',
+        programEndTime: '',
+        staffStartTime: '',
+        staffEndTime: ''
+      })
+    },
+    /** 修改项目履历确定更新 */
+    submitFormUpdateProgram() {
+      this.$refs['programUpdateForm'].validate(valid => {
+        if (valid) {
+          // this.form.businessRoute = this.$route.name
+          api.updateProgram({ programList: this.programUpdateForm.ygxms }).then(response => {
+            this.msgSuccess('更新成功')
+            this.programUpdateDialog = false
+            this.getList()
+          })
+        }
+      })
+    },
     // 修改经历移除
     removeygxmsup(item) {
       var index = this.updateForm.indexOf(item)
@@ -1694,21 +1779,7 @@ export default {
       this.uploadDialog.show = false
       this.uploadDialog.items = generateDefaultList()
     },
-    /** 更新经历按钮操作 */
-    handleUpdatejl(row) {
-      let updateId = null
-      if (row.id != null) {
-        updateId = row.id
-      } else {
-        updateId = this.ids[0]
-      }
-      this.reset()
-      api.getOnejn({ userid: updateId }).then(response => {
-        this.updateForm = response.data
-        this.openUpdate3 = true
-        this.title = '经历修改'
-      })
-    },
+
     /** 提交修改按钮操作 */
     handleEdit(row) {
       this.reset()

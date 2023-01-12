@@ -40,6 +40,15 @@ export function getOnejn(query) {
   })
 }
 
+// 查询技能详细信息
+export function getOnejl(query) {
+  return request({
+    url: '/emuser/tEmProgram/getOne',
+    method: 'get',
+    params: query
+  })
+}
+
 // 新增
 export function add(data) {
   return request({
@@ -76,6 +85,15 @@ export function delSkill(data) {
   })
 }
 
+// 删除项目履历
+export function delProgram(data) {
+  return request({
+    url: '/emuser/tEmProgram/remove',
+    method: 'post',
+    data: data
+  })
+}
+
 // 更新
 export function update(data) {
   return request({
@@ -89,6 +107,15 @@ export function update(data) {
 export function updateSkill(data) {
   return request({
     url: '/emuser/tEmUserSkill/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新
+export function updateProgram(data) {
+  return request({
+    url: '/emuser/tEmProgram/update',
     method: 'post',
     data: data
   })
@@ -138,13 +165,16 @@ export default {
   add,
   del,
   delSkill,
+  delProgram,
   draft,
   edit,
   update,
   updateSkill,
+  updateProgram,
   exportExcel,
   importTemplate,
   getOnejn,
+  getOnejl,
   uploadAttachment,
   queryAttachment(userid) {
     return request({
