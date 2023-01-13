@@ -255,31 +255,30 @@
           </div>
         </el-dialog>-->
     <!-- 新增弹出框 -->
-    <el-dialog :title="title" :visible.sync="addDialog" width="70%" :destroy-on-close="true">
+    <el-dialog :title="title" :visible.sync="addDialog" width="70%" @close="closeDialogBefore('addForm')">
       <div class="score-lock">
         <el-form
           ref="addForm"
           :model="form"
           :rules="rules"
-          :is-drfat="isDraft"
-          label-width="140px"
+          label-width="30%"
           :inline-message="false"
         >
           <span style="color: #1a1a1a;font-size: medium"><b>基础信息</b></span>
           <el-row style="padding-top: 1%">
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="姓名" prop="name">
                 <el-input v-model="form.name" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="身份证号" prop="idcard">
+            <el-col :span="11">
+              <el-form-item label="身份证号" prop="idcard" required>
                 <el-input v-model="form.idcard" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="性别 " prop="gender">
                 <el-select v-model="form.gender" placeholder="请选择性别">
                   <el-option label="女" value="0" />
@@ -288,19 +287,19 @@
 
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="手机号" prop="tel">
+            <el-col :span="11">
+              <el-form-item label="手机号" prop="tel" required>
                 <el-input v-model="form.tel" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="最高学历毕业院校" prop="zgbyyx">
                 <el-input v-model="form.zgbyyx" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="最高学历专业" prop="zgxlzy">
 
                 <el-input v-model="form.zgxlzy" />
@@ -309,7 +308,7 @@
           </el-row>
 
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="最高学历" prop="zgxl">
                 <el-select v-model="form.zgxl" placeholder="请选择学历">
                   <el-option label="博士" value="0" />
@@ -322,19 +321,19 @@
 
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="毕业证编号" prop="zsbh">
+            <el-col :span="11">
+              <el-form-item label="毕业证编号" prop="zsbh" required>
                 <el-input v-model="form.zsbh" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="技能" prop="skills">
                 <el-input v-model="form.skills" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="入职日期" prop="entrydate">
                 <el-date-picker
                   v-model="form.entrydate"
@@ -347,7 +346,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="最高学历毕业日期" prop="zgxlbyrq">
                 <el-date-picker
                   v-model="form.zgxlbyrq"
@@ -358,7 +357,7 @@
 
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="离职日期" prop="godate">
                 <el-date-picker
                   v-model="form.godate"
@@ -371,14 +370,14 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="base地(在职地)" prop="basearea">
                 <el-input v-model="form.basearea" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="11">
               <el-form-item label="状态" prop="status">
-                <el-select v-model="form.status" placeholder="请选择状态">
+                <el-select v-model="form.status" placeholder="请选择状态" disabled>
                   <el-option label="离职" value="0" />
                   <el-option label="在职" value="1" />
                 </el-select>
@@ -394,26 +393,55 @@
             v-for="(domain, index) in form.jnList"
             :key="domain.key"
             :label="'专业技能' + (index+1)"
-            :prop="'jnList.' + index + '.value'"
             style="padding-top: 1%"
+            required
+            label-width="10%"
           >
-            <el-input
-              v-model="domain.skillname"
-              style="width: 20%"
-              placeholder="技能名称"
-            />
-            <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px">
-              <el-option label="熟练" value="0" />
-              <el-option label="熟悉" value="1" />
-              <el-option label="了解" value="2" />
-            </el-select>
-            <el-button
-              type="danger"
-              style="margin-left: 10px"
-              @click.prevent="removeDomain(domain)"
-            >删除
-            </el-button>
+            <el-row :span="24">
+              <el-col :span="7">
+                <el-form-item
+                  :prop="'jnList.' + index + '.skillname'"
+                  :rules="{
+                    required: true, message: '技能名称不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="domain.skillname"
+                    style="width: 100%"
+                    placeholder="技能名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'jnList.' + index + '.skillstatus'"
+                  :rules="{
+                    required: true, message: '掌握水平不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="domain.skillstatus" placeholder="掌握水平" style="margin-left: 10px;width: 95%">
+                    <el-option label="熟练" value="0" />
+                    <el-option label="熟悉" value="1" />
+                    <el-option label="了解" value="2" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item
+                  label-width="0px"
+                >
+                  <el-button
+                    type="danger"
+                    style="margin-left: 10px"
+                    @click.prevent="removeDomain(domain)"
+                  >删除
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form-item>
+
           <el-form-item>
             <el-button
               type="primary"
@@ -429,71 +457,154 @@
             v-for="(ygxm, index) in form.ygxms"
             :key="ygxm.key"
             :label="'项目经历' + (index+1)"
-            :prop="'ygxms.' + index + '.value'"
             style="padding-top: 1%"
+            label-width="10%"
+            required=""
           >
-            <el-row>
-              <el-col>
-                <el-input
-                  v-model="ygxm.programName"
-                  style="width: 20%"
-                  placeholder="项目名称"
-                />
-                <el-input
-                  v-model="ygxm.firstPartyName"
-                  style="width: 20%;padding-left: 10px"
-                  placeholder="甲方名称"
-                />
-                <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
-                  <el-option label="开发" value="0" />
-                  <el-option label="测试" value="1" />
-                  <el-option label="项目经理" value="2" />
-                </el-select>
-                <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
-                  <el-option label="大型" value="0" />
-                  <el-option label="中型" value="1" />
-                  <el-option label="小型" value="2" />
-                </el-select>
+            <el-row :span="24">
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programName'"
+                  :rules="{
+                    required: true, message: '项目名称不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.programName"
+                    style="width: 95%"
+                    placeholder="项目名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="10px"
+                  :prop="'ygxms.' + index + '.firstPartyName'"
+                  :rules="{
+                    required: true, message: '甲方名称不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.firstPartyName"
+                    style="width: 91%"
+                    placeholder="甲方名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.staffRole'"
+                  :rules="{
+                    required: true, message: '项目角色不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="width: 90%">
+                    <el-option label="开发" value="0" />
+                    <el-option label="测试" value="1" />
+                    <el-option label="项目经理" value="2" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programInfo'"
+                  :rules="{
+                    required: true, message: '项目规模不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="width: 95%">
+                    <el-option label="大型" value="0" />
+                    <el-option label="中型" value="1" />
+                    <el-option label="小型" value="2" />
+                  </el-select>
+                </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
-              <el-col style="padding-top: 1%">
-                <el-date-picker
-                  v-model="ygxm.programStartTime"
-                  type="date"
-                  placeholder="项目开始日期"
-                  style="width: 20%"
-                  value-format="yyyy-MM-dd"
-                />
-                <span style="padding-left: 2px;padding-right: 2px">-</span>
-                <el-date-picker
-                  v-model="ygxm.programEndTime"
-                  type="date"
-                  placeholder="项目结束日期"
-                  value-format="yyyy-MM-dd"
-                />
-                <el-date-picker
-                  v-model="ygxm.staffStartTime"
-                  type="date"
-                  placeholder="参与项目开始日期"
-                  style="margin-left: 10px;width: 18%"
-                  value-format="yyyy-MM-dd"
-                />
-                <span style="padding-left: 2px;padding-right: 2px">-</span>
-                <el-date-picker
-                  v-model="ygxm.staffEndTime"
-                  type="date"
-                  placeholder="结束日期"
-                  style="width: 18%"
-                  value-format="yyyy-MM-dd"
-                />
-
-                <el-button
-                  type="danger"
-                  style="margin-left: 10px"
-                  @click.prevent="removeygxms(ygxm)"
-                >删除
-                </el-button>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="5">
+                <el-form-item
+                  label-width="3%"
+                  :prop="'ygxms.' + index + '.programStartTime'"
+                  :rules="{
+                    required: true, message: '项目开始日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.programStartTime"
+                    type="date"
+                    placeholder="项目开始日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <!--              <el-col style="width: 1%">
+               <span>—</span>
+              </el-col>-->
+              <el-col :span="5">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programEndTime'"
+                  :rules="{
+                    required: true, message: '项目结束日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.programEndTime"
+                    type="date"
+                    placeholder="项目结束日期"
+                    value-format="yyyy-MM-dd"
+                    style="width: 95%"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item
+                  label-width="10px"
+                  :prop="'ygxms.' + index + '.staffStartTime'"
+                  :rules="{
+                    required: true, message: '参与项目开始日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.staffStartTime"
+                    type="date"
+                    placeholder="参与项目开始日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.staffEndTime'"
+                  :rules="{
+                    required: true, message: '参与项目结束日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.staffEndTime"
+                    type="date"
+                    placeholder="参与项目结束日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <el-form-item
+                  label-width="10px"
+                >
+                  <el-button
+                    type="danger"
+                    @click.prevent="removeygxms(ygxm)"
+                  >删除
+                  </el-button>
+                </el-form-item>
               </el-col>
             </el-row>
           </el-form-item>
@@ -554,7 +665,7 @@
       </div>
     </el-dialog>
     <!-- 基础信息更新弹出框 -->
-    <el-dialog :title="title" :visible.sync="baseUpdateDialog" width="65%" append-to-body>
+    <el-dialog :title="title" :visible.sync="baseUpdateDialog" width="65%" append-to-body @close="closeDialogBefore('updateBaseForm')">
       <el-form ref="updateBaseForm" :model="updateBaseForm" :rules="rules" :is-drfat="isDraft" label-width="140px">
 
         <el-row>
@@ -564,7 +675,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="身份证号" prop="idcard">
+            <el-form-item label="身份证号" prop="idcard" required>
               <el-input v-model="updateBaseForm.idcard" />
             </el-form-item>
           </el-col>
@@ -580,7 +691,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号" prop="tel">
+            <el-form-item label="手机号" prop="tel" required>
               <el-input v-model="updateBaseForm.tel" />
             </el-form-item>
           </el-col>
@@ -614,7 +725,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="毕业证编号" prop="zsbh">
+            <el-form-item label="毕业证编号" prop="zsbh" required>
               <el-input v-model="updateBaseForm.zsbh" />
             </el-form-item>
           </el-col>
@@ -669,7 +780,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态(是否在职)" prop="status">
-              <el-select v-model="updateBaseForm.status" placeholder="请选择状态">
+              <el-select v-model="updateBaseForm.status" placeholder="请选择状态" disabled>
                 <el-option label="离职" value="0" />
                 <el-option label="在职" value="1" />
               </el-select>
@@ -685,7 +796,7 @@
       </div>
     </el-dialog>
     <!--修改技能信息-->
-    <el-dialog :title="title" :visible.sync="skillUpdateDialog" width="50%" append-to-body>
+    <el-dialog :title="title" :visible.sync="skillUpdateDialog" width="50%" append-to-body @close="closeDialogBefore('skillUpdateForm')">
       <div style="height: 50vh;overflow: auto">
         <el-form ref="skillUpdateForm" :model="skillUpdateForm" :is-drfat="isDraft" label-width="30%">
           <el-form-item
@@ -756,10 +867,165 @@
       </div>
     </el-dialog>
     <!--修改项目履历信息-->
-    <el-dialog :title="title" :visible.sync="programUpdateDialog" width="65%" append-to-body>
+    <el-dialog :title="title" :visible.sync="programUpdateDialog" width="65%" append-to-body @close="closeDialogBefore('programUpdateForm')">
       <div style="height: 50vh;overflow: auto">
         <el-form ref="programUpdateForm" :model="programUpdateForm" label-width="140px">
           <el-form-item
+            v-for="(ygxm, index) in programUpdateForm.ygxms"
+            :key="ygxm.key"
+            :label="'项目履历' + (index+1)"
+            style="padding-top: 1%"
+            label-width="10%"
+            required=""
+          >
+            <el-row :span="24">
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programName'"
+                  :rules="{
+                    required: true, message: '项目名称不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.programName"
+                    style="width: 95%"
+                    placeholder="项目名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="10px"
+                  :prop="'ygxms.' + index + '.firstPartyName'"
+                  :rules="{
+                    required: true, message: '甲方名称不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.firstPartyName"
+                    style="width: 91%"
+                    placeholder="甲方名称"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.staffRole'"
+                  :rules="{
+                    required: true, message: '项目角色不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="width: 90%">
+                    <el-option label="开发" value="0" />
+                    <el-option label="测试" value="1" />
+                    <el-option label="项目经理" value="2" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programInfo'"
+                  :rules="{
+                    required: true, message: '项目规模不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="width: 95%">
+                    <el-option label="大型" value="0" />
+                    <el-option label="中型" value="1" />
+                    <el-option label="小型" value="2" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="5">
+                <el-form-item
+                  label-width="3%"
+                  :prop="'ygxms.' + index + '.programStartTime'"
+                  :rules="{
+                    required: true, message: '项目开始日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.programStartTime"
+                    type="date"
+                    placeholder="项目开始日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <!--              <el-col style="width: 1%">
+                             <span>—</span>
+                            </el-col>-->
+              <el-col :span="5">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.programEndTime'"
+                  :rules="{
+                    required: true, message: '项目结束日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.programEndTime"
+                    type="date"
+                    placeholder="项目结束日期"
+                    value-format="yyyy-MM-dd"
+                    style="width: 95%"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item
+                  label-width="10px"
+                  :prop="'ygxms.' + index + '.staffStartTime'"
+                  :rules="{
+                    required: true, message: '参与项目开始日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.staffStartTime"
+                    type="date"
+                    placeholder="参与项目开始日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.staffEndTime'"
+                  :rules="{
+                    required: true, message: '参与项目结束日期不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-date-picker
+                    v-model="ygxm.staffEndTime"
+                    type="date"
+                    placeholder="参与项目结束日期"
+                    style="width: 95%"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <el-form-item
+                  label-width="10px"
+                >
+                  <el-button
+                    type="danger"
+                    @click.prevent="removeDomainjl(ygxm)"
+                  >删除
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <!--          <el-form-item
             v-for="(ygxm, index) in programUpdateForm.ygxms"
             :key="ygxm.key"
             :label="'项目经历' + (index+1)"
@@ -830,7 +1096,7 @@
                 </el-button>
               </el-col>
             </el-row>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item>
             <el-button
               type="primary"
@@ -1154,6 +1420,7 @@ import { getDefinitionsByInstanceId } from '@/api/activiti/definition'
 import approvalForm from '@/views/components/approvalForm'
 import attachmentUploadDialog from '@/views/yggl/leave/components/AttachmentUploadDialog.vue'
 import request from '@/utils/request'
+import { validateIdCard, validatePhone, validategraduateNumber } from '../../../utils/validateUtils'
 
 const generateDefaultList = function() {
   return [
@@ -1213,7 +1480,7 @@ export default {
         zgxlbyrq: null,
         godate: null,
         basearea: null,
-        status: null,
+        status: '1',
         jnList: [{
           skillname: '',
           skillstatus: ''
@@ -1234,7 +1501,44 @@ export default {
       rules: {
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' }
+        ],
+        idcard: [
+          { validator: validateIdCard, trigger: 'blur' }
+        ],
+        gender: [
+          { required: true, message: '性别不能为空', trigger: 'blur' }
+        ],
+        tel: [
+          { validator: validatePhone, trigger: 'blur' }
+        ],
+        zgbyyx: [
+          { required: true, message: '最高学历毕业院校不能为空', trigger: 'blur' }
+        ],
+        zgxlzy: [
+          { required: true, message: '最高学历专业不能为空', trigger: 'blur' }
+        ],
+        zsbh: [
+          { validator: validategraduateNumber, trigger: 'blur' }
+        ],
+        zgxl: [
+          { required: true, message: '最高学历不能为空', trigger: 'blur' }
+        ],
+        skills: [
+          { required: true, message: '技能不能为空', trigger: 'blur' }
+        ],
+        entrydate: [
+          { required: true, message: '入职日期不能为空', trigger: 'blur' }
+        ],
+        zgxlbyrq: [
+          { required: true, message: '最高学历毕业日期不能为空', trigger: 'blur' }
+        ],
+        basearea: [
+          { required: true, message: 'base地(在职地)不能为空', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '状态不能为空', trigger: 'blur' }
         ]
+
       },
       // 项目履历弹出标志
       programDialog: false,
@@ -1263,7 +1567,7 @@ export default {
         zgxlbyrq: '',
         godate: '',
         basearea: '',
-        status: ''
+        status: '1'
       },
       // 技能修改展示框
       skillUpdateDialog: false,
@@ -1388,6 +1692,28 @@ export default {
       reForm: {}
       // 表单校验 下拉框、日期框时trigger: 'change',值发生改变时校验，输入框trigger: 'blur',失去焦点时校验
 
+    }
+  },
+  watch: {
+    'form.godate': {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          this.form.status = '0'
+        } else {
+          this.form.status = '1'
+        }
+      }
+    },
+    'updateBaseForm.godate': {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          this.form.status = '0'
+        } else {
+          this.form.status = '1'
+        }
+      }
     }
   },
   created() {
@@ -1659,6 +1985,9 @@ export default {
           })
         }
       })
+    },
+    closeDialogBefore(formName) {
+      this.$refs[formName].resetFields()
     },
     // 修改经历移除
     removeygxmsup(item) {
