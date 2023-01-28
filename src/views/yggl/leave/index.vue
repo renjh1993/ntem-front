@@ -120,6 +120,16 @@
         >导入
         </el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['system:tEmUser:import']"
+          type="info"
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleProImport"
+        >项目履历导入
+        </el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
     <!-- 数据展示区 -->
@@ -1263,7 +1273,7 @@
         <div slot="tip" class="el-upload__tip">
           <el-checkbox v-model="upload.updateSupport" />
           是否更新已经存在的用户数据
-          <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
+          <el-link type="info" style="font-size:12px" @click="importTemplate()">下载模板</el-link>
         </div>
         <div slot="tip" class="el-upload__tip" style="color:red">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
       </el-upload>
@@ -2232,11 +2242,24 @@ export default {
       this.upload.title = '用户导入'
       this.upload.open = true
     },
+    /** 项目履历导入按钮操作 */
+    handleProImport() {
+      this.upload.title = '项目履历导入'
+      this.upload.open = true
+    },
     /** 下载模板操作 */
     importTemplate() {
-      api.importTemplate().then(response => {
-        this.download(response.message)
-      })
+      const title = this.upload.title
+      if (title === '用户导入') {
+        api.importTemplate().then(response => {
+          this.download(response.message)
+        })
+      }
+      if (title === '项目履历导入') {
+        api.importProgramTemplate().then(response => {
+          this.download(response.message)
+        })
+      }
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {
@@ -2252,7 +2275,14 @@ export default {
     },
     // 提交上传文件
     submitFileForm() {
-      this.$refs.upload.submit()
+      const title = this.upload.title
+      if (title === '用户导入') {
+        this.$refs.upload.submit()
+      }
+      if (title === '项目履历导入') {
+        this.upload.url = process.env.VUE_APP_BASE_API + '/emuser/tEmProgram/importData'
+        this.$refs.upload.submit()
+      }
     }
   }
 }

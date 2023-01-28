@@ -147,6 +147,14 @@ export function importTemplate() {
   })
 }
 
+// 下载员工履历导入模板
+export function importProgramTemplate() {
+  return request({
+    url: '/emuser/tEmProgram/importProgramTemplate',
+    method: 'get'
+  })
+}
+
 function uploadAttachment(data) {
   return request({
     url: '/annexInfo/tEmAnnexinfo/upload',
@@ -173,6 +181,7 @@ export default {
   updateProgram,
   exportExcel,
   importTemplate,
+  importProgramTemplate,
   getOnejn,
   getOnejl,
   uploadAttachment,
