@@ -466,7 +466,7 @@
           <el-form-item
             v-for="(ygxm, index) in form.ygxms"
             :key="ygxm.key"
-            :label="'项目经历' + (index+1)"
+            :label="'项目履历' + (index+1)"
             style="padding-top: 1%"
             label-width="10%"
             required=""
@@ -605,6 +605,45 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="20">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.resWork'"
+                  :rules="[
+                    {required: true, message: '负责工作不能为空', trigger: 'blur'},
+                    { min: 1, max: 255, message: '长度必须在 1 到 255 个字符', trigger: 'blur' }
+                  ]"
+                >
+                  <el-input
+                    v-model="ygxm.resWork"
+                    type="textarea"
+                    style="width: 95%"
+                    placeholder="负责工作"
+                    maxlength="255"
+                    show-word-limit
+                    :rows="3"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.witness'"
+                  :rules="{
+                    required: true, message: '证明人不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.witness"
+                    style="width: 95%"
+                    placeholder="证明人"
+                  />
+                </el-form-item>
+              </el-col>
               <el-col :span="2">
                 <el-form-item
                   label-width="10px"
@@ -639,6 +678,15 @@
     <el-dialog :title="title" :visible.sync="programDialog" width="75%" append-to-body>
       <div style="height: 50vh;overflow: auto">
         <el-table v-loading="loading" :data="programList" style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="负责工作">
+                  <el-input type="textarea" :rows="3" style="width: 800px" :value="props.row.resWork" maxlength="255" show-word-limit />
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column label="项目名称" align="center" prop="programName" min-width="120" />
           <el-table-column label="甲方名称" align="center" prop="firstPartyName" min-width="200" />
           <el-table-column label="项目规模" align="center" prop="programInfo" min-width="80">
@@ -661,6 +709,7 @@
           <el-table-column label="项目结束时间" align="center" prop="programEndTime" min-width="200" />
           <el-table-column label="员工参与起始时间" align="center" prop="staffStartTime" min-width="200" />
           <el-table-column label="员工参与结束时间" align="center" prop="staffEndTime" min-width="160" />
+          <el-table-column label="证明人" align="center" prop="witness" min-width="120" />
         </el-table>
         <pagination
           v-show="programerTotal>0"
@@ -1022,6 +1071,42 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="20">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.resWork'"
+                  :rules="[
+                    {required: true, message: '负责工作不能为空', trigger: 'blur'},
+                    { min: 1, max: 255, message: '长度必须在 1 到 255 个字符', trigger: 'blur' }
+                  ]"
+                >
+                  <el-input
+                    v-model="ygxm.resWork"
+                    type="textarea"
+                    style="width: 95%"
+                    placeholder="负责工作"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :span="24" style="padding-top: 2%">
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0px"
+                  :prop="'ygxms.' + index + '.witness'"
+                  :rules="{
+                    required: true, message: '证明人不能为空', trigger: 'blur'
+                  }"
+                >
+                  <el-input
+                    v-model="ygxm.witness"
+                    style="width: 95%"
+                    placeholder="证明人"
+                  />
+                </el-form-item>
+              </el-col>
               <el-col :span="2">
                 <el-form-item
                   label-width="10px"
@@ -1035,78 +1120,6 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <!--          <el-form-item
-            v-for="(ygxm, index) in programUpdateForm.ygxms"
-            :key="ygxm.key"
-            :label="'项目经历' + (index+1)"
-            :prop="'ygxms.' + index + '.value'"
-            style="padding-top: 1%"
-          >
-            <el-row>
-              <el-col>
-                <el-input
-                  v-model="ygxm.programName"
-                  style="width: 20%"
-                  placeholder="项目名称"
-                />
-                <el-input
-                  v-model="ygxm.firstPartyName"
-                  style="width: 20%;padding-left: 10px"
-                  placeholder="甲方名称"
-                />
-                <el-select v-model="ygxm.staffRole" placeholder="项目角色" style="margin-left: 10px">
-                  <el-option label="开发" value="0" />
-                  <el-option label="测试" value="1" />
-                  <el-option label="项目经理" value="2" />
-                </el-select>
-                <el-select v-model="ygxm.programInfo" placeholder="项目规模" style="margin-left: 10px">
-                  <el-option label="大型" value="0" />
-                  <el-option label="中型" value="1" />
-                  <el-option label="小型" value="2" />
-                </el-select>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col style="padding-top: 1%">
-                <el-date-picker
-                  v-model="ygxm.programStartTime"
-                  type="date"
-                  placeholder="项目开始日期"
-                  style="width: 20%"
-                  value-format="yyyy-MM-dd"
-                />
-                <span style="padding-left: 2px;padding-right: 2px">-</span>
-                <el-date-picker
-                  v-model="ygxm.programEndTime"
-                  type="date"
-                  placeholder="项目结束日期"
-                  value-format="yyyy-MM-dd"
-                />
-                <el-date-picker
-                  v-model="ygxm.staffStartTime"
-                  type="date"
-                  placeholder="参与项目开始日期"
-                  style="margin-left: 10px;width: 18%"
-                  value-format="yyyy-MM-dd"
-                />
-                <span style="padding-left: 2px;padding-right: 2px">-</span>
-                <el-date-picker
-                  v-model="ygxm.staffEndTime"
-                  type="date"
-                  placeholder="结束日期"
-                  style="width: 18%"
-                  value-format="yyyy-MM-dd"
-                />
-
-                <el-button
-                  type="danger"
-                  style="margin-left: 10px"
-                  @click.prevent="removeDomainjl(ygxm)"
-                >删除
-                </el-button>
-              </el-col>
-            </el-row>
-          </el-form-item>-->
           <el-form-item>
             <el-button
               type="primary"
@@ -1503,7 +1516,9 @@ export default {
           programStartTime: '',
           programEndTime: '',
           staffStartTime: '',
-          staffEndTime: ''
+          staffEndTime: '',
+          resWork: '',
+          witness: ''
         }]
 
       },
@@ -1600,7 +1615,9 @@ export default {
           programStartTime: '',
           programEndTime: '',
           staffStartTime: '',
-          staffEndTime: ''
+          staffEndTime: '',
+          resWork: '',
+          witness: ''
         }]
       },
       uploadDialog: {
@@ -1709,7 +1726,7 @@ export default {
       immediate: true,
       handler(newValue) {
         if (newValue) {
-          this.form.status = '0'
+          this.updateBaseForm.status = '0'
         } else {
           this.form.status = '1'
         }
@@ -1721,7 +1738,7 @@ export default {
         if (newValue) {
           this.form.status = '0'
         } else {
-          this.form.status = '1'
+          this.updateBaseForm.status = '1'
         }
       }
     }
@@ -1827,7 +1844,9 @@ export default {
         programStartTime: '',
         programEndTime: '',
         staffStartTime: '',
-        staffEndTime: ''
+        staffEndTime: '',
+        resWork: '',
+        witness: ''
       })
     },
     /** 项目履历查询 */
@@ -1997,6 +2016,44 @@ export default {
       })
     },
     closeDialogBefore(formName) {
+      switch (formName) {
+        case 'programUpdateForm': {
+          this.programUpdateForm = {
+            ygxms: [{
+              programName: '',
+              firstPartyName: '',
+              staffRole: '',
+              programInfo: '',
+              programStartTime: '',
+              programEndTime: '',
+              staffStartTime: '',
+              staffEndTime: '',
+              resWork: '',
+              witness: ''
+            }]
+          }
+          break
+        }
+        case 'addForm': {
+          // 技能修改请求参数
+          this.form.jnList = [{
+            skillname: '',
+            skillstatus: ''
+          }]
+          // 项目履历请求参数
+          this.form.ygxms = [{
+            programName: '',
+            firstPartyName: '',
+            staffRole: '',
+            programInfo: '',
+            programStartTime: '',
+            programEndTime: '',
+            staffStartTime: '',
+            staffEndTime: ''
+          }]
+          break
+        }
+      }
       this.$refs[formName].resetFields()
     },
     // 修改经历移除
